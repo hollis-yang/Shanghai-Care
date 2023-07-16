@@ -7,5 +7,8 @@ module.exports = {
   ],
   parserOptions: {
     ecmaVersion: 'latest'
+  },
+  rules: {
+    'vue/multi-word-component-names': 0, // 不强制要求组件命名
   }
 }
