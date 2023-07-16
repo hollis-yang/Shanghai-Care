@@ -26,6 +26,11 @@ const filteredResult = computed(() => {
       {{ item[1] }} --- {{ item[2] }} --- {{ item[3] }} --- {{ item[4] }}
     </li>
   </ul>
+
+  <div>
+    shy测试
+  </div>
+
 </template>
 
 <style scoped></style>
