@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Login from '@/views/Login/index.vue'
 import Layout from '@/views/Layout/index.vue'
+import Facility from '@/views/Facility/index.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -9,9 +10,15 @@ const router = createRouter({
       path: '/',
       redirect: '/screen'
     },
+    // 主页概述
     {
       path: '/screen',
       component: Layout,
+    },
+    // 养老设施
+    {
+      path: '/facility',
+      component: Facility,
     },
     {
       path: '/login',

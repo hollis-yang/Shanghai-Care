@@ -4,14 +4,15 @@ import LayoutHeader from './Components/LayoutHeader.vue'
 
 <template>
   <div class="layout-container">
-    <header class="layout-header">
+    <div class="layout-header">
       <LayoutHeader></LayoutHeader>
-    </header>
+    </div>
   </div>
 </template>
 
 <style scoped lang="less">
 .layout-header {
-  height: 30vh;
+  width: 100%;
+  height: 10vh;
 }
 </style>

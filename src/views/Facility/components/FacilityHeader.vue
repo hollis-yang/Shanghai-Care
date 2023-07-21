@@ -32,13 +32,13 @@ onMounted(() => {
     <!-- 左侧 -->
     <div class="left">
       <!-- 主页概述 -->
-      <div class="left-item active">
-        <img src="../../../assets/img/bntactive.png" alt="概述">
+      <div class="left-item">
+        <img src="../../../assets/img/bnt.png" alt="概述">
         <span class="desc">主 页 概 述</span>
       </div>
       <!-- 养老设施页 -->
-      <div class="left-item">
-        <img src="../../../assets/img/bnt.png" alt="养老设施">
+      <div class="left-item active">
+        <img src="../../../assets/img/bntactive.png" alt="养老设施">
         <span class="desc">养 老 设 施</span>
       </div>
       <!-- 护工信息页 -->
