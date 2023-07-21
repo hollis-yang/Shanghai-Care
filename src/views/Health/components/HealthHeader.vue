@@ -34,8 +34,8 @@ onMounted(() => {
 
       <!-- 主页概述 -->
       <RouterLink to="/screen">
-        <div class="left-item active">
-          <img src="../../../assets/img/bntactive.png" alt="概述">
+        <div class="left-item">
+          <img src="../../../assets/img/bnt.png" alt="概述">
           <span class="desc">主 页 概 述</span>
         </div>
       </RouterLink>
@@ -74,7 +74,7 @@ onMounted(() => {
       <!-- 健康档案页 -->
       <RouterLink to="/health">
         <div class="right-item">
-          <img src="../../../assets/img/bnt.png" alt="养老设施">
+          <img src="../../../assets/img/bntactive.png" alt="养老设施">
           <span class="desc">健 康 档 案</span>
         </div>
       </RouterLink>

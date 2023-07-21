@@ -2,13 +2,16 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Login from '@/views/Login/index.vue'
 import Layout from '@/views/Layout/index.vue'
 import Facility from '@/views/Facility/index.vue'
+import Nursing from '@/views/Nursing/index.vue'
+import Activity from '@/views/Activity/index.vue'
+import Health from '@/views/Health/index.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      redirect: '/screen'
+      redirect: '/screen',
     },
     // 主页概述
     {
@@ -19,6 +22,21 @@ const router = createRouter({
     {
       path: '/facility',
       component: Facility,
+    },
+    // 护工信息
+    {
+      path: '/nursing',
+      component: Nursing,
+    },
+    // 社区活动
+    {
+      path: '/activity',
+      component: Activity
+    },
+    // 健康档案
+    {
+      path: '/health',
+      component: Health
     },
     {
       path: '/login',

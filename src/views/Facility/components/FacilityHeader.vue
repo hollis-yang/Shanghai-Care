@@ -31,21 +31,30 @@ onMounted(() => {
   <div class="header-container">
     <!-- 左侧 -->
     <div class="left">
+
       <!-- 主页概述 -->
-      <div class="left-item">
-        <img src="../../../assets/img/bnt.png" alt="概述">
-        <span class="desc">主 页 概 述</span>
-      </div>
+      <RouterLink to="/screen">
+        <div class="left-item">
+          <img src="../../../assets/img/bnt.png" alt="概述">
+          <span class="desc">主 页 概 述</span>
+        </div>
+      </RouterLink>
+
       <!-- 养老设施页 -->
-      <div class="left-item active">
-        <img src="../../../assets/img/bntactive.png" alt="养老设施">
-        <span class="desc">养 老 设 施</span>
-      </div>
+      <RouterLink to="/facility">
+        <div class="left-item active">
+          <img src="../../../assets/img/bntactive.png" alt="养老设施">
+          <span class="desc">养 老 设 施</span>
+        </div>
+      </RouterLink>
+
       <!-- 护工信息页 -->
-      <div class="left-item">
-        <img src="../../../assets/img/bnt.png" alt="护理员信息">
-        <span class="desc">护 工 信 息</span>
-      </div>
+      <RouterLink to="/nursing">
+        <div class="left-item">
+          <img src="../../../assets/img/bnt.png" alt="护理员信息">
+          <span class="desc">护 工 信 息</span>
+        </div>
+      </RouterLink>
     </div>
 
     <!-- 用于flex布局占位 -->
@@ -53,16 +62,22 @@ onMounted(() => {
 
     <!-- 右侧 -->
     <div class="right">
+
       <!-- 社区活动页 -->
-      <div class="right-item active">
-        <img src="../../../assets/img/bnt.png" alt="概述">
-        <span class="desc">社 区 活 动</span>
-      </div>
+      <RouterLink to="/activity">
+        <div class="right-item">
+          <img src="../../../assets/img/bnt.png" alt="概述">
+          <span class="desc">社 区 活 动</span>
+        </div>
+      </RouterLink>
+
       <!-- 健康档案页 -->
-      <div class="right-item">
-        <img src="../../../assets/img/bnt.png" alt="养老设施">
-        <span class="desc">健 康 档 案</span>
-      </div>
+      <RouterLink to="/health">
+        <div class="right-item">
+          <img src="../../../assets/img/bnt.png" alt="养老设施">
+          <span class="desc">健 康 档 案</span>
+        </div>
+      </RouterLink>
       <!-- 最右侧时间 -->
       <div class="right-item datetime">
         <div class="desc">{{ currentTime }}</div>
@@ -72,75 +87,5 @@ onMounted(() => {
 </template>
 
 <style scoped lang="less">
-.header-container {
-  display: flex;
-}
-
-.title {
-  position: fixed;
-  left: 50%;
-  top: 2%;
-  transform: translateX(-50%);
-  font-size: 3vh;
-  font-weight: 700;
-}
-
-.left {
-  flex: 0.4;
-  display: flex;
-  justify-content: space-around;
-  margin-top: 5vh;
-  margin-left: 4vw;
-
-  .left-item {
-    position: relative;
-    display: inline-block;
-    width: 8vw;
-    cursor: pointer;
-
-    img {
-      width: 6vw;
-      height: 4vh;
-    }
-  }
-}
-
-.middle {
-  flex: 0.6;
-}
-
-.right {
-  flex: 0.4;
-  display: flex;
-  justify-content: space-around;
-  margin-top: 5vh;
-  margin-right: 2vw;
-
-  .right-item {
-    position: relative;
-    display: inline-block;
-    width: 8vw;
-    cursor: pointer;
-
-    img {
-      width: 6vw;
-      height: 4vh;
-    }
-  }
-}
-
-.desc {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 0.8vw;
-  padding-bottom: 0.5vh;
-  margin-left: -1vw;
-}
-
-.right-item.datetime {
-  text-align: center;
-  cursor: default;
-}
+@import '../../../assets/css/header.less';
 </style>

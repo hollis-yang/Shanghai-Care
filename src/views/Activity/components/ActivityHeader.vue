@@ -34,8 +34,8 @@ onMounted(() => {
 
       <!-- 主页概述 -->
       <RouterLink to="/screen">
-        <div class="left-item active">
-          <img src="../../../assets/img/bntactive.png" alt="概述">
+        <div class="left-item">
+          <img src="../../../assets/img/bnt.png" alt="概述">
           <span class="desc">主 页 概 述</span>
         </div>
       </RouterLink>
@@ -65,8 +65,8 @@ onMounted(() => {
 
       <!-- 社区活动页 -->
       <RouterLink to="/activity">
-        <div class="right-item">
-          <img src="../../../assets/img/bnt.png" alt="概述">
+        <div class="right-item active">
+          <img src="../../../assets/img/bntactive.png" alt="概述">
           <span class="desc">社 区 活 动</span>
         </div>
       </RouterLink>
