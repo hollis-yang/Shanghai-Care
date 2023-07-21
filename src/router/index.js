@@ -7,6 +7,10 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      redirect: '/screen'
+    },
+    {
+      path: '/screen',
       component: Layout,
     },
     {
