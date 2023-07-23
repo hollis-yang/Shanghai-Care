@@ -22,7 +22,6 @@ import NursingAge from './components/NursingAge.vue'
 
 .nursing-age {
   position: absolute;
-  background-color: red;
   top: 8vw;
   left: 8vh;
 

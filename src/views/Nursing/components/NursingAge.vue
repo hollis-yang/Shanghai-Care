@@ -1,6 +1,6 @@
 <script setup>
 import { getSQLAPI } from '@/apis/mysql'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, onUnmounted } from 'vue'
 import * as echarts from 'echarts'
 
 
@@ -17,7 +17,7 @@ const initChart = () => {
       top: '5%'
     },
     legend: {
-      top: '15%',
+      top: '18%',
       icon: 'circle',
       left: '10%'
     },
@@ -37,7 +37,7 @@ const initChart = () => {
         },
         center: ['50%', '65%'],
         itemStyle: {
-          borderRadius: 5,
+          borderRadius: 8,
         }
       }
     ]
@@ -83,9 +83,49 @@ const updateChart = function () {
   chartInstance.setOption(dataOption)
 }
 
+
+// 自适应
+const titleFontSize = ref(0)
+const screenAdapter = () => {
+  titleFontSize.value = ageRef.value.offsetWidth / 100 * 3.6
+
+  const adaptOption = {
+    title: {
+      textStyle: {
+        fontSize: titleFontSize.value * 2
+      }
+    },
+    legend: {
+      itemWidth: titleFontSize.value * 1.5,
+      itemHeight: titleFontSize.value * 1.5,
+      itemGap: titleFontSize.value / 3 * 2,
+      textStyle: {
+        fontSize: titleFontSize.value * 1.2
+      }
+    },
+    series: [
+      {
+        radius: titleFontSize.value * 8
+      }
+    ]
+  }
+  chartInstance.setOption(adaptOption)
+
+  chartInstance.resize()
+}
+
+// 挂载
 onMounted(() => {
   initChart()
   getData()
+  // 监听window大小变化以进行分辨率适配
+  window.addEventListener('resize', screenAdapter)
+  // 界面加载完成后主动进行分辨率适配
+  screenAdapter()
+})
+onUnmounted(() => {
+  // 组件销毁时取消事件监听
+  window.removeEventListener('resize', screenAdapter)
 })
 </script>
 
