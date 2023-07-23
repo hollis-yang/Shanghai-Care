@@ -1,16 +1,16 @@
 <script setup>
 import NursingHeader from './Components/NursingHeader.vue'
-import chartexample from './components/chartexample.vue'
+import NursingAge from './components/NursingAge.vue'
 </script>
 
 <template>
   <div class="nursing-container">
     <div class="nursing-header">
-      <NursingHeader class="nursing-header"></NursingHeader>
+      <NursingHeader></NursingHeader>
     </div>
 
-    <div class="coat">
-      <chartexample class="chart"></chartexample>
+    <div class="nursing-age">
+      <NursingAge class="chart"></NursingAge>
     </div>
   </div>
 </template>
@@ -20,15 +20,15 @@ import chartexample from './components/chartexample.vue'
   position: relative;
 }
 
-.coat {
-  background-color: red;
+.nursing-age {
   position: absolute;
-  top: 12vh;
-  left: 3vw;
+  background-color: red;
+  top: 8vw;
+  left: 8vh;
 
   .chart {
-    height: 40vh;
-    width: 30vw;
+    width: 20vw;
+    height: 42vh;
   }
 }
 </style>
