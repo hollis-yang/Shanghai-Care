@@ -2,13 +2,18 @@
 import NursingHeader from './components/NursingHeader.vue'
 import NursingAge from './components/NursingAge.vue'
 import NursingMap from './components/NursingMap.vue'
-import NursingDistrict from './components/NursingDistrict.vue';
+import NursingDistrict from './components/NursingDistrict.vue'
+import ChangeRoute from './components/ChangeRoute.vue'
 </script>
 
 <template>
   <div class="nursing-container">
     <div class="nursing-header">
       <NursingHeader></NursingHeader>
+    </div>
+
+    <div class="nursing-route">
+      <ChangeRoute></ChangeRoute>
     </div>
 
     <div class="nursing-age">
@@ -28,6 +33,12 @@ import NursingDistrict from './components/NursingDistrict.vue';
 <style scoped lang="less">
 .nursing-container {
   position: relative;
+}
+
+.nursing-route {
+  position: absolute;
+  top: 12vh;
+  left: 4vw;
 }
 
 .nursing-age {
