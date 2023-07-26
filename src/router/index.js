@@ -3,6 +3,7 @@ import Login from '@/views/Login/index.vue'
 import Layout from '@/views/Layout/index.vue'
 import Facility from '@/views/Facility/index.vue'
 import Nursing from '@/views/Nursing/index.vue'
+import NursingQuery from '@/views/NursingQuery/index.vue'
 import Activity from '@/views/Activity/index.vue'
 import Health from '@/views/Health/index.vue'
 
@@ -23,20 +24,25 @@ const router = createRouter({
       path: '/facility',
       component: Facility,
     },
-    // 护工信息
+    // 护工信息可视化
     {
       path: '/nursing',
-      component: Nursing,
+      component: Nursing
+    },
+    // 护工查询
+    {
+      path: '/nursing/query',
+      component: NursingQuery
     },
     // 社区活动
     {
       path: '/activity',
-      component: Activity
+      component: Activity,
     },
     // 健康档案
     {
       path: '/health',
-      component: Health
+      component: Health,
     },
     {
       path: '/login',
