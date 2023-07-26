@@ -1,6 +1,8 @@
 <script setup>
-import NursingHeader from './Components/NursingHeader.vue'
+import NursingHeader from './components/NursingHeader.vue'
 import NursingAge from './components/NursingAge.vue'
+import NursingMap from './components/NursingMap.vue'
+import NursingDistrict from './components/NursingDistrict.vue';
 </script>
 
 <template>
@@ -12,6 +14,14 @@ import NursingAge from './components/NursingAge.vue'
     <div class="nursing-age">
       <NursingAge class="chart"></NursingAge>
     </div>
+
+    <div class="nursing-map">
+      <NursingMap class="chart"></NursingMap>
+    </div>
+
+    <div class="nursing-district">
+      <NursingDistrict class="chart"></NursingDistrict>
+    </div>
   </div>
 </template>
 
@@ -22,12 +32,35 @@ import NursingAge from './components/NursingAge.vue'
 
 .nursing-age {
   position: absolute;
-  top: 8vw;
-  left: 8vh;
+  top: 18vh;
+  left: 4vw;
 
   .chart {
-    width: 20vw;
-    height: 42vh;
+    width: 21vw;
+    height: 40vh;
+  }
+}
+
+.nursing-map {
+  position: absolute;
+  top: 12vh;
+  left: 26vw;
+
+  .chart {
+    width: 45vw;
+    height: 51vh;
+    background-color: red;
+  }
+}
+
+.nursing-district {
+  position: absolute;
+  top: 66vh;
+  left: 26vw;
+  .chart {
+    width: 45vw;
+    height: 29vh;
+    background-color: green;
   }
 }
 </style>
