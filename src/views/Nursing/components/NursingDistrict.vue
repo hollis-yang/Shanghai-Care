@@ -139,6 +139,23 @@ const updateChart = () => {
 }
 
 
+// 分辨率适配
+const screenAdapter = () => {
+  const titleFontSize = districtRef.value.offsetWidth / 100 * 2.5
+
+  // 图表分辨率相关参数配置
+  const adapterOption = {
+    title: {
+      textStyle: {
+        fontSize: titleFontSize
+      }
+    }
+  }
+  chartInstance.setOption(adapterOption)
+
+  chartInstance.resize()
+}
+
 
 // 定时器
 const startInterval = () => {
@@ -160,12 +177,19 @@ const stopInterval = () => {
   clearInterval(timeId.value)
 }
 
+
 onMounted(() => {
   initChart()
   getData()
+  // 监听window大小变化以进行分辨率适配
+  window.addEventListener('resize', screenAdapter)
+  // 界面加载完成后主动进行分辨率适配
+  screenAdapter()
 })
 onUnmounted(() => {
   clearInterval(timeId.value)
+  // 组件销毁时取消事件监听
+  window.removeEventListener('resize', screenAdapter)
 })
 </script>
 
