@@ -55,10 +55,10 @@ import ChangeRoute from './components/ChangeRoute.vue'
 .nursing-map {
   position: absolute;
   top: 12vh;
-  left: 26vw;
+  left: 28vw;
 
   .chart {
-    width: 45vw;
+    width: 44vw;
     height: 51vh;
     background-color: red;
   }
@@ -67,9 +67,9 @@ import ChangeRoute from './components/ChangeRoute.vue'
 .nursing-district {
   position: absolute;
   top: 66vh;
-  left: 26vw;
+  left: 28vw;
   .chart {
-    width: 45vw;
+    width: 44vw;
     height: 29vh;
     background-color: green;
   }
