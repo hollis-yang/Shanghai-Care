@@ -69,8 +69,7 @@ import ChangeRoute from './components/ChangeRoute.vue'
   left: 28vw;
   .chart {
     width: 44vw;
-    height: 29vh;
-    background-color: green;
+    height: 33vh;
   }
 }
 </style>
