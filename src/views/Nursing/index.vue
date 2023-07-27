@@ -3,6 +3,7 @@ import NursingHeader from './components/NursingHeader.vue'
 import NursingAge from './components/NursingAge.vue'
 import NursingMap from './components/NursingMap.vue'
 import NursingDistrict from './components/NursingDistrict.vue'
+import NursingEducation from './components/NursingEducation.vue'
 import ChangeRoute from './components/ChangeRoute.vue'
 </script>
 
@@ -27,6 +28,10 @@ import ChangeRoute from './components/ChangeRoute.vue'
     <div class="nursing-district">
       <NursingDistrict class="chart"></NursingDistrict>
     </div>
+
+    <div class="nursing-education">
+      <NursingEducation class="chart"></NursingEducation>
+    </div>
   </div>
 </template>
 
@@ -47,8 +52,8 @@ import ChangeRoute from './components/ChangeRoute.vue'
   left: 4vw;
 
   .chart {
-    width: 21vw;
-    height: 40vh;
+    width: 22vw;
+    height: 38vh;
   }
 }
 
@@ -70,6 +75,17 @@ import ChangeRoute from './components/ChangeRoute.vue'
   .chart {
     width: 44vw;
     height: 33vh;
+  }
+}
+
+.nursing-education {
+  position: absolute;
+  top: 58vh;
+  left: 4vw;
+  .chart {
+    width: 22vw;
+    height: 37.5vh;
+    background-color: red;
   }
 }
 </style>

@@ -5,7 +5,7 @@ import { DataAnalysis, Files } from '@element-plus/icons-vue'
 <template>
   <el-row class="mb-4">
     <router-link :to="{ path: '/nursing' }">
-      <el-button color="#2642AA" plain>
+      <el-button color="#2642AA" plain style="width: 9vw;">
         <el-icon>
           <DataAnalysis />
         </el-icon>
@@ -15,7 +15,7 @@ import { DataAnalysis, Files } from '@element-plus/icons-vue'
 
     <span style="width: 1vw;"></span>
 
-    <el-button color="#2642AA">
+    <el-button color="#2642AA" style="width: 9vw;">
       <el-icon>
         <Files />
       </el-icon>

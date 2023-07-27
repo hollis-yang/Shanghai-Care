@@ -17,7 +17,7 @@ const initChart = () => {
       top: '5%'
     },
     legend: {
-      top: '18%',
+      top: '15%',
       icon: 'circle',
       left: '10%'
     },
@@ -92,12 +92,12 @@ const screenAdapter = () => {
   const adaptOption = {
     title: {
       textStyle: {
-        fontSize: titleFontSize.value * 2
+        fontSize: titleFontSize.value * 1.7
       }
     },
     legend: {
-      itemWidth: titleFontSize.value * 1.5,
-      itemHeight: titleFontSize.value * 1.5,
+      itemWidth: titleFontSize.value * 1.1,
+      itemHeight: titleFontSize.value * 1.1,
       itemGap: titleFontSize.value / 3 * 2,
       textStyle: {
         fontSize: titleFontSize.value * 1.2
