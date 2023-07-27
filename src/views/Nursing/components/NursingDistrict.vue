@@ -1,11 +1,16 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, onUnmounted } from 'vue'
 import * as echarts from 'echarts'
 import { getSQLAPI } from '@/apis/mysql'
 
 // init
 const districtRef = ref(null)  // DOM
 let chartInstance
+
+// 数组起终点
+const startValue = ref(0)
+const timeId = ref(null)  // 定时器ID(用于销毁定时器)
+
 const initChart = () => {
   chartInstance = echarts.init(districtRef.value, 'dark')
   const initOption = {
@@ -48,10 +53,12 @@ const sqlResult = ref([])
 const getData = async () => {
   const sql = "SELECT * FROM district_nursing_workers"
   const res = await getSQLAPI(sql)
-  console.log(res)
+
   sqlResult.value = res
 
   updateChart()
+
+  startInterval()
 }
 
 const updateChart = () => {
@@ -61,7 +68,6 @@ const updateChart = () => {
     'rgb(255, 0, 135)',
     'rgb(255, 191, 0)'
   ]
-  // 全透明的颜色值
   const colorArr2 = [
     'rgb(1, 191, 236)',
     'rgb(77, 119, 255)',
@@ -73,7 +79,7 @@ const updateChart = () => {
   // x轴
   const xArr = ['养老机构(上海籍)', '社区(上海籍)', '护理站(上海籍)', '养老机构(非上海籍)', '社区(非上海籍)', '护理站(非上海籍)']
   // y轴
-  const districtData = sqlResult.value.splice(2, 8)  // 获取某四个区的具体数据
+  const districtData = sqlResult.value.slice(startValue.value, startValue.value + 8)  // 获取某四个区的具体数据
 
   let districtName = districtData.map(item => item[1])
   districtName = [...new Set(districtName)]
@@ -132,14 +138,39 @@ const updateChart = () => {
   chartInstance.setOption(dataOption)
 }
 
+
+
+// 定时器
+const startInterval = () => {
+  if (timeId.value) {
+    clearInterval(timeId.value)
+  }
+
+  timeId.value = setInterval(() => {
+    startValue.value += 8
+
+    if (startValue.value === 32) {
+      startValue.value = 0
+    }
+
+    updateChart()
+  }, 3000)
+}
+const stopInterval = () => {
+  clearInterval(timeId.value)
+}
+
 onMounted(() => {
   initChart()
   getData()
 })
+onUnmounted(() => {
+  clearInterval(timeId.value)
+})
 </script>
 
 <template>
-  <div ref="districtRef"></div>
+  <div ref="districtRef" @mouseover="stopInterval" @mouseout="startInterval"></div>
 </template>
 
 <style scoped lang="less"></style>

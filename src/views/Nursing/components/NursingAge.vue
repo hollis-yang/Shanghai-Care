@@ -50,7 +50,7 @@ const sqlResult = ref([])
 const getData = async () => {
   const sql = "SELECT age_group, number FROM age_nursing_workers"
   const res = await getSQLAPI(sql)
-  console.log(res)
+
   sqlResult.value = res
 
   updateChart()
