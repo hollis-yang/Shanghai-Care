@@ -34,13 +34,13 @@ const initChart = async () => {
   const initOption = {
     title: [
       {
-        text: '上海市地图',
+        text: '上海市全图',
         left: '42%',
         top: '88%'
       },
       {
-        text: '上海市区',
-        left: '85%',
+        text: '市中心区全图',
+        left: '82%',
         top: '88%'
       }
     ],
@@ -64,7 +64,8 @@ const initChart = async () => {
           borderColor: '#333'
         },
         left: '60%',
-        top: '10%'
+        top: '10%',
+        zoom: 0.9
       }
     ]
   }
@@ -72,10 +73,57 @@ const initChart = async () => {
 
   // 监听地图点击
   chartInstance.on('click', async (arg) => {
-    console.log(arg)
+    const selectedName = arg.name
     // 只监听左侧地图
     if (arg.componentIndex === 0) {
       // 获取这个区的数据
+      if (!mapData.value[selectedName]) {
+        await fetch(`/json/${selectedName}.json`)
+          .then((response) => response.json())
+          .then((json) => {
+            // 将地图数据注册到echarts
+            echarts.registerMap(selectedName, json)
+            // 将地图数据添加到缓存
+            mapData.value[selectedName] = json
+          })
+      }
+
+      // 个性化定制
+      let leftLevel = '60%'
+      let zoomLevel = 0.9
+      if (selectedName === '青浦区' || selectedName === '崇明区' || selectedName === '闵行区') {
+        leftLevel = '50%'
+      } else if (selectedName === '金山区' || selectedName === '奉贤区') {
+        leftLevel = '45%'
+        zoomLevel = 0.65
+      } else if (selectedName === '松江区') {
+        leftLevel = '55%'
+        zoomLevel = 0.8
+      } else if (selectedName === '普陀区' || selectedName === '长宁区') {
+        leftLevel = '45%'
+        zoomLevel = 0.7
+      }
+
+      // 更新右侧地图为选定的地图
+      const changeOption = {
+        title: [
+          {},
+          {
+            text: selectedName,
+          }
+        ],
+        geo: [
+          {
+            map: 'shanghai'
+          },
+          {
+            map: selectedName, // 在这里使用选定的地图名称
+            left: leftLevel,
+            zoom: zoomLevel
+          }
+        ]
+      }
+      chartInstance.setOption(changeOption);
     }
   })
 }
