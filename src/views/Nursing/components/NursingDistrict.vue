@@ -9,6 +9,7 @@ let chartInstance
 const initChart = () => {
   chartInstance = echarts.init(districtRef.value, 'dark')
   const initOption = {
+    color: ['#80FFA5', '#00DDFF', '#FF0087', '#FFBF00'],
     title: {
       text: '丨各区护工来源与户籍统计',
       top: '5%'
@@ -54,8 +55,21 @@ const getData = async () => {
 }
 
 const updateChart = () => {
-  // 数据处理
+  const colorArr1 = [
+    'rgb(128, 255, 165)',
+    'rgb(0, 221, 255)',
+    'rgb(255, 0, 135)',
+    'rgb(255, 191, 0)'
+  ]
+  // 全透明的颜色值
+  const colorArr2 = [
+    'rgb(1, 191, 236)',
+    'rgb(77, 119, 255)',
+    'rgb(135, 0, 157)',
+    'rgb(224, 62, 76)'
+  ]
 
+  // 数据处理
   // x轴
   const xArr = ['养老机构(上海籍)', '社区(上海籍)', '护理站(上海籍)', '养老机构(非上海籍)', '社区(非上海籍)', '护理站(非上海籍)']
   // y轴
@@ -82,11 +96,22 @@ const updateChart = () => {
       data: Array.from(item),
       stack: 'district',
       smooth: true,
+      showSymbol: false,
       lineStyle: {
         width: 0
       },
       areaStyle: {
-        opacity: 0.8
+        opacity: 0.7,
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          {
+            offset: 0,
+            color: colorArr1[index]
+          },
+          {
+            offset: 1,
+            color: colorArr2[index]
+          }
+        ])
       },
       emphasis: {
         focus: 'series'
