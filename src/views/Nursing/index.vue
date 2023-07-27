@@ -4,6 +4,8 @@ import NursingAge from './components/NursingAge.vue'
 import NursingMap from './components/NursingMap.vue'
 import NursingDistrict from './components/NursingDistrict.vue'
 import NursingEducation from './components/NursingEducation.vue'
+import NursingLicense from './components/NursingLicense.vue'
+import NursingWork from './components/NursingWork.vue'
 import ChangeRoute from './components/ChangeRoute.vue'
 </script>
 
@@ -31,6 +33,14 @@ import ChangeRoute from './components/ChangeRoute.vue'
 
     <div class="nursing-education">
       <NursingEducation class="chart"></NursingEducation>
+    </div>
+
+    <div class="nursing-license">
+      <NursingLicense class="chart"></NursingLicense>
+    </div>
+
+    <div class="nursing-work">
+      <NursingWork class="chart"></NursingWork>
     </div>
   </div>
 </template>
@@ -86,6 +96,28 @@ import ChangeRoute from './components/ChangeRoute.vue'
     width: 22vw;
     height: 37.5vh;
     background-color: red;
+  }
+}
+
+.nursing-license {
+  position: absolute;
+  top: 12vh;
+  left: 74vw;
+  .chart {
+    width: 22vw;
+    height: 40vh;
+    background-color: pink;
+  }
+}
+
+.nursing-work {
+  position: absolute;
+  top: 54vh;
+  left: 74vw;
+  .chart {
+    width: 22vw;
+    height: 41.5vh;
+    background-color: skyblue;
   }
 }
 </style>
