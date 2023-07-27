@@ -94,7 +94,7 @@ const initChart = async () => {
       if (selectedName === '青浦区' || selectedName === '崇明区' || selectedName === '闵行区') {
         leftLevel = '50%'
       } else if (selectedName === '金山区' || selectedName === '奉贤区') {
-        leftLevel = '45%'
+        leftLevel = '42%'
         zoomLevel = 0.65
       } else if (selectedName === '松江区') {
         leftLevel = '55%'
