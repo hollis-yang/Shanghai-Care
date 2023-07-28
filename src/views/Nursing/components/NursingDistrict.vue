@@ -149,6 +149,14 @@ const screenAdapter = () => {
       textStyle: {
         fontSize: titleFontSize
       }
+    },
+    legend: {
+      itemWidth: titleFontSize,
+      itemHeight: titleFontSize,
+      itemGap: titleFontSize * 3 / 2,
+      textStyle: {
+        fontSize: titleFontSize / 3 * 2
+      }
     }
   }
   chartInstance.setOption(adapterOption)
