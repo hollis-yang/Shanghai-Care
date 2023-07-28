@@ -69,11 +69,21 @@ const getData = async () => {
 
 // update
 const updateChart = function () {
+  // 准备颜色
+  const colorArr1 = ['rgb(128, 255, 165)', 'rgb(0, 221, 255)', 'rgb(55, 162, 255)', 'rgb(255, 191, 0)', 'rgb(255, 0, 135)']
+  const colorArr2 = ['rgb(1, 191, 236)', 'rgb(77, 119, 255)', 'rgb(116, 21, 219)', 'rgb(224, 62, 76)', 'rgb(135, 0, 157)']
+
   // 数据处理
-  const seriesData = sqlResult.value.map(item => {
+  const seriesData = sqlResult.value.map((item, index) => {
     return {
       name: item[0],
-      value: item[1]
+      value: item[1],
+      itemStyle: {
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          { offset: 0, color: colorArr1[index] },
+          { offset: 1, color: colorArr2[index] }
+        ])
+      }
     }
   })
   const legendData = sqlResult.value.map(item => {
