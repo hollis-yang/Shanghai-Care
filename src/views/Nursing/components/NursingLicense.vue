@@ -47,7 +47,6 @@ const initChart = () => {
     },
     series: [
       {
-        name: '养老护理员持证情况',
         type: 'bar',
         markPoint: {
           symbolSize: 65,

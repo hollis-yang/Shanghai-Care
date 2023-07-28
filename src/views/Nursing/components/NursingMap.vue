@@ -1,5 +1,6 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { getSQLAPI } from '@/apis/mysql'
+import { onMounted, ref, onUnmounted } from 'vue'
 import * as echarts from 'echarts'
 
 // init
@@ -8,7 +9,6 @@ const shanghai = ref({})
 const downtown = ref({})
 let chartInstance
 
-const mapData = ref({})  // 不同行政区数据缓存
 
 const initChart = async () => {
   chartInstance = echarts.init(mapRef.value, 'dark')
@@ -35,17 +35,43 @@ const initChart = async () => {
     backgroundColor: 'transparent',
     title: [
       {
-        text: '上海市全图',
-        left: '42%',
-        top: '88%'
+        text: '全市16区',
+        left: '32%',
+        top: '92%'
       },
       {
-        text: '市中心区全图',
-        left: '82%',
-        top: '88%'
+        text: '市中心7区',
+        left: '67%',
+        top: '92%'
       }
     ],
-    geo: [
+    tooltip: {
+      trigger: 'item'
+    },
+    visualMap: {
+      right: '4%',
+      top: 'bottom',
+      orient: 'vertical',
+      itemHeight: 200,
+      min: 0,
+      max: 15000,
+      inRange: {
+        color: [
+          '#313695',
+          '#4575b4',
+          '#74add1',
+          '#abd9e9',
+          '#e0f3f8',
+          '#fee090',
+          '#fdae61',
+          '#f46d43',
+          '#d73027',
+          '#a50026'
+        ]
+      },
+      calculable: true
+    },
+    series: [
       {
         type: 'map',
         map: 'shanghai',
@@ -53,7 +79,7 @@ const initChart = async () => {
           areaColor: '#2e72bf',
           borderColor: '#333'
         },
-        left: '10%',
+        left: '5%',
         top: '10%',
         zoom: 1.2
       },
@@ -64,74 +90,109 @@ const initChart = async () => {
           areaColor: '#2e72bf',
           borderColor: '#333'
         },
-        left: '60%',
-        top: '10%',
+        left: '55%',
+        top: '13%',
         zoom: 0.9
       }
     ]
   }
   chartInstance.setOption(initOption)
-
-  // 监听地图点击
-  chartInstance.on('click', async (arg) => {
-    const selectedName = arg.name
-    // 只监听左侧地图
-    if (arg.componentIndex === 0) {
-      // 获取这个区的数据
-      if (!mapData.value[selectedName]) {
-        await fetch(`/json/${selectedName}.json`)
-          .then((response) => response.json())
-          .then((json) => {
-            // 将地图数据注册到echarts
-            echarts.registerMap(selectedName, json)
-            // 将地图数据添加到缓存
-            mapData.value[selectedName] = json
-          })
-      }
-
-      // 个性化定制
-      let leftLevel = '60%'
-      let zoomLevel = 0.9
-      if (selectedName === '青浦区' || selectedName === '崇明区' || selectedName === '闵行区') {
-        leftLevel = '50%'
-      } else if (selectedName === '金山区' || selectedName === '奉贤区') {
-        leftLevel = '42%'
-        zoomLevel = 0.65
-      } else if (selectedName === '松江区') {
-        leftLevel = '55%'
-        zoomLevel = 0.8
-      } else if (selectedName === '普陀区' || selectedName === '长宁区') {
-        leftLevel = '45%'
-        zoomLevel = 0.7
-      }
-
-      // 更新右侧地图为选定的地图
-      const changeOption = {
-        title: [
-          {},
-          {
-            text: selectedName,
-          }
-        ],
-        geo: [
-          {
-            map: 'shanghai'
-          },
-          {
-            map: selectedName, // 在这里使用选定的地图名称
-            left: leftLevel,
-            zoom: zoomLevel
-          }
-        ]
-      }
-      chartInstance.setOption(changeOption);
-    }
-  })
 }
 
 
-onMounted(() => {
-  initChart()
+// SQL
+const sqlResult = ref([])
+const getData = async () => {
+  const sql = `SELECT 
+  district, 
+  SUM(institution_number) AS total_institution_number,
+  SUM(community_number) AS total_community_number,
+  SUM(station_number) AS total_station_number
+  FROM district_nursing_workers
+  GROUP BY district; `
+  const res = await getSQLAPI(sql)
+
+  sqlResult.value = res
+
+  updateChart()
+}
+
+
+// update
+const updateChart = () => {
+  // 数据处理
+  const seriesData1 = sqlResult.value.map(item => {
+    return {
+      name: item[0],
+      value: Number(item[1]) + Number(item[2]) + Number(item[3])
+    }
+  })
+
+  const downtownDistricts = ['徐汇区', '长宁区', '黄浦区', '静安区', '虹口区', '普陀区', '杨浦区']
+  const seriesData2 = sqlResult.value.map(item => {
+    if (downtownDistricts.includes(item[0])) {
+      return {
+        name: item[0],
+        value: Number(item[1]) + Number(item[2]) + Number(item[3])
+      }
+    }
+  }).filter(item => item !== undefined)
+
+  const dataOption = {
+    series: [
+      {
+        type: 'map',
+        map: 'shanghai',
+        data: seriesData1
+      },
+      {
+        type: 'map',
+        map: 'downtown',
+        data: seriesData2
+      }
+    ],
+    tooltip: {
+      formatter: '{b}: {c}人'
+    }
+  }
+  chartInstance.setOption(dataOption)
+}
+
+
+// 自适应
+const screenAdapter = () => {
+  const titleFontSize = mapRef.value.offsetWidth / 100 * 3.6
+
+  const adapterOption = {
+    title: [
+      {
+        textStyle: {
+          fontSize: titleFontSize * 0.8
+        }
+      },
+      {
+        textStyle: {
+          fontSize: titleFontSize * 0.8
+        }
+      }
+    ]
+  }
+  chartInstance.setOption(adapterOption)
+
+  chartInstance.resize()
+}
+
+onMounted(async () => {
+  await initChart()
+  getData()
+  // 监听window大小变化以进行分辨率适配
+  window.addEventListener('resize', screenAdapter)
+  // 界面加载完成后主动进行分辨率适配
+  screenAdapter()
+})
+onUnmounted(() => {
+  // 组件销毁时取消事件监听
+  window.removeEventListener('resize', screenAdapter)
 })
 </script>
 

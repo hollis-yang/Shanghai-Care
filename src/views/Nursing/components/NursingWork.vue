@@ -51,7 +51,6 @@ const getData = async () => {
   const res = await getSQLAPI(sql)
 
   sqlResult.value = res
-  console.log(res)
 
   updateChart()
 }
