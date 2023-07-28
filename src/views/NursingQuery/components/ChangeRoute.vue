@@ -13,7 +13,7 @@ import { DataAnalysis, Files } from '@element-plus/icons-vue'
       </el-button>
     </router-link>
 
-    <span style="width: 1vw;"></span>
+    <span style="width: 2vw;"></span>
 
     <el-button color="#2642AA" class="el-button">
       <span class="icon"><el-icon>

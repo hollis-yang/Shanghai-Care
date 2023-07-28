@@ -9,7 +9,7 @@ import { DataAnalysis, Files } from '@element-plus/icons-vue'
       <span class="desc">&nbsp;护工数据可视化</span>
     </el-button>
 
-    <span style="width: 1vw;"></span>
+    <span style="width: 2vw;"></span>
     
     <router-link :to="{ path: '/nursing/query' }">
       <el-button color="#2642AA" plain class="el-button">

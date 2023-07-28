@@ -163,14 +163,14 @@ const screenAdapter = () => {
     xAxis: {
       axisLabel: {
         textStyle: {
-          fontSize: titleFontSize * 0.75
+          fontSize: titleFontSize * 0.8
         }
       }
     },
     yAxis: {
       axisLabel: {
         textStyle: {
-          fontSize: titleFontSize * 0.9
+          fontSize: titleFontSize * 1
         }
       }
     },

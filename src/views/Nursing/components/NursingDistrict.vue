@@ -152,24 +152,24 @@ const screenAdapter = () => {
       }
     },
     legend: {
-      itemWidth: titleFontSize,
-      itemHeight: titleFontSize,
+      itemWidth: titleFontSize * 1.1,
+      itemHeight: titleFontSize * 1.1,
       itemGap: titleFontSize * 3 / 2,
       textStyle: {
-        fontSize: titleFontSize / 3 * 2
+        fontSize: titleFontSize / 4 * 3
       }
     },
     xAxis: {
       axisLabel: {
         textStyle: {
-          fontSize: titleFontSize * 0.6
+          fontSize: titleFontSize * 0.7
         }
       }
     },
     yAxis: {
       axisLabel: {
         textStyle: {
-          fontSize: titleFontSize * 0.6
+          fontSize: titleFontSize * 0.7
         }
       }
     },
