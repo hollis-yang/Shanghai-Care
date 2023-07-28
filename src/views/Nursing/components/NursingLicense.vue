@@ -140,6 +140,20 @@ const screenAdapter = () => {
         fontSize: titleFontSize * 2.4
       }
     },
+    xAxis: {
+      axisLabel: {
+        textStyle: {
+          fontSize: titleFontSize
+        }
+      }
+    },
+    yAxis: {
+      axisLabel: {
+        textStyle: {
+          fontSize: titleFontSize * 1.1
+        }
+      }
+    },
     tooltip: {
       axisPointer: {
         lineStyle: {

@@ -160,6 +160,20 @@ const screenAdapter = () => {
         fontSize: titleFontSize * 1.7
       }
     },
+    xAxis: {
+      axisLabel: {
+        textStyle: {
+          fontSize: titleFontSize * 0.75
+        }
+      }
+    },
+    yAxis: {
+      axisLabel: {
+        textStyle: {
+          fontSize: titleFontSize * 0.9
+        }
+      }
+    },
     series: [
       {
         barWidth: titleFontSize * 2.5,

@@ -158,7 +158,21 @@ const screenAdapter = () => {
       textStyle: {
         fontSize: titleFontSize / 3 * 2
       }
-    }
+    },
+    xAxis: {
+      axisLabel: {
+        textStyle: {
+          fontSize: titleFontSize * 0.6
+        }
+      }
+    },
+    yAxis: {
+      axisLabel: {
+        textStyle: {
+          fontSize: titleFontSize * 0.6
+        }
+      }
+    },
   }
   chartInstance.setOption(adapterOption)
 
