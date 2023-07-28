@@ -25,7 +25,15 @@ const initChart = () => {
       top: '15%'
     },
     tooltip: {
-      show: true
+      trigger: 'axis',
+      axisPointer: {
+        type: 'line',
+        z: 0,
+        lineStyle: {
+          color: 'rgba(127, 127, 127, 0.3)',
+          type: 'solid'
+        }
+      }
     },
     xAxis: {
       type: 'value'
@@ -171,6 +179,13 @@ const screenAdapter = () => {
       axisLabel: {
         textStyle: {
           fontSize: titleFontSize * 1
+        }
+      }
+    },
+    tooltip: {
+      axisPointer: {
+        lineStyle: {
+          width: titleFontSize * 2.5
         }
       }
     },
