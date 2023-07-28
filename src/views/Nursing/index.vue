@@ -111,11 +111,10 @@ import ChangeRoute from './components/ChangeRoute.vue'
 .nursing-work {
   position: absolute;
   top: 57vh;
-  left: 74vw;
+  left: 72vw;
   .chart {
-    width: 22vw;
+    width: 26vw;
     height: 38.8vh;
-    background-color: skyblue;
   }
 }
 </style>
