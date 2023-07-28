@@ -47,7 +47,7 @@ const initChart = () => {
         center: ['50%', '67%'],
         itemStyle: {
           borderRadius: 8,
-          borderColor: 'rgb(45, 52, 67)',
+          borderColor: 'rgba(127, 127, 127, 0.5)',
           borderWidth: 2
         }
       }

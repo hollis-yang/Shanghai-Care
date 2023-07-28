@@ -16,7 +16,7 @@ const initChart = () => {
     backgroundColor: 'transparent',
     title: {
       text: '丨护工学历分布',
-      top: '5%'
+      top: '2%'
     },
     grid: {
       left: '13%',
@@ -157,7 +157,7 @@ const screenAdapter = () => {
   const adapterOption = {
     title: {
       textStyle: {
-        fontSize: titleFontSize * 1.5
+        fontSize: titleFontSize * 1.7
       }
     },
     series: [

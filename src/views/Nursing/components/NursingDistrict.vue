@@ -18,7 +18,7 @@ const initChart = () => {
     color: ['#80FFA5', '#00DDFF', '#FF0087', '#FFBF00'],
     title: {
       text: '丨各区护工来源与户籍统计',
-      top: '5%'
+      top: '1%'
     },
     legend: {
       left: '40%',
@@ -148,7 +148,7 @@ const screenAdapter = () => {
   const adapterOption = {
     title: {
       textStyle: {
-        fontSize: titleFontSize
+        fontSize: titleFontSize * 1.2
       }
     },
     legend: {

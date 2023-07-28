@@ -15,13 +15,14 @@ const initChart = () => {
     backgroundColor: 'transparent',
     title: {
       text: '丨养老护理员持证情况',
-      top: '5%'
+      top: '2%',
+      left: '0%'
     },
     grid: {
       left: '13%',
       right: '9%',
       top: '17%',
-      bottom: '10%'
+      bottom: '11%'
     },
     xAxis: {
       type: 'category',
@@ -39,7 +40,7 @@ const initChart = () => {
         type: 'line',
         z: 0,
         lineStyle: {
-          color: 'rgba(45, 52, 67, 0.5)',
+          color: 'rgba(127, 127, 127, 0.3)',
           type: 'solid'
         }
       }
@@ -136,7 +137,7 @@ const screenAdapter = () => {
   const adapterOption = {
     title: {
       textStyle: {
-        fontSize: titleFontSize * 2
+        fontSize: titleFontSize * 2.4
       }
     },
     tooltip: {
