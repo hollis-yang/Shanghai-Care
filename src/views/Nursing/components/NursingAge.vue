@@ -17,9 +17,10 @@ const initChart = () => {
       top: '5%'
     },
     legend: {
-      top: '15%',
+      top: '14%',
       icon: 'circle',
-      left: '10%'
+      left: '10%',
+      right: '10%'
     },
     tooltip: {
       show: true,
@@ -28,16 +29,25 @@ const initChart = () => {
     series: [
       {
         type: 'pie',
-        radius: ['40%', '70%'],
+        radius: ['45%', '65%'],
         label: {
-          show: false
+          show: false,
+          position: 'center'
+        },
+        emphasis: {
+          label: {
+            show: true,
+            fontWeight: 700
+          }
         },
         labelLine: {
           show: false
         },
-        center: ['50%', '65%'],
+        center: ['50%', '62%'],
         itemStyle: {
           borderRadius: 8,
+          borderColor: 'rgb(45, 52, 67)',
+          borderWidth: 2
         }
       }
     ]
@@ -98,14 +108,18 @@ const screenAdapter = () => {
     legend: {
       itemWidth: titleFontSize.value * 1.1,
       itemHeight: titleFontSize.value * 1.1,
-      itemGap: titleFontSize.value / 3 * 2,
+      itemGap: titleFontSize.value,
       textStyle: {
-        fontSize: titleFontSize.value * 1.2
+        fontSize: titleFontSize.value
       }
     },
     series: [
       {
-        radius: titleFontSize.value * 8
+        emphasis: {
+          label: {
+            fontSize: titleFontSize.value * 2.1
+          }
+        }
       }
     ]
   }
