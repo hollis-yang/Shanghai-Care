@@ -12,12 +12,13 @@ const initChart = () => {
 
   // 图表初始化配置
   const initOption = {
+    backgroundColor: 'transparent',
     title: {
       text: '丨护工年龄分布',
       top: '5%'
     },
     legend: {
-      top: '14%',
+      top: '16%',
       icon: 'circle',
       left: '10%',
       right: '10%'
@@ -43,7 +44,7 @@ const initChart = () => {
         labelLine: {
           show: false
         },
-        center: ['50%', '62%'],
+        center: ['50%', '67%'],
         itemStyle: {
           borderRadius: 8,
           borderColor: 'rgb(45, 52, 67)',

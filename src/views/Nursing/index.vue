@@ -105,7 +105,6 @@ import ChangeRoute from './components/ChangeRoute.vue'
   .chart {
     width: 23vw;
     height: 43vh;
-    background-color: pink;
   }
 }
 

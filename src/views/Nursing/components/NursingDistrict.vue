@@ -14,6 +14,7 @@ const timeId = ref(null)  // 定时器ID(用于销毁定时器)
 const initChart = () => {
   chartInstance = echarts.init(districtRef.value, 'dark')
   const initOption = {
+    backgroundColor: 'transparent',
     color: ['#80FFA5', '#00DDFF', '#FF0087', '#FFBF00'],
     title: {
       text: '丨各区护工来源与户籍统计',

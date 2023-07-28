@@ -32,6 +32,7 @@ const initChart = async () => {
 
   // 图表初始化配置
   const initOption = {
+    backgroundColor: 'transparent',
     title: [
       {
         text: '上海市全图',

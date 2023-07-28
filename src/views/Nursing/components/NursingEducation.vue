@@ -13,6 +13,7 @@ const initChart = () => {
 
   // 图表初始化配置
   const initOption = {
+    backgroundColor: 'transparent',
     title: {
       text: '丨护工学历分布',
       top: '5%'
@@ -161,7 +162,7 @@ const screenAdapter = () => {
     },
     series: [
       {
-        barWidth: titleFontSize * 3,
+        barWidth: titleFontSize * 2.5,
         itemStyle: {
           borderRadius: [0, titleFontSize * 2, titleFontSize * 2, 0]
         }

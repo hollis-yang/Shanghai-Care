@@ -12,6 +12,7 @@ const initChart = () => {
 
   // 图表初始化配置
   const initOption = {
+    backgroundColor: 'transparent',
     title: {
       text: '丨养老护理员持证情况',
       top: '5%'
