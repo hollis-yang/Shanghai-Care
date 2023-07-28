@@ -94,7 +94,7 @@ import ChangeRoute from './components/ChangeRoute.vue'
   left: 4vw;
   .chart {
     width: 22vw;
-    height: 37.5vh;
+    height: 37.8vh;
   }
 }
 
@@ -103,19 +103,19 @@ import ChangeRoute from './components/ChangeRoute.vue'
   top: 12vh;
   left: 74vw;
   .chart {
-    width: 22vw;
-    height: 40vh;
+    width: 23vw;
+    height: 43vh;
     background-color: pink;
   }
 }
 
 .nursing-work {
   position: absolute;
-  top: 54vh;
+  top: 57vh;
   left: 74vw;
   .chart {
     width: 22vw;
-    height: 41.5vh;
+    height: 38.8vh;
     background-color: skyblue;
   }
 }
