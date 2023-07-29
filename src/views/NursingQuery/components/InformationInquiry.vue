@@ -1,4 +1,4 @@
-  <script setup>
+<script setup>
   import axios from '../../../utils/http'
   import { User, Female, Files, HomeFilled, Menu, GoldMedal, EditPen, Histogram } from '@element-plus/icons-vue'
   import { ElMessage } from 'element-plus'
@@ -99,7 +99,7 @@
     }
     infoObj.value = obj
   }
-  </script>
+</script>
 
 <template>
     <div class="InformationInquiry">
@@ -130,4 +130,4 @@
         </div>
       </div>
     </div>
-  </template>
+</template>
