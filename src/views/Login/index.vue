@@ -1,8 +1,9 @@
 <script setup>
+import insertTest from './insertTest.vue'
 </script>
 
 <template>
-  我是Login
+  <insertTest></insertTest>
 </template>
 
 <style scoped>

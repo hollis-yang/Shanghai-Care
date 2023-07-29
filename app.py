@@ -18,6 +18,7 @@ connection = pymysql.connect(
 
 lock = threading.Lock()   # 创建全局互斥锁
 
+
 @app.route('/query', methods=['GET'])
 def query():
     try:
@@ -42,5 +43,34 @@ def query():
         return jsonify({'error': str(e)})
 
 
+@app.route('/insert', methods=['POST'])
+def add_data():
+    try:
+        # 获取POST请求中的JSON数据
+        data = request.get_json()
+        sql = data.get('sql')
+
+        if sql:
+            # 创建游标对象
+            cursor = connection.cursor()
+            # 互斥锁
+            lock.acquire()
+            # 执行插入操作
+            cursor.execute(sql)
+            # 提交事务
+            connection.commit()
+            # 解锁
+            lock.release()
+            # 关闭游标
+            cursor.close()
+            # 返回成功响应
+            return jsonify({'message': 'Data added successfully!'}), 200
+        else:
+            return jsonify({'error': 'No SQL code provided.'}), 400
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 if __name__ == '__main__':
-    app.run(host="127.0.0.1",port="5000",debug=True)
+    app.run(host="127.0.0.1", port="5000", debug=True)
