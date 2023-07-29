@@ -1,6 +1,7 @@
 <script setup>
 import NursingHeader from '../Nursing/components/NursingHeader.vue'
 import ChangeRoute from './components/ChangeRoute.vue'
+import InformationInquiry from './components/InformationInquiry.vue';
 </script>
 
 <template>
@@ -11,6 +12,7 @@ import ChangeRoute from './components/ChangeRoute.vue'
 
     <div class="nursing-route">
       <ChangeRoute></ChangeRoute>
+        <InformationInquiry></InformationInquiry>
     </div>
   </div>
 </template>
