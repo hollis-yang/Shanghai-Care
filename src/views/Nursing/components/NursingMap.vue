@@ -3,6 +3,7 @@ import { getSQLAPI } from '@/apis/mysql'
 import { onMounted, ref, onUnmounted } from 'vue'
 import * as echarts from 'echarts'
 
+
 // init
 const mapRef = ref(null)  // DOM
 const shanghai = ref({})
@@ -57,16 +58,11 @@ const initChart = async () => {
       max: 15000,
       inRange: {
         color: [
-          '#313695',
-          '#4575b4',
+          '#e0f3f8', // Lightest blue
           '#74add1',
-          '#abd9e9',
-          '#e0f3f8',
-          '#fee090',
-          '#fdae61',
-          '#f46d43',
-          '#d73027',
-          '#a50026'
+          '#4575b4',
+          '#313695',
+          '#0c0847' // Darkest blue
         ]
       },
       calculable: true
@@ -80,8 +76,8 @@ const initChart = async () => {
           borderColor: '#333'
         },
         left: '5%',
-        top: '10%',
-        zoom: 1.2
+        top: '13%',
+        zoom: 1.1
       },
       {
         type: 'map',
@@ -200,4 +196,5 @@ onUnmounted(() => {
   <div ref="mapRef"></div>
 </template>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+</style>
