@@ -131,3 +131,56 @@
       </div>
     </div>
 </template>
+
+<style lang='less' scoped>
+.InformationInquiry {
+  position: fixed;
+  font-size: 16px;
+  top: 60%;
+  left: 50%;
+  width: 500px;
+  height: 500px;
+  transform: translate(-50%, -50%);
+  .top {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    display: flex;
+    /deep/ .el-input-group__prepend {
+      background-color: #1827c4 !important;
+      color: #fff !important;
+      box-shadow: none !important;
+    }
+    .btn {
+      margin-left: 30px;
+      /deep/ .el-button {
+        background-color: #1827c4 !important;
+        border: none;
+      }
+    }
+  }
+  .bottom {
+    background-color: #0000006b;
+    color: rgb(255, 255, 255);
+    padding: 10px 20px;
+    margin-top: 50px;
+    border-radius: 5px;
+    .bottom-box {
+      display: flex;
+      margin-top: 18px;
+      justify-content: space-between;
+      .left {
+        display: flex;
+        align-items: center;
+        .icon {
+          width: 16px;
+          height: 16px;
+          margin-right: 0.5em;
+        }
+      }
+      .right {
+      }
+    }
+  }
+}
+</style>
