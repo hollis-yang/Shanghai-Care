@@ -1,5 +1,6 @@
 <script setup>
-import FacilityHeader from './Components/FacilityHeader.vue'
+import FacilityHeader from './components/FacilityHeader.vue'
+import FacilityMap from './components/FacilityMap.vue';
 </script>
 
 <template>
@@ -8,6 +9,11 @@ import FacilityHeader from './Components/FacilityHeader.vue'
       <FacilityHeader></FacilityHeader>
     </div>
   </div>
+
+  <div>
+    <FacilityMap></FacilityMap>
+  </div>
+
 </template>
 
 <style scoped lang="less">
