@@ -100,3 +100,34 @@
     infoObj.value = obj
   }
   </script>
+
+<template>
+    <div class="InformationInquiry">
+      <div class="top">
+        <el-input v-model="input1" placeholder="请输入姓名">
+          <template #prepend>
+            <div>
+              按姓名查询
+            </div>
+          </template>
+        </el-input>
+        <div class="btn">
+          <el-button @click="queryInfo" type="primary">查询</el-button>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="bottom-box" v-for="(item,index) in infoObj" :key="index">
+          <div class="left">
+            <div class="icon">
+              <Icon :Components='iconObj[index]'></Icon>
+            </div>
+            {{TitleObj[index]}}
+          </div>
+  
+          <div class="right">
+            {{item}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
