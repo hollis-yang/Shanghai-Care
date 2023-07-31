@@ -33,14 +33,12 @@ const initChart = () => {
     },
     xAxis: {
       type: 'category',
-      // name: '年份',
       axisLabel: {
         rotate: 30
       }
     },
     yAxis: {
       type: 'value',
-      // name: '预期寿命',
       min: 70,
       max: 90
     },

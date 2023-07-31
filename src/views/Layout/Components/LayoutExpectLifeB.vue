@@ -24,23 +24,21 @@ const initChart = () => {
       top: '26%',
       bottom: '13%',
       left: '6%',
-      right: '10%'
+      right: '9%'
     },
     legend: {
       orient: 'horizontal',
       top: '1%',
-      left: '50%'
+      left: '60%'
     },
     xAxis: {
       type: 'category',
-      // name: '年份',
       axisLabel: {
         rotate: 30
       }
     },
     yAxis: {
       type: 'value',
-      // name: '预期寿命',
       min: 70,
       max: 90
     },
@@ -87,16 +85,16 @@ const updateChart = () => {
         symbolSize: elRef.value.offsetWidth / 100 * 3.6 * 0.5,
         name: '预期寿命',
         lineStyle: {
-          color: '#5E83BA',
+          color: '#FFA500',
           width: elRef.value.offsetWidth / 100 * 3.6 * 0.15
         },
         itemStyle: {
-          color: '#5E83BA'
+          color: '#FFA500'
         },
         smooth: true,
         endLabel: {
           show: true,
-          formatter: '  {c}',
+          formatter: '平均: {c}',
           fontSize: elRef.value.offsetWidth / 100 * 3.6 * 0.7
         },
         emphasis: {
@@ -134,7 +132,7 @@ const screenAdapter = () => {
     },
     legend: {
       textStyle: {
-        fontSize: titleFontSize * 0.7
+        fontSize: titleFontSize * 0.8
       }
     },
     series: [
@@ -145,7 +143,7 @@ const screenAdapter = () => {
           fontSize: titleFontSize * 0.7
         },
         lineStyle: {
-          color: '#5E83BA',
+          color: '#FFA500',
           width: elRef.value.offsetWidth / 100 * 3.6 * 0.15
         },
       }
