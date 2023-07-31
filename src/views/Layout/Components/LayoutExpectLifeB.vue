@@ -24,7 +24,7 @@ const initChart = () => {
       top: '26%',
       bottom: '13%',
       left: '6%',
-      right: '9%'
+      right: '11.5%'
     },
     legend: {
       orient: 'horizontal',
