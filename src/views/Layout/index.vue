@@ -23,7 +23,7 @@ const toggleChart = () => {
 
 const timeId = ref(null)
 onMounted(() => {
-  timeId.value = setInterval(toggleChart, 5000)
+  timeId.value = setInterval(toggleChart, 100000000)
 })
 onUnmounted(() => {
   // 当组件被卸载时清除定时器
@@ -35,7 +35,7 @@ const expectLifeMouseOver = () => {
   clearInterval(timeId.value)
 }
 const expectLifeMouseOut = () => {
-  timeId.value = setInterval(toggleChart, 5000)
+  timeId.value = setInterval(toggleChart, 1000000000)
 }
 </script>
 

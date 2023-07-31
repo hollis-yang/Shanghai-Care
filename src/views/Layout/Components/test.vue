@@ -1,52 +1,21 @@
+<template>
+  <div ref="elRef"></div>
+</template>
+
 <script setup>
 import { onMounted, ref, onUnmounted } from 'vue'
 import * as echarts from 'echarts'
 import { getSQLAPI } from '@/apis/mysql'
 
 // init
-const elRef = ref(null)  // DOM
+const elRef = ref(null) // DOM
 let chartInstance
+let endLabelFormatter // 保存 endLabel 的 formatter 函数
 
 const initChart = () => {
   chartInstance = echarts.init(elRef.value, 'dark')
-  const initOption = {
-    backgroundColor: 'transparent',
-    animation: true,
-    animationDuration: 5000,
-    title: {
-      text: '丨上海市人口预期寿命变化',
-    },
-    tooltip: {
-      trigger: 'axis'
-    },
-    grid: {
-      top: '21%',
-      bottom: '13%',
-      left: '6%',
-      right: '7%'
-    },
-    legend: {
-      orient: 'horizontal',
-      top: '1%',
-      left: '45%'
-    },
-    xAxis: {
-      type: 'category',
-      name: '年份',
-      axisLabel: {
-        rotate: 30
-      }
-    },
-    yAxis: {
-      type: 'value',
-      name: '预期寿命',
-      min: 70,
-      max: 90
-    },
-  }
-  chartInstance.setOption(initOption)
+  // ... 省略其他初始化代码 ...
 }
-
 
 // SQL
 const sqlResult = ref([])
@@ -61,21 +30,25 @@ const getData = async () => {
   updateChart()
 }
 
-
 const updateChart = () => {
   // 数据处理
-
-  // 年份信息
-  const yearData = sqlResult.value.map(item => item[0])
-  // 男的数据
-  const MData = sqlResult.value.map(item => item[2])
-  // 女的数据
-  const FData = sqlResult.value.map(item => item[3])
-
+  // 男女分开的数据
+  const MFData = sqlResult.value.map(item => {
+    return {
+      year: item[0],
+      MExpectancy: item[2],
+      FExpectancy: item[3]
+    }
+  });
 
   const dataOption = {
+    dataset: [
+      {
+        source: MFData
+      }
+    ],
     xAxis: {
-      data: yearData
+      data: MFData.map(item => item.year)
     },
     legend: {
       data: ['男性预期寿命', '女性预期寿命']
@@ -83,7 +56,7 @@ const updateChart = () => {
     series: [
       {
         type: 'line',
-        data: MData,
+        datasetId: 'dataset_raw',
         showSymbol: true,
         name: '男性预期寿命',
         encode: {
@@ -100,12 +73,12 @@ const updateChart = () => {
         smooth: true,
         endLabel: {
           show: true,
-          formatter: '男: {c}'
+          formatter: endLabelFormatter // 使用保存的 formatter 函数
         }
       },
       {
         type: 'line',
-        data: FData,
+        datasetId: 'dataset_raw',
         showSymbol: true,
         name: '女性预期寿命',
         encode: {
@@ -119,26 +92,18 @@ const updateChart = () => {
         },
         itemStyle: {
           color: '#F9677F'
-        },
-        endLabel: {
-          show: true,
-          formatter: '女: {c}'
         }
       }
     ]
-  }
-  chartInstance.setOption(dataOption)
-}
+  };
 
+  chartInstance.setOption(dataOption);
+};
 
 onMounted(() => {
   initChart()
   getData()
 })
 </script>
-
-<template>
-  <div ref="elRef"></div>
-</template>
 
 <style lang="less" scoped></style>
