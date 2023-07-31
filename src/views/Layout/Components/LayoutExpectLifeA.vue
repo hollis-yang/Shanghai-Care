@@ -88,11 +88,11 @@ const updateChart = () => {
         symbolSize: elRef.value.offsetWidth / 100 * 3.6 * 0.5,
         name: '男性预期寿命',
         lineStyle: {
-          color: '#5E83BA',
+          color: 'rgb(37, 117, 252)',
           width: elRef.value.offsetWidth / 100 * 3.6 * 0.15
         },
         itemStyle: {
-          color: '#5E83BA'
+          color: 'rgb(37, 117, 252)'
         },
         smooth: true,
         endLabel: {
@@ -112,11 +112,11 @@ const updateChart = () => {
         name: '女性预期寿命',
         smooth: true,
         lineStyle: {
-          color: '#F9677F',
+          color: 'rgb(255, 0, 135)',
           width: elRef.value.offsetWidth / 100 * 3.6 * 0.15
         },
         itemStyle: {
-          color: '#F9677F'
+          color: 'rgb(255, 0, 135)'
         },
         endLabel: {
           show: true,
@@ -169,7 +169,7 @@ const screenAdapter = () => {
           fontSize: titleFontSize * 0.7
         },
         lineStyle: {
-          color: '#5E83BA',
+          color: 'rgb(37, 117, 252)',
           width: elRef.value.offsetWidth / 100 * 3.6 * 0.15
         },
       },
@@ -180,7 +180,7 @@ const screenAdapter = () => {
           fontSize: titleFontSize * 0.7
         },
         lineStyle: {
-          color: '#F9677F',
+          color: 'rgb(255, 0, 135)',
           width: elRef.value.offsetWidth / 100 * 3.6 * 0.15
         },
       }
