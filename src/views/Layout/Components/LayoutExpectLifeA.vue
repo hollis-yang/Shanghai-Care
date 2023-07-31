@@ -89,10 +89,6 @@ const updateChart = () => {
         showSymbol: true,
         symbolSize: elRef.value.offsetWidth / 100 * 3.6 * 0.5,
         name: '男性预期寿命',
-        encode: {
-          x: 'year',
-          y: 'MExpectancy'
-        },
         lineStyle: {
           color: '#5E83BA',
           width: elRef.value.offsetWidth / 100 * 3.6 * 0.15
@@ -116,10 +112,6 @@ const updateChart = () => {
         showSymbol: true,
         symbolSize: elRef.value.offsetWidth / 100 * 3.6 * 0.5,
         name: '女性预期寿命',
-        encode: {
-          x: 'year',
-          y: 'FExpectancy'
-        },
         smooth: true,
         lineStyle: {
           color: '#F9677F',
