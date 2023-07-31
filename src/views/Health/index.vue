@@ -1,5 +1,5 @@
 <script setup>
-import HealthHeader from './Components/HealthHeader.vue'
+import HealthHeader from './components/HealthHeader.vue'
 </script>
 
 <template>
