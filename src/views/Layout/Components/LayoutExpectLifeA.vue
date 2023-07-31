@@ -149,7 +149,7 @@ const screenAdapter = () => {
   const adapterOption = {
     title: {
       textStyle: {
-        fontSize: titleFontSize
+        fontSize: titleFontSize * 1.1
       }
     },
     xAxis: {
