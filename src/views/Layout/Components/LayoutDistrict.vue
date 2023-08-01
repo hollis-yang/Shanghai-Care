@@ -28,9 +28,9 @@ const initChart = () => {
     grid: {
       containLabel: true,
       bottom: '0%',
-      left: '4%',
-      right: '7%',
-      top: '25%'
+      left: '6%',
+      right: '5%',
+      top: '20%'
     },
     tooltip: {
       trigger: 'axis',
@@ -41,16 +41,16 @@ const initChart = () => {
     yAxis: [
       {
         type: 'value',
-        name: '60岁以上人口数',
+        name: '60岁以上人口数（万）',
       },
       {
         type: 'value',
-        name: '60岁以上人口占比',
+        name: '60岁以上人口占比（%）',
       }
     ],
     series: [
       {
-        name: '60岁以上人口数',
+        name: '60岁以上人口数（万）',
         type: 'bar',
         itemStyle: {
           color: (arg) => {
@@ -76,7 +76,7 @@ const initChart = () => {
         }
       },
       {
-        name: '60岁以上人口占比',
+        name: '60岁以上人口占比（%）',
         type: 'line',
         yAxisIndex: 1,
         
@@ -141,11 +141,11 @@ const updateChart = () => {
     ],
     series: [
       {
-        name: '60岁以上人口数',
+        name: '60岁以上人口数（万）',
         data: barArr
       },
       {
-        name: '60岁以上人口占比',
+        name: '60岁以上人口占比（%）',
         data: lineArr,
         smooth: true,
         
