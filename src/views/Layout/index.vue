@@ -66,7 +66,7 @@ const expectLifeMouseOut = () => {
 
     <div class="layout-map">
       <LayoutMapA class="chart"></LayoutMapA>
-      <LayoutMapB class="chart" style="display: none;"></LayoutMapB>
+      <LayoutMapB class="chart"></LayoutMapB>
     </div>
 
     <div class="layout-district">

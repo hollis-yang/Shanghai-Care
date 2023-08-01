@@ -34,8 +34,8 @@ const initChart = async () => {
       trigger: 'item'
     },
     visualMap: {
-      min: 6000,
-      max: 18000,
+      min: 5000,
+      max: 15000,
       itemHeight: 200,
       inRange: {
         color: [
@@ -59,7 +59,7 @@ const initChart = async () => {
           areaColor: '#2e72bf',
           borderColor: '#333'
         },
-        zoom: 1.15
+        zoom: 1
       }
     ]
   }
