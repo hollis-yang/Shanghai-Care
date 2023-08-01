@@ -11,7 +11,6 @@ const timeId = ref(null)
 // 颜色数组
 const colorArr = [
   ['#2e72bf', '#23e5e5'],
-
   ['#5052ee', '#ab6ee5'],
   ['#0ba82c', '#4ff778'],
 ]
@@ -28,12 +27,20 @@ const initChart = () => {
     grid: {
       containLabel: true,
       bottom: '0%',
-      left: '6%',
-      right: '5%',
-      top: '20%'
+      left: '10%',
+      right: '8%',
+      top: '25%'
     },
     tooltip: {
       trigger: 'axis',
+      axisPointer: {
+        type: 'line',
+        z: 0,
+        lineStyle: {
+          color: 'rgba(127, 127, 127, 0.3)',
+          type: 'solid'
+        }
+      }
     },
     xAxis: {
       type: 'category'
@@ -79,7 +86,12 @@ const initChart = () => {
         name: '60岁以上人口占比（%）',
         type: 'line',
         yAxisIndex: 1,
-        
+        lineStyle: {
+          color: '#ff6347'
+        },
+        itemStyle: {
+          color: '#ff6347'
+        }
       }
     ]
   }
@@ -148,7 +160,7 @@ const updateChart = () => {
         name: '60岁以上人口占比（%）',
         data: lineArr,
         smooth: true,
-        
+
       }
     ]
   }
@@ -176,9 +188,81 @@ const startInterval = () => {
 }
 
 
+// 屏幕适配
+const screenAdapter = () => {
+  const titleFontSize = districtRef.value.offsetWidth / 100 * 3.6
+
+  const adapterOption = {
+    title: {
+      textStyle: {
+        fontSize: titleFontSize * 0.9
+      }
+    },
+    xAxis: {
+      axisLabel: {
+        textStyle: {
+          fontSize: titleFontSize * 0.6
+        }
+      }
+    },
+    yAxis: [
+      {
+        axisLabel: {
+          textStyle: {
+            fontSize: titleFontSize * 0.6
+          }
+        },
+        nameTextStyle: {
+          fontSize: titleFontSize * 0.6
+        }
+      },
+      {
+        axisLabel: {
+          textStyle: {
+            fontSize: titleFontSize * 0.6
+          }
+        },
+        nameTextStyle: {
+          fontSize: titleFontSize * 0.6
+        }
+      }
+    ],
+    tooltip: {
+      axisPointer: {
+        lineStyle: {
+          width: titleFontSize * 1.5
+        }
+      }
+    },
+    series: [
+      {
+        barWidth: titleFontSize * 1.5,
+        itemStyle: {
+          borderRadius: [titleFontSize / 3 * 2, titleFontSize / 3 * 2, 0, 0]
+        }
+      },
+      {
+        symbolSize: titleFontSize * 0.4
+      },
+    ]
+  }
+  chartInstance.setOption(adapterOption)
+
+  chartInstance.resize()
+}
+
+
 onMounted(() => {
   initChart()
   getData()
+  // 监听window大小变化以进行分辨率适配
+  window.addEventListener('resize', screenAdapter)
+  // 界面加载完成后主动进行分辨率适配
+  screenAdapter()
+})
+onUnmounted(() => {
+  // 组件销毁时取消事件监听
+  window.removeEventListener('resize', screenAdapter)
 })
 </script>
 
