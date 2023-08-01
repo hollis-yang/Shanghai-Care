@@ -96,6 +96,13 @@ const initChart = () => {
     ]
   }
   chartInstance.setOption(initOption)
+
+  chartInstance.on('mouseover', () => {
+    clearInterval(timeId.value)
+  })
+  chartInstance.on('mouseout', () => {
+    startInterval()
+  })
 }
 
 const startValue = ref(0)
