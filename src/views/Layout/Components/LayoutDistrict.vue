@@ -6,13 +6,24 @@ import { getSQLAPI } from '@/apis/mysql'
 // init
 const districtRef = ref(null)  // DOM
 let chartInstance
+const timeId = ref(null)
+
+// 颜色数组
+const colorArr = [
+  ['#2e72bf', '#23e5e5'],
+
+  ['#5052ee', '#ab6ee5'],
+  ['#0ba82c', '#4ff778'],
+]
+
 
 const initChart = () => {
   chartInstance = echarts.init(districtRef.value, 'dark')
+
   const initOption = {
-    // backgroundColor: 'transparent',
+    backgroundColor: 'transparent',
     title: {
-      text: '|各区不同年龄段老年人口数量与占比',
+      text: '丨各区老年人口数量及其占比',
     },
     grid: {
       containLabel: true,
@@ -21,47 +32,62 @@ const initChart = () => {
       right: '7%',
       top: '25%'
     },
-    tooltop: {
-      show: true
+    tooltip: {
+      trigger: 'axis',
     },
     xAxis: {
-      type: 'category',
-      axisLabel: {
-        rotate: 30
-      }
+      type: 'category'
     },
     yAxis: [
       {
         type: 'value',
         name: '60岁以上人口数',
-        min: 15,
-        max: 120,
-        interval: 15
       },
       {
         type: 'value',
         name: '60岁以上人口占比',
-        min: 24,
-        max: 45,
-        interval: 3
       }
     ],
     series: [
       {
         name: '60岁以上人口数',
-        type: 'bar'
+        type: 'bar',
+        itemStyle: {
+          color: (arg) => {
+            let targetArr = null
+            if (arg.data > 40) {
+              targetArr = colorArr[0]
+            } else if (arg.data > 20) {
+              targetArr = colorArr[1]
+            } else {
+              targetArr = colorArr[2]
+            }
+            return new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              {
+                offset: 0,
+                color: targetArr[0]
+              },
+              {
+                offset: 1,
+                color: targetArr[1]
+              }
+            ])
+          }
+        }
       },
       {
         name: '60岁以上人口占比',
         type: 'line',
-        yAxisIndex: 1
+        yAxisIndex: 1,
+        
       }
     ]
   }
   chartInstance.setOption(initOption)
 }
 
-
+const startValue = ref(0)
+const endValue = ref(5)
 // SQL
 const sqlResult = ref([])
 const getData = async () => {
@@ -71,8 +97,9 @@ const getData = async () => {
   const res = await getSQLAPI(sql)
 
   sqlResult.value = res
-  console.log(res)
   updateChart()
+
+  startInterval()
 }
 
 const updateChart = () => {
@@ -80,13 +107,38 @@ const updateChart = () => {
   const xArr = sqlResult.value.map(item => item[0])
   const barArr = sqlResult.value.map(item => item[1])
   const lineArr = sqlResult.value.map(item => item[2])
-  console.log(barArr)
-  console.log(lineArr)
+
+  // 最大最小
+  const usedBarArr = barArr.slice(startValue.value, endValue.value + 1)
+  const minBar = Math.min(...usedBarArr)
+  const maxBar = Math.max(...usedBarArr)
+
+  const usedLineArr = lineArr.slice(startValue.value, endValue.value + 1)
+  const minLine = Math.min(...usedLineArr)
+  const maxLine = Math.max(...usedLineArr)
 
   const dataOption = {
+    dataZoom: {
+      show: false,
+      // 每次展示6个区
+      startValue: startValue.value,
+      endValue: endValue.value
+    },
     xAxis: {
       data: xArr
     },
+    yAxis: [
+      {
+        min: (minBar - 10).toFixed(0),
+        max: (maxBar + 10).toFixed(0),
+        interval: ((maxBar + 10).toFixed(0) - (minBar - 10).toFixed(0)) / 5
+      },
+      {
+        min: (minLine - 10).toFixed(0),
+        max: (maxLine + 10).toFixed(0),
+        interval: ((maxLine + 10).toFixed(0) - (minLine - 10).toFixed(0)) / 5
+      }
+    ],
     series: [
       {
         name: '60岁以上人口数',
@@ -95,11 +147,34 @@ const updateChart = () => {
       {
         name: '60岁以上人口占比',
         data: lineArr,
+        smooth: true,
+        
       }
     ]
   }
   chartInstance.setOption(dataOption)
 }
+
+
+// 平移柱状图定时器
+const startInterval = () => {
+  if (timeId.value) {
+    clearInterval(timeId.value)
+  }
+
+  timeId.value = setInterval(() => {
+    startValue.value += 2
+    endValue.value += 2
+
+    if (endValue.value >= 16) {
+      startValue.value = 0
+      endValue.value = 5
+    }
+
+    updateChart()
+  }, 3000);
+}
+
 
 onMounted(() => {
   initChart()
