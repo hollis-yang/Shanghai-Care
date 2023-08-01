@@ -31,13 +31,20 @@ onUnmounted(() => {
   clearInterval(timeIdBar.value)
 })
 
-
 // 监听这个div(.layout-expect-life)的mouseover/mouseout处理定时器
 const expectLifeMouseOver = () => {
   clearInterval(timeIdBar.value)
 }
 const expectLifeMouseOut = () => {
   timeIdBar.value = setInterval(toggleBarChart, 8000)
+}
+
+
+const showMapA = ref(true)
+const showMapB = ref(false)
+const toggleMap = () => {
+  showMapA.value = !showMapA.value
+  showMapB.value = !showMapB.value
 }
 </script>
 
@@ -65,8 +72,10 @@ const expectLifeMouseOut = () => {
     </div>
 
     <div class="layout-map">
-      <LayoutMapA class="chart"></LayoutMapA>
-      <LayoutMapB class="chart"></LayoutMapB>
+      <span class="iconfont arr-left" @click="toggleMap">&#xe6ef;</span>
+      <span class="iconfont arr-right" @click="toggleMap">&#xe6ed;</span>
+      <LayoutMapA class="chartA fade-in" v-if="showMapA"></LayoutMapA>
+      <LayoutMapB class="chartB fade-in" v-if="showMapB"></LayoutMapB>
     </div>
 
     <div class="layout-district">
@@ -86,5 +95,8 @@ const expectLifeMouseOut = () => {
 <style scoped lang="less">
 @import '../../assets/css/layout.less';
 
-
+.arr-left,
+.arr-right {
+  font-size: 1.5vw;
+}
 </style>

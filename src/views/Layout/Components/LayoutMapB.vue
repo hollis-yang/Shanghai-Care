@@ -27,7 +27,7 @@ const initChart = async () => {
   const initOption = {
     backgroundColor: 'transparent',
     title: {
-      text: '丨上海市中心区老年人口密度',
+      text: '丨上海市中心城区老年人口密度',
       top: '0%'
     },
     tooltip: {

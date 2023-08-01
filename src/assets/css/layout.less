@@ -37,9 +37,28 @@
   position: absolute;
   top: 12vh;
   left: 33vw;
-  .chart {
+  .chartA,
+  .chartB {
     width: 35vw;
     height: 52vh;
+  }
+  .arr-left {
+    position: absolute;
+    left: 10%;
+    top: 20vh;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: white;
+    z-index: 999;
+  }
+  .arr-right {
+    position: absolute;
+    right: 10%;
+    top: 20vh;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: white;
+    z-index: 999;
   }
 }
 
@@ -76,5 +95,17 @@
     width: 27vw;
     height: 40vh;
     background-color: white;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 1.5s;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
