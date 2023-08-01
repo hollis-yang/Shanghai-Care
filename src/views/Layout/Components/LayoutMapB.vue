@@ -36,7 +36,7 @@ const initChart = async () => {
     visualMap: {
       min: 5000,
       max: 15000,
-      itemHeight: 200,
+      // itemHeight: 200,
       inRange: {
         color: [
           '#a3cfe0',
@@ -122,7 +122,10 @@ const screenAdapter = () => {
           fontSize: titleFontSize * 0.8
         }
       }
-    ]
+    ],
+    visualMap: {
+      itemHeight: titleFontSize * 7
+    }
   }
   chartInstance.setOption(adapterOption)
 

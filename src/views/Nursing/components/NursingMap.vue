@@ -53,7 +53,7 @@ const initChart = async () => {
       right: '4%',
       top: 'bottom',
       orient: 'vertical',
-      itemHeight: 200,
+      // itemHeight: 200,
       min: 0,
       max: 15000,
       inRange: {
@@ -171,7 +171,10 @@ const screenAdapter = () => {
           fontSize: titleFontSize * 0.8
         }
       }
-    ]
+    ],
+    visualMap: {
+      itemHeight: titleFontSize * 7
+    }
   }
   chartInstance.setOption(adapterOption)
 
