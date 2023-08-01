@@ -5,7 +5,8 @@ import LayoutDistrict from './components/LayoutDistrict.vue'
 import LayoutExpectLifeA from './components/LayoutExpectLifeA.vue'
 import LayoutExpectLifeB from './components/LayoutExpectLifeB.vue'
 import LayoutInfo from './components/LayoutInfo.vue'
-import LayoutMap from './components/LayoutMap.vue'
+import LayoutMapA from './components/LayoutMapA.vue'
+import LayoutMapB from './components/LayoutMapB.vue'
 import LayoutPie from './components/LayoutPie.vue'
 import LayoutTable from './components/LayoutTable.vue'
 
@@ -13,7 +14,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 
 const currentExpectLife = ref('A')
 // 切换预期寿命的函数
-const toggleChart = () => {
+const toggleBarChart = () => {
   if (currentExpectLife.value === 'A') {
     currentExpectLife.value = 'B'
   } else {
@@ -21,21 +22,22 @@ const toggleChart = () => {
   }
 }
 
-const timeId = ref(null)
+const timeIdBar = ref(null)
 onMounted(() => {
-  timeId.value = setInterval(toggleChart, 8000)
+  timeIdBar.value = setInterval(toggleBarChart, 8000)
 })
 onUnmounted(() => {
   // 当组件被卸载时清除定时器
-  clearInterval(timeId.value)
+  clearInterval(timeIdBar.value)
 })
+
 
 // 监听这个div(.layout-expect-life)的mouseover/mouseout处理定时器
 const expectLifeMouseOver = () => {
-  clearInterval(timeId.value)
+  clearInterval(timeIdBar.value)
 }
 const expectLifeMouseOut = () => {
-  timeId.value = setInterval(toggleChart, 8000)
+  timeIdBar.value = setInterval(toggleBarChart, 8000)
 }
 </script>
 
@@ -63,7 +65,8 @@ const expectLifeMouseOut = () => {
     </div>
 
     <div class="layout-map">
-      <LayoutMap class="chart"></LayoutMap>
+      <LayoutMapA class="chart"></LayoutMapA>
+      <LayoutMapB class="chart" style="display: none;"></LayoutMapB>
     </div>
 
     <div class="layout-district">
@@ -82,4 +85,6 @@ const expectLifeMouseOut = () => {
 
 <style scoped lang="less">
 @import '../../assets/css/layout.less';
+
+
 </style>
