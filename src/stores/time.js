@@ -3,7 +3,19 @@ import { ref } from 'vue'
 
 export const useTime = defineStore('time', () => {
   const currentTime = ref('')
-
+  // 初始化数据
+  const infoObj = ref({
+    name: '',
+    gender: '',
+    age: '',
+    residence: '',
+    organization: '',
+    certificate: '',
+    comprehensive: '',
+    honor: '',
+    competition: '',
+    id: ''
+  });
   const updateTime = () => {
     const date = new Date()
     const year = date.getFullYear()
