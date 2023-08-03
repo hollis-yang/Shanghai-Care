@@ -1,4 +1,4 @@
- // 下拉款数据1
+ // 下拉框数据1
 export const conditionSelect = [
   {
     label: '全部',
@@ -25,7 +25,7 @@ export const conditionSelect = [
     id: '5',
   },
 ]
-// 下拉款数据2
+// 下拉框数据2
 export const gender = [
   {
     label: '全部',
