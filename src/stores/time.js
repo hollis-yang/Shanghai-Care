@@ -29,7 +29,14 @@ export const useTime = defineStore('time', () => {
 
     currentTime.value = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
   }
-
+  // 触发更新
+  const setUpdate = () => {
+    update.value = !update.value
+  }
+  // 修改数据
+  const setInfoObj = (obj) => {
+    infoObj.value = obj
+  }
   // 在组件挂载时开始定时器
   setInterval(() => {
     updateTime()
@@ -37,5 +44,9 @@ export const useTime = defineStore('time', () => {
 
   return {
     currentTime,
+    infoObj,
+    setInfoObj,
+    update,
+    setUpdate
   }
 })
