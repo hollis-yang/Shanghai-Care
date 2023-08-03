@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { districtOptions } from '@/utils/district'
 
-const selectorValue = ref('Option0')
+const selectorValue = ref('Shanghai')
 
 
 </script>
@@ -10,8 +10,18 @@ const selectorValue = ref('Option0')
 <template>
   <div class="select-district">
     <span class="desc">丨各行政区信息查询</span>
-    <el-select v-model="selectorValue" class="m-2 elp-select" size="large">
-      <el-option v-for="item in districtOptions" :key="item.value" :label="item.label" :value="item.value" />
+    <el-select v-model="selectorValue" class="elp-select">
+      <el-option v-for="item in districtOptions" :key="item.value" :label="item.label" :value="item.value">
+        <span style="
+        float: left;
+        font-size: 1.6vh;">{{ item.label }}</span>
+        <span style="
+          float: right;
+          color: var(--el-text-color-secondary);
+          font-size: 1.6vh;
+          padding-left: 2vh;
+        ">{{ item.value }}</span>
+      </el-option>
     </el-select>
   </div>
 </template>
@@ -26,9 +36,10 @@ const selectorValue = ref('Option0')
     font-weight: 700;
     margin-right: 2vw;
   }
+
   .elp-select {
-    width: 12vw;
-    height: 4.3vh;
+    width: 8vw;
+    height: 3.2vh;
   }
 }
 </style>

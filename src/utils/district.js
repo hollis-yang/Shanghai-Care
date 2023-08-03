@@ -1,70 +1,70 @@
 export const districtOptions = [
   {
-    value: 'Option0',
+    value: 'Shanghai',
     label: '全市',
   },
   {
-    value: 'Option1',
+    value: 'Huangpu',
     label: '黄浦区',
   },
   {
-    value: 'Option2',
+    value: 'Xuhui',
     label: '徐汇区',
   },
   {
-    value: 'Option3',
+    value: 'Changning',
     label: '长宁区',
   },
   {
-    value: 'Option4',
+    value: 'Jingan',
     label: '静安区',
   },
   {
-    value: 'Option5',
+    value: 'Putuo',
     label: '普陀区',
   },
   {
-    value: 'Option6',
+    value: 'Hongkou',
     label: '虹口区',
   },
   {
-    value: 'Option7',
+    value: 'Yangpu',
     label: '杨浦区',
   },
   {
-    value: 'Option8',
+    value: 'Minhang',
     label: '闵行区',
   },
   {
-    value: 'Option9',
+    value: 'Baoshan',
     label: '宝山区',
   },
   {
-    value: 'Option10',
+    value: 'Jiading',
     label: '嘉定区',
   },
   {
-    value: 'Option11',
+    value: 'Pudong',
     label: '浦东新区',
   },
   {
-    value: 'Option12',
+    value: 'Jinshan',
     label: '金山区',
   },
   {
-    value: 'Option13',
+    value: 'Songjiang',
     label: '松江区',
   },
   {
-    value: 'Option14',
+    value: 'Qingpu',
     label: '青浦区',
   },
   {
-    value: 'Option15',
+    value: 'Fengxian',
     label: '奉贤区',
   },
   {
-    value: 'Option16',
+    value: 'Chongming',
     label: '崇明区',
   },
-]
+];
