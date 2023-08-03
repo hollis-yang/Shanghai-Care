@@ -14,8 +14,10 @@ export const useTime = defineStore('time', () => {
     comprehensive: '',
     honor: '',
     competition: '',
-    id: ''
-  });
+    id: '',
+  })
+  // 更新变量
+  const update = ref(false);
   const updateTime = () => {
     const date = new Date()
     const year = date.getFullYear()
@@ -34,6 +36,6 @@ export const useTime = defineStore('time', () => {
   }, 1000)
 
   return {
-    currentTime
+    currentTime,
   }
 })
