@@ -2,7 +2,7 @@
     <Components/>
 </template>
 <script setup lang="ts">
-import { ref, toRefs, inject } from 'vue';
+import { toRefs } from 'vue';
 
 const props = defineProps({
   Components: String,

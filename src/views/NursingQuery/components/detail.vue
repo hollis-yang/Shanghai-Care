@@ -54,15 +54,15 @@
     </div>
   </div>
 </template>
-<script lang="ts" setup>
-import { ref, reactive, computed, watch } from "vue";
-import { conditionSelect, gender, age, domicile, situation, grade, some } from '@/utils/data';
-import { User, MagicStick, Files, HomeFilled, OfficeBuilding, Collection, EditPen, GoldMedal, Trophy } from '@element-plus/icons-vue';
-import Icon from './Icon.vue';
+<script setup>
+import { reactive, computed, watch } from "vue"
+import { conditionSelect, gender, age, domicile, situation, grade, some } from '@/utils/data'
+import { User, MagicStick, Files, HomeFilled, OfficeBuilding, Collection, EditPen, GoldMedal, Trophy } from '@element-plus/icons-vue'
+import Icon from './Icon.vue'
 import { BorderBox8 as DvBorderBox8 } from '@kjgl77/datav-vue3'
-import { getSQLAPI } from "@/apis/mysql";
-import { useTime } from '@/stores/time';
-const infoObj = useTime();
+import { getSQLAPI } from "@/apis/mysql"
+import { useTime } from '@/stores/time'
+const infoObj = useTime()
 const updateData = computed(()=> infoObj.update)
 const iconObj = {
   name: User,
@@ -74,48 +74,60 @@ const iconObj = {
   comprehensive: EditPen,
   honor: GoldMedal,
   competition: Trophy
-};
-const state: {
-  information: any;
-  conditionSelectValue: string;
-  selectValue: string;
-  page: string | number;
-} = reactive({
+}
+const state = reactive({
   conditionSelectValue: '全部',
   selectValue: '',
   information: [],
   page: 1
 })
 // 根据第一个下框判断应该展示那个
+// 假设gender、age、domicile等都是合法的数组
 const screenArr = computed(() => {
   switch (state.conditionSelectValue) {
     case '性别':
-      state.selectValue = gender[0].label
-      return gender;
+      return gender
     case '年龄':
-      state.selectValue = age[0].label
-      return age;
+      return age
     case '户籍情况':
-      state.selectValue = domicile[0].label
-      return domicile;
+      return domicile
     case '持证情况':
-      state.selectValue = situation[0].label
-      return situation;
+      return situation
     case '综合评价等级':
-      state.selectValue = grade[0].label
-      return grade;
+      return grade
     default:
-      state.selectValue = some[0].label
       return some
   }
-});
+})
+watch(() => state.conditionSelectValue, (newValue) => {
+  switch (newValue) {
+    case '性别':
+      state.selectValue = gender[0].label
+      break
+    case '年龄':
+      state.selectValue = age[0].label
+      break
+    case '户籍情况':
+      state.selectValue = domicile[0].label
+      break
+    case '持证情况':
+      state.selectValue = situation[0].label
+      break
+    case '综合评价等级':
+      state.selectValue = grade[0].label
+      break
+    default:
+      state.selectValue = some[0].label
+      break
+  }
+})
 // 切换分页后更新数据
 const informationData = computed(() => {
   const data = JSON.parse(JSON.stringify(state.information))
-  return data.splice((Number(state.page) - 1) * 6, 6);
-});
+  return data.splice((Number(state.page) - 1) * 6, 6)
+})
 const onChangePage = (page) => {
-  state.page = page;
+  state.page = page
 }
 // 筛选判断
 const onSelect = () => {
@@ -140,7 +152,7 @@ const onSelect = () => {
     }
   }
   getSQLAPI(sql).then((res) => {
-    state.information = res;
+    state.information = res
   })
 }
 // 点击详情
@@ -163,14 +175,14 @@ const onToDetail = (infoArr) => {
 watch(updateData, () => {
   const sql = 'SELECT name, institution, gender, age, census_register,certificate, grade, honor, competition,  id FROM nursing_workers'
   getSQLAPI(sql).then((res) => {
-    state.information = res;
+    state.information = res
   })
 })
 // 初始化获取数据
-const init = (): void => {
-  const sql = 'SELECT name, institution, gender, age, census_register,certificate, grade, honor, competition,  id FROM nursing_workers'
+const init = () => {
+  const sql = 'SELECT name, institution, gender, age, census_register, certificate, grade, honor, competition, id FROM nursing_workers'
   getSQLAPI(sql).then((res) => {
-    state.information = res;
+    state.information = res
   })
 }
 init();

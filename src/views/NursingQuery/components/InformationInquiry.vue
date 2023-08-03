@@ -39,18 +39,16 @@
 </template>
 
 <script setup>
-import axios from '../../../utils/http'
 import { User, MagicStick, Files, HomeFilled, OfficeBuilding, Collection, EditPen, GoldMedal, Trophy } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
 import { ref, computed } from 'vue'
 import { getSQLAPI } from '../../../apis/mysql'
 import { insertSQLAPI } from '@/apis/insertsql'
 import Icon from './Icon.vue'
-import { useTime } from '@/stores/time';
-const time = useTime();
+import { useTime } from '@/stores/time'
+const time = useTime()
 const input1 = ref('')
-const isSet = ref(true);
-const isAdd = ref(false);
+const isSet = ref(true)
+const isAdd = ref(false)
 const iconObj = {
   name: User,
   gender: MagicStick,
@@ -73,7 +71,7 @@ const TitleObj = {
   honor: '荣誉级别',
   competition: '竞赛奖项'
 }
-const infoObj = computed(() => time.infoObj);
+const infoObj = computed(() => time.infoObj)
 const sqlResult = ref([])
 const getData = async () => {
   const sql = 'SELECT name, institution, gender, age, census_register,certificate, grade, honor, competition,id FROM nursing_workers'
@@ -81,7 +79,7 @@ const getData = async () => {
   console.log(res)
   sqlResult.value = res
 }
-getData();
+getData()
 const onChange = () => {
 }
 // 删除
@@ -89,8 +87,8 @@ const onDel = () => {
   const sql = `DELETE FROM nursing_workers WHERE id='${infoObj.value.id}';`
   insertSQLAPI(sql).then(() => {
     // 处理后端返回的响应数据
-    isSet.value = true;
-    isAdd.value = false;
+    isSet.value = true
+    isAdd.value = false
     time.setInfoObj({
       name: '-',
       gender: '-',
@@ -102,13 +100,13 @@ const onDel = () => {
       honor: '-',
       competition: '-'
     })
-    time.setUpdate();
+    time.setUpdate()
   })
 }
 // 点击添加，并且把数据设置为空
 const onAdd = () => {
-  isSet.value = false;
-  isAdd.value = true;
+  isSet.value = false
+  isAdd.value = true
   time.setInfoObj({
       name: '',
       gender: '',
@@ -132,15 +130,15 @@ const onSetAndAdd = () => {
     }
     insertSQLAPI(sql).then(() => {
       // 处理后端返回的响应数据
-      time.setUpdate();
+      time.setUpdate()
     })
   }
-  isSet.value = !isSet.value;
+  isSet.value = !isSet.value
 }
 async function queryInfo() {
   let isInfo = false
   let infoArr = []
-  isAdd.value = false;
+  isAdd.value = false
   sqlResult.value.map(val => {
     if (val[0].replace(/\s*/g, '') === input1.value.replace(/\s*/g, '')) {
       isInfo = true
