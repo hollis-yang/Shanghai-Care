@@ -7,8 +7,7 @@ import LayoutExpectLifeB from './components/LayoutExpectLifeB.vue'
 import LayoutInfo from './components/LayoutInfo.vue'
 import LayoutMapA from './components/LayoutMapA.vue'
 import LayoutMapB from './components/LayoutMapB.vue'
-import LayoutPie from './components/LayoutPie.vue'
-import LayoutTable from './components/LayoutTable.vue'
+import LayoutRight from './components/LayoutRight.vue'
 
 import { ref, onMounted, onUnmounted } from 'vue'
 
@@ -83,11 +82,7 @@ const toggleMap = () => {
     </div>
 
     <div class="layout-table">
-      <LayoutTable class="chart"></LayoutTable>
-    </div>
-
-    <div class="layout-pie">
-      <LayoutPie class="chart"></LayoutPie>
+      <LayoutRight class="chart"></LayoutRight>
     </div>
   </div>
 </template>
