@@ -19,8 +19,10 @@ const initChart = () => {
 
   // 图表初始化配置
   const initOption = {
+    backgroundColor: 'transparent',
     legend: {
-      icon: 'circle'
+      icon: 'circle',
+      top: '10%'
     },
     tooltip: {
       show: true
@@ -38,7 +40,8 @@ const initChart = () => {
           labelLine: {
             show: false
           }
-        }
+        },
+        center: ['50%', '60%']
       }
     ]
   }
@@ -198,7 +201,14 @@ const updateChart = () => {
 
 // 自适应
 const screenAdapter = () => {
-  const adaptOption = {}
+  const titleFontSize = pieRef.value.offsetWidth / 100 * 3.6
+  const adaptOption = {
+    title: {
+      textStyle: {
+        fontSize: titleFontSize * 1.2
+      }
+    }
+  }
   chartInstance.setOption(adaptOption)
 
   chartInstance.resize()
@@ -223,31 +233,49 @@ onUnmounted(() => {
 watch(selectorValue, () => {
   updateChart()
 })
+
+
+const togglePie = () => {
+  if (currentPie.value === 1) {
+    currentPie.value = 0
+  } else {
+    currentPie.value = 1
+  }
+  updateChart()
+}
 </script>
 
 <template>
-  <!-- 上侧筛选框+表格 -->
-  <div class="table">
-    <div class="select-district">
-      <span class="desc">丨各行政区信息查询</span>
-      <el-select v-model="selectorValue" class="elp-select">
-        <el-option v-for="item in districtOptions" :key="item.value" :label="item.label" :value="item.value">
-          <span style="
+  <div class="container">
+    <!-- 上侧筛选框+表格 -->
+    <div class="table">
+      <div class="select-district">
+        <span class="desc">丨各行政区信息查询</span>
+        <el-select v-model="selectorValue" class="elp-select">
+          <el-option v-for="item in districtOptions" :key="item.value" :label="item.label" :value="item.value">
+            <span style="
           float: left;
           font-size: 1.3vh;">{{ item.label }}</span>
-          <span style="
+            <span style="
           float: right;
           color: var(--el-text-color-secondary);
           font-size: 1.3vh;
           padding-left: 2vh;
         ">{{ item.value }}</span>
-        </el-option>
-      </el-select>
+          </el-option>
+        </el-select>
+      </div>
+    </div>
+
+    <!-- 下册饼图 -->
+    <div class="pie" ref="pieRef"></div>
+
+    <!-- 左右切换按钮 -->
+    <div class="arr">
+      <span class="iconfont arr-left" @click="togglePie">&#xe6ef;</span>
+      <span class="iconfont arr-right" @click="togglePie">&#xe6ed;</span>
     </div>
   </div>
-
-  <!-- 下册饼图 -->
-  <div class="pie" ref="pieRef"></div>
 </template>
 
 <style lang="less" scoped>
@@ -275,6 +303,33 @@ watch(selectorValue, () => {
   .elp-select {
     width: 8vw;
     height: 3.2vh;
+  }
+}
+
+
+.container {
+  position: relative;
+
+  .arr {
+    position: absolute;
+
+    .arr-left {
+      position: absolute;
+      top: -18vh;
+      left: 0%;
+      font-size: 1.5vw;
+      transform: rotate(0deg);
+      cursor: pointer;
+    }
+
+    .arr-right {
+      position: absolute;
+      top: -18vh;
+      right: -27vw;
+      font-size: 1.5vw;
+      transform: rotate(0deg);
+      cursor: pointer;
+    }
   }
 }
 </style>
