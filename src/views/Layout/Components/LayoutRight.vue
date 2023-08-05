@@ -40,7 +40,13 @@ const initChart = () => {
         label: {
           show: false
         },
-        center: ['50%', '63%']
+        center: ['50%', '63%'],
+        radius: ['50%', '70%'],
+        itemStyle: {
+          borderRadius: 8,
+          borderColor: 'rgba(127, 127, 127, 0.3)',
+          borderWidth: 2
+        }
       }
     ]
   }
@@ -139,6 +145,9 @@ const seriesData = ref([])
 const hcLegend = ['健康', '基本健康', '不健康但生活可自理', '不健康且生活不可自理']
 const lcLegend = ['与配偶及子女同住', '与配偶同住', '与子女同住', '独居(有保姆)', '独居(无保姆)', '养老机构', '其他']
 
+// 准备颜色
+const colorArr = ['#6ab8e0', 'rgb(255, 50, 71)', '#ffa040', '#9e81d3', '#ffe34f', '#4b3d7c', '#7fc8ca']
+
 // update
 const updateChart = () => {
   let districtName
@@ -158,7 +167,10 @@ const updateChart = () => {
     seriesData.value = hcData.value.map((item, index) => {
       return {
         name: hcLegend[index],
-        value: item
+        value: item,
+        itemStyle: {
+          color: colorArr[index]
+        }
       }
     })
   } else if (currentPie.value === 1) {  // 1表示居住状况
@@ -175,7 +187,10 @@ const updateChart = () => {
     seriesData.value = lcData.value.map((item, index) => {
       return {
         name: lcLegend[index],
-        value: item
+        value: item,
+        itemStyle: {
+          color: colorArr[index]
+        }
       }
     })
   }
@@ -218,12 +233,7 @@ const screenAdapter = () => {
       textStyle: {
         fontSize: titleFontSize * 0.9
       }
-    },
-    series: [
-      {
-        radius: titleFontSize * 8.2
-      }
-    ]
+    }
   }
   chartInstance.setOption(adaptOption)
 
