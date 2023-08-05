@@ -22,7 +22,9 @@ const initChart = () => {
     backgroundColor: 'transparent',
     legend: {
       icon: 'circle',
-      top: '10%'
+      top: '10%',
+      left: '0',
+      right: '0'
     },
     tooltip: {
       show: true
@@ -41,7 +43,7 @@ const initChart = () => {
             show: false
           }
         },
-        center: ['50%', '60%']
+        center: ['50%', '63%']
       }
     ]
   }
@@ -191,7 +193,7 @@ const updateChart = () => {
     },
     series: [
       {
-        data: seriesData.value
+        data: seriesData.value,
       }
     ]
   }
@@ -207,7 +209,20 @@ const screenAdapter = () => {
       textStyle: {
         fontSize: titleFontSize * 1.2
       }
-    }
+    },
+    legend: {
+      itemWidth: titleFontSize * 0.9,
+      itemHeight: titleFontSize * 0.9,
+      itemGap: titleFontSize,
+      textStyle: {
+        fontSize: titleFontSize * 0.9
+      }
+    },
+    series: [
+      {
+        radius: titleFontSize * 8.2
+      }
+    ]
   }
   chartInstance.setOption(adaptOption)
 
