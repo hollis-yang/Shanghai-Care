@@ -3,9 +3,7 @@
 import { districtOptions } from '@/utils/district'
 import { onMounted, ref, onUnmounted, watch } from 'vue'
 
-const selectorValue = ref('Xuhui')  // 当前筛选框选中了哪个区
-// const selectDistrictCN = ref(selectorValue.value)
-
+const selectorValue = ref('Shanghai')  // 当前筛选框选中了哪个区
 
 
 
@@ -20,7 +18,30 @@ const initChart = () => {
   chartInstance = echarts.init(pieRef.value, 'dark')
 
   // 图表初始化配置
-  const initOption = {}
+  const initOption = {
+    legend: {
+      icon: 'circle'
+    },
+    tooltip: {
+      show: true
+    },
+    series: [
+      {
+        type: 'pie',
+        label: {
+          show: false
+        },
+        emphasis: {
+          label: {
+            show: true
+          },
+          labelLine: {
+            show: false
+          }
+        }
+      }
+    ]
+  }
   chartInstance.setOption(initOption)
 }
 
@@ -29,6 +50,10 @@ const hcResult = ref([])
 const hcSumResult = ref([])
 const lcResult = ref([])
 const lcSumResult = ref([])
+
+let hcData_sum
+let lcData_sum
+
 const getData = async () => {
   const sql1 = `SELECT
               district,
@@ -48,7 +73,6 @@ const getData = async () => {
   const res2 = await getSQLAPI(sql2)
   hcResult.value = res1
   hcSumResult.value = res2
-
 
   const sql3 = `SELECT
                 district,
@@ -74,18 +98,100 @@ const getData = async () => {
   lcResult.value = res3
   lcSumResult.value = res4
 
-  console.log('1', res1)
-  console.log('2', res2)
-  console.log('3', res3)
-  console.log('4', res4)
+  // 准备选择'全市'时的数据
+  hcData_sum = Array.from(hcSumResult.value[0]).map(item => Number(item))
+  lcData_sum = Array.from(lcResult.value[0]).map(item => Number(item))
+
   updateChart()
 }
 
 
+// 区和下标对应关系
+const districtIndex = {
+  Huangpu: 0,
+  Xuhui: 1,
+  Changning: 2,
+  Jingan: 3,
+  Putuo: 4,
+  Hongkou: 5,
+  Yangpu: 6,
+  Minhang: 7,
+  Baoshan: 8,
+  Jiading: 9,
+  Pudong: 10,
+  Jinshan: 11,
+  Songjiang: 12,
+  Qingpu: 13,
+  Fengxian: 14,
+  Chongming: 15
+}
+
+// 监控当下是哪个饼图
+const currentPie = ref(0)
+// 监控用于渲染的数据
+const hcData = ref(null)
+const lcData = ref(null)
+const seriesData = ref([])
+
+// 准备两个饼图的legend
+const hcLegend = ['健康', '基本健康', '不健康但生活可自理', '不健康且生活不可自理']
+const lcLegend = ['与配偶及子女同住', '与配偶同住', '与子女同住', '独居(有保姆)', '独居(无保姆)', '养老机构', '其他']
+
 // update
 const updateChart = () => {
-  console.log('update执行')
-  const dataOption = {}
+  let districtName
+
+  // 根据currentPie的值获取数据
+  if (currentPie.value === 0) {  // 0表示健康状况
+    if (selectorValue.value !== 'Shanghai') {
+      // 各区的情况
+      hcData.value = Array.from(hcResult.value[districtIndex[selectorValue.value]])
+      districtName = hcData.value.shift()  // 获得当前区中文名称
+    } else {
+      // 全市的情况
+      districtName = '全市'
+      hcData.value = hcData_sum
+    }
+    // 最终放入series的数组
+    seriesData.value = hcData.value.map((item, index) => {
+      return {
+        name: hcLegend[index],
+        value: item
+      }
+    })
+  } else if (currentPie.value === 1) {  // 1表示居住状况
+    if (selectorValue.value !== 'Shanghai') {
+      // 各区的情况
+      lcData.value = Array.from(lcResult.value[districtIndex[selectorValue.value]])
+      districtName = lcData.value.shift()  // 获得当前区中文名称
+    } else {
+      // 全市的情况
+      districtName = '全市'
+      lcData.value = lcData_sum
+    }
+    // 最终放入series的数组
+    seriesData.value = lcData.value.map((item, index) => {
+      return {
+        name: lcLegend[index],
+        value: item
+      }
+    })
+  }
+
+
+  const dataOption = {
+    title: {
+      text: `丨${districtName}${currentPie.value === 0 ? '老年人健康状况' : '老年人居住状况'}`
+    },
+    legend: {
+      data: currentPie.value === 0 ? hcLegend : lcLegend
+    },
+    series: [
+      {
+        data: seriesData.value
+      }
+    ]
+  }
   chartInstance.setOption(dataOption)
 }
 
@@ -114,9 +220,7 @@ onUnmounted(() => {
 
 
 // 所选区发生变化时重新渲染饼图
-watch(selectorValue, (newValue, oldValue) => {
-  console.log('new:', newValue)
-  console.log('old:', oldValue)
+watch(selectorValue, () => {
   updateChart()
 })
 </script>
@@ -150,14 +254,12 @@ watch(selectorValue, (newValue, oldValue) => {
 .table {
   width: 27vw;
   height: 41vh;
-  // background-color: red;
 }
 
 .pie {
   margin-top: 1vh;
   width: 27vw;
   height: 40vh;
-  background-color: skyblue;
 }
 
 .select-district {
