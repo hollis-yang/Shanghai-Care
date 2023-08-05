@@ -20,6 +20,11 @@ const initChart = () => {
   // 图表初始化配置
   const initOption = {
     backgroundColor: 'transparent',
+    title: [
+      {
+        top: '0'
+      }
+    ],
     legend: {
       icon: 'circle',
       top: '10%',
@@ -34,14 +39,6 @@ const initChart = () => {
         type: 'pie',
         label: {
           show: false
-        },
-        emphasis: {
-          label: {
-            show: true
-          },
-          labelLine: {
-            show: false
-          }
         },
         center: ['50%', '63%']
       }
@@ -185,9 +182,11 @@ const updateChart = () => {
 
 
   const dataOption = {
-    title: {
-      text: `丨${districtName}${currentPie.value === 0 ? '老年人健康状况' : '老年人居住状况'}`
-    },
+    title: [
+      {
+        text: `丨${districtName}${currentPie.value === 0 ? '老年人健康状况' : '老年人居住状况'}`
+      }
+    ],
     legend: {
       data: currentPie.value === 0 ? hcLegend : lcLegend
     },
@@ -205,11 +204,13 @@ const updateChart = () => {
 const screenAdapter = () => {
   const titleFontSize = pieRef.value.offsetWidth / 100 * 3.6
   const adaptOption = {
-    title: {
-      textStyle: {
-        fontSize: titleFontSize * 1.2
+    title: [
+      {
+        textStyle: {
+          fontSize: titleFontSize * 1.2
+        }
       }
-    },
+    ],
     legend: {
       itemWidth: titleFontSize * 0.9,
       itemHeight: titleFontSize * 0.9,
@@ -286,7 +287,8 @@ const togglePie = () => {
     <div class="pie" ref="pieRef"></div>
 
     <!-- 左右切换按钮 -->
-    <div class="arr">
+    <div class="footer-right">
+      <span class="subtitle">数据来源:<br>2020上海市人口普查年鉴</span>
       <span class="iconfont arr-left" @click="togglePie">&#xe6ef;</span>
       <span class="iconfont arr-right" @click="togglePie">&#xe6ed;</span>
     </div>
@@ -325,8 +327,16 @@ const togglePie = () => {
 .container {
   position: relative;
 
-  .arr {
+  .footer-right {
     position: absolute;
+
+    .subtitle {
+      position: absolute;
+      width: 12vw;
+      font-size: 0.7vw;
+      top: -2vh;
+      right: -31vw;
+    }
 
     .arr-left {
       position: absolute;
