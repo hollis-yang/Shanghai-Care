@@ -11,6 +11,7 @@ const selectorValue = ref('Shanghai')  // 当前筛选框选中了哪个区
 import * as echarts from 'echarts'
 import { getSQLAPI } from '@/apis/mysql'
 
+
 // init
 const pieRef = ref(null)
 let chartInstance
@@ -31,9 +32,6 @@ const initChart = () => {
       left: '0',
       right: '0'
     },
-    tooltip: {
-      show: true
-    },
     series: [
       {
         type: 'pie',
@@ -43,7 +41,7 @@ const initChart = () => {
         center: ['50%', '63%'],
         radius: ['50%', '70%'],
         itemStyle: {
-          borderRadius: 8,
+          borderRadius: 5,
           borderColor: 'rgba(127, 127, 127, 0.3)',
           borderWidth: 2
         }
@@ -108,7 +106,7 @@ const getData = async () => {
 
   // 准备选择'全市'时的数据
   hcData_sum = Array.from(hcSumResult.value[0]).map(item => Number(item))
-  lcData_sum = Array.from(lcResult.value[0]).map(item => Number(item))
+  lcData_sum = Array.from(lcSumResult.value[0]).map(item => Number(item))
 
   updateChart()
 }
@@ -209,7 +207,16 @@ const updateChart = () => {
       {
         data: seriesData.value,
       }
-    ]
+    ],
+    tooltip: {
+      show: true,
+      formatter: function (params) {
+        let tooltip = `<span style="display: inline-block; margin-right: 0.35vw; border-radius: 50%; width: 1.1vh; height: 1.1vh; background-color: ${params.color};"></span>`
+        tooltip += `<span style="color: ${params.color};">${params.name}：</span><span>${params.percent}%</span>`
+        // return circle + params.name + ': ' + params.percent + '%'
+        return tooltip
+      },
+    }
   }
   chartInstance.setOption(dataOption)
 }
