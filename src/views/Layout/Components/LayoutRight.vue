@@ -335,11 +335,11 @@ import { Decoration2 } from '@kjgl77/datav-vue3'
           <el-option v-for="item in districtOptions" :key="item.value" :label="item.label" :value="item.value">
             <span style="
           float: left;
-          font-size: 1.4vh;">{{ item.label }}</span>
+          font-size: 1.6vh;">{{ item.label }}</span>
             <span style="
           float: right;
           color: var(--el-text-color-secondary);
-          font-size: 1.4vh;
+          font-size: 1.6vh;
           padding-left: 2vh;
         ">{{ item.value }}</span>
           </el-option>
@@ -421,7 +421,7 @@ import { Decoration2 } from '@kjgl77/datav-vue3'
       display: flex;
       align-items: center;
       padding-left: 1vw;
-      font-size: 1.4vh;
+      font-size: 1.65vh;
 
       .icon {
         width: 1.8vh;
@@ -432,7 +432,7 @@ import { Decoration2 } from '@kjgl77/datav-vue3'
 
     .right {
       padding-right: 1.6vw;
-      font-size: 1.6vh;
+      font-size: 1.65vh;
     }
   }
 }
@@ -444,7 +444,7 @@ import { Decoration2 } from '@kjgl77/datav-vue3'
 }
 
 /deep/ .el-input__inner {
-  font-size: 1.5vh !important;
+  font-size: 1.6vh !important;
   font-weight: 500 !important;
 }
 

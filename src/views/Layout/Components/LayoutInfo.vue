@@ -84,7 +84,7 @@ ul {
       // 居中
       height: 5vh;
       line-height: 5vh;
-      font-size: 5vh;
+      font-size: 5.5vh;
       color: #ffeb7b;
       font-family: electronicFont;
       font-weight: bold;
@@ -103,13 +103,14 @@ ul {
 
 .no .no-bd ul {
   display: flex;
+  margin-top: 0vh;
 
   li {
     flex: 1;
     height: 1vh;
     line-height: 1vh;
     text-align: center;
-    font-size: 1.6vh;
+    font-size: 2vh;
     color: #fff
   }
 }
