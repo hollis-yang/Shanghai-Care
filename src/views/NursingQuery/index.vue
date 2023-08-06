@@ -1,7 +1,8 @@
 <script setup>
 import NursingHeader from '../Nursing/components/NursingHeader.vue'
 import ChangeRoute from './components/ChangeRoute.vue'
-import InformationInquiry from './components/InformationInquiry.vue';
+import InformationInquiry from './components/InformationInquiry.vue'
+import Detail from './components/detail.vue'
 </script>
 
 <template>
@@ -14,6 +15,9 @@ import InformationInquiry from './components/InformationInquiry.vue';
       <ChangeRoute></ChangeRoute>
         <InformationInquiry></InformationInquiry>
     </div>
+    <div class="nursing-right">
+      <Detail></Detail>
+    </div>
   </div>
 </template>
 
@@ -21,7 +25,13 @@ import InformationInquiry from './components/InformationInquiry.vue';
 .nursing-container {
   position: relative;
 }
-
+.nursing-right {
+  position: absolute;
+  right: 10%;
+  width: 620px;
+  height: 553px;
+  top: 18vh;
+}
 .nursing-route {
   position: absolute;
   top: 12vh;

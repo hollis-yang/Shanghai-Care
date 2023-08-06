@@ -1,11 +1,12 @@
 <template>
     <Components/>
 </template>
-<script setup lang="ts">
-import { ref, toRefs, inject } from 'vue';
+
+<script setup>
+import { toRefs } from 'vue'
 
 const props = defineProps({
-  Components: String,
+  Components: String
 })
 const { Components } = toRefs(props)
 </script>

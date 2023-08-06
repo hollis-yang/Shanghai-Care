@@ -7,7 +7,6 @@ import * as echarts from 'echarts'
 // init
 const mapRef = ref(null)  // DOM
 const shanghai = ref({})
-const downtown = ref({})
 let chartInstance
 
 
@@ -20,52 +19,37 @@ const initChart = async () => {
     .then((json) => {
       shanghai.value = json
     })
-  // 获取市区矢量数据
-  await fetch('/json/downtown.json')
-    .then((response) => response.json())
-    .then((json) => {
-      downtown.value = json
-    })
 
   // 将矢量数据注册到地图
   echarts.registerMap('shanghai', shanghai.value)
-  echarts.registerMap('downtown', downtown.value)
 
   // 图表初始化配置
   const initOption = {
     backgroundColor: 'transparent',
-    title: [
-      {
-        text: '全市16区',
-        left: '32%',
-        top: '92%'
-      },
-      {
-        text: '市中心7区',
-        left: '67%',
-        top: '92%'
-      }
-    ],
+    title: {
+      text: '丨上海市各区老年人口密度',
+      top: '0%'
+    },
     tooltip: {
       trigger: 'item'
     },
     visualMap: {
-      right: '4%',
-      top: 'bottom',
-      orient: 'vertical',
-      // itemHeight: 200,
       min: 0,
-      max: 15000,
+      max: 10000,
+      // itemHeight: 200,
       inRange: {
         color: [
-          '#e0f3f8', // Lightest blue
-          '#74add1',
-          '#4575b4',
-          '#313695',
+          '#a3cfe0',
+          '#75afd1',
+          '#4575b4', // Medium blue
+          '#2b4f8c', // Darker blue
+          '#1a3870',
           '#0c0847' // Darkest blue
         ]
       },
-      calculable: true
+      calculable: true,
+      left: '5%',
+      bottom: '10%'
     },
     series: [
       {
@@ -75,20 +59,7 @@ const initChart = async () => {
           areaColor: '#2e72bf',
           borderColor: '#333'
         },
-        left: '5%',
-        top: '13%',
-        zoom: 1.1
-      },
-      {
-        type: 'map',
-        map: 'downtown',
-        itemStyle: {
-          areaColor: '#2e72bf',
-          borderColor: '#333'
-        },
-        left: '55%',
-        top: '13%',
-        zoom: 0.9
+        zoom: 1.15
       }
     ]
   }
@@ -99,13 +70,7 @@ const initChart = async () => {
 // SQL
 const sqlResult = ref([])
 const getData = async () => {
-  const sql = `SELECT 
-  district, 
-  SUM(institution_number) AS total_institution_number,
-  SUM(community_number) AS total_community_number,
-  SUM(station_number) AS total_station_number
-  FROM district_nursing_workers
-  GROUP BY district; `
+  const sql = `SELECT district, elder_density FROM oldpop;`
   const res = await getSQLAPI(sql)
 
   sqlResult.value = res
@@ -117,38 +82,23 @@ const getData = async () => {
 // update
 const updateChart = () => {
   // 数据处理
-  const seriesData1 = sqlResult.value.map(item => {
+  const seriesData = sqlResult.value.map(item => {
     return {
       name: item[0],
-      value: Number(item[1]) + Number(item[2]) + Number(item[3])
+      value: item[1]
     }
   })
-
-  const downtownDistricts = ['徐汇区', '长宁区', '黄浦区', '静安区', '虹口区', '普陀区', '杨浦区']
-  const seriesData2 = sqlResult.value.map(item => {
-    if (downtownDistricts.includes(item[0])) {
-      return {
-        name: item[0],
-        value: Number(item[1]) + Number(item[2]) + Number(item[3])
-      }
-    }
-  }).filter(item => item !== undefined)
 
   const dataOption = {
     series: [
       {
         type: 'map',
         map: 'shanghai',
-        data: seriesData1
-      },
-      {
-        type: 'map',
-        map: 'downtown',
-        data: seriesData2
+        data: seriesData
       }
     ],
     tooltip: {
-      formatter: '{b}: {c}人'
+      formatter: '{b}: {c}人/km²'
     }
   }
   chartInstance.setOption(dataOption)
@@ -163,7 +113,7 @@ const screenAdapter = () => {
     title: [
       {
         textStyle: {
-          fontSize: titleFontSize * 0.8
+          fontSize: titleFontSize * 0.9
         }
       },
       {
@@ -180,6 +130,7 @@ const screenAdapter = () => {
 
   chartInstance.resize()
 }
+
 
 onMounted(async () => {
   await initChart()
@@ -199,5 +150,4 @@ onUnmounted(() => {
   <div ref="mapRef"></div>
 </template>
 
-<style scoped lang="less">
-</style>
+<style lang="less" scoped></style>

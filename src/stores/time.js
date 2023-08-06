@@ -3,7 +3,21 @@ import { ref } from 'vue'
 
 export const useTime = defineStore('time', () => {
   const currentTime = ref('')
-
+  // 初始化数据
+  const infoObj = ref({
+    name: '',
+    gender: '',
+    age: '',
+    residence: '',
+    organization: '',
+    certificate: '',
+    comprehensive: '',
+    honor: '',
+    competition: '',
+    id: '',
+  })
+  // 更新变量
+  const update = ref(false);
   const updateTime = () => {
     const date = new Date()
     const year = date.getFullYear()
@@ -15,13 +29,24 @@ export const useTime = defineStore('time', () => {
 
     currentTime.value = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
   }
-
+  // 触发更新
+  const setUpdate = () => {
+    update.value = !update.value
+  }
+  // 修改数据
+  const setInfoObj = (obj) => {
+    infoObj.value = obj
+  }
   // 在组件挂载时开始定时器
   setInterval(() => {
     updateTime()
   }, 1000)
 
   return {
-    currentTime
+    currentTime,
+    infoObj,
+    setInfoObj,
+    update,
+    setUpdate
   }
 })
