@@ -290,6 +290,7 @@ const getTableData = async () => {
 
 // 2. 获取渲染表格所需数据
 const renderData = ref([])
+const finalData = ref([])
 const getRenderData = () => {
   if (selectorValue.value === 'Shanghai') {
     renderData.value = tableSQLData.value[0]
@@ -297,13 +298,28 @@ const getRenderData = () => {
     renderData.value = tableSQLData.value[districtIndex[selectorValue.value] + 1]
   }
   console.log(renderData.value)
+  // 准备符合表格下标的数组
+  finalData.value = [`${renderData.value[3]} km²`,
+  `${renderData.value[13]} 人`,
+  `${Math.floor(renderData.value[2] * 10000)} 人`,
+  `${renderData.value[4]} 人/km²`,
+  `${renderData.value[5]} 万人`,
+  `${renderData.value[7]} 万人`,
+  `${renderData.value[9]} 万人`,
+  `${renderData.value[11]} 人`,
+  `${renderData.value[12]} 人`]
 }
 
-// 3. 准备每项要渲染的内容
+// 3. 准备每项要渲染的title
 const tableTitle = ['面积', '常住人口数', '户籍人口数', '老年人口密度',
   '60岁及以上老年人口数', '65岁及以上老年人口数', '80岁及以上老年人口数',
   '百岁老人数', '每10万人百岁老人数']
 
+// 4. 准备每项的icon
+import Icon from './Icon.vue'
+import { Location, Files, MagicStick, User, Star } from '@element-plus/icons-vue'
+
+const iconArr = [Location, Files, Files, MagicStick, User, User, User, Star, Star]
 
 onMounted(async () => {
   await getTableData()
@@ -314,6 +330,9 @@ onMounted(async () => {
 watch(selectorValue, () => {
   getRenderData()
 })
+
+// 5. 添加表格中间dataV装饰
+import { Decoration2 } from '@kjgl77/datav-vue3'
 </script>
 
 <template>
@@ -323,42 +342,47 @@ watch(selectorValue, () => {
       <!-- 筛选框 -->
       <div class="select-district">
         <span class="desc">丨各行政区信息查询</span>
-        <el-select v-model="selectorValue" class="elp-select">
+        <el-select v-model="selectorValue" class="elp-select" size="large">
           <el-option v-for="item in districtOptions" :key="item.value" :label="item.label" :value="item.value">
             <span style="
           float: left;
-          font-size: 1.3vh;">{{ item.label }}</span>
+          font-size: 1.4vh;">{{ item.label }}</span>
             <span style="
           float: right;
           color: var(--el-text-color-secondary);
-          font-size: 1.3vh;
+          font-size: 1.4vh;
           padding-left: 2vh;
         ">{{ item.value }}</span>
           </el-option>
         </el-select>
       </div>
-      <br>
+
       <!-- 具体信息表格 -->
       <div class="detail-info">
         <!-- v-for遍历 -->
         <div class="detail-box" v-for="(item, index) in tableTitle" :key="index">
           <!-- 左侧icon + label -->
           <div class="left">
-            <div class="icon"></div>
+            <div class="icon">
+              <Icon :Components='iconArr[index]'></Icon>
+            </div>
             {{ item }}
           </div>
 
-          <div class="right"></div>
+          <div class="right">{{ finalData[index] }}</div>
         </div>
       </div>
     </div>
+
+    <!-- dataV装饰线 -->
+    <div><decoration-2 :reverse="true" :dur="6" class="datav" /></div>
 
     <!-- 下册饼图 -->
     <div class="pie" ref="pieRef"></div>
 
     <!-- 左右切换按钮 -->
     <div class="footer-right">
-      <span class="subtitle">数据来源:<br>2020上海市人口普查年鉴</span>
+      <!-- <span class="subtitle">数据来源:<br>2020上海市人口普查年鉴</span> -->
       <span class="iconfont arr-left" @click="togglePie">&#xe6ef;</span>
       <span class="iconfont arr-right" @click="togglePie">&#xe6ed;</span>
     </div>
@@ -366,6 +390,15 @@ watch(selectorValue, () => {
 </template>
 
 <style lang="less" scoped>
+.datav {
+  position: fixed;
+  width: 10vw;
+  height: 32.8vh;
+  top: 18vh;
+  right: 11.3vw;
+  z-index: 999;
+}
+
 .table {
   width: 25vw;
   height: 39.5vh;
@@ -376,52 +409,47 @@ watch(selectorValue, () => {
   color: rgb(255, 255, 255);
   border-radius: 1vw;
   padding: 0.5vh 0.5vw;
+  margin-top: 1vh;
 
   .detail-box {
     display: flex;
     margin-top: 1.5vh;
     justify-content: space-between;
+    text-align: center;
 
     &:last-child {
       margin-bottom: 1.5vh;
     }
-    
+
     .left {
       display: flex;
       align-items: center;
       padding-left: 1vw;
       font-size: 1.4vh;
 
-      // .icon {
-      //   width: 16px;
-      //   height: 16px;
-      //   margin-right: 0.5em;
-      // }
+      .icon {
+        width: 1.8vh;
+        height: 1.8vh;
+        margin-right: 0.6vw;
+      }
+    }
+
+    .right {
+      padding-right: 1.6vw;
+      font-size: 1.6vh;
     }
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .pie {
-  margin-top: 1vh;
+  margin-top: 2vh;
   width: 27vw;
   height: 41vh;
+}
+
+/deep/ .el-input__inner {
+  font-size: 1.5vh !important;
+  font-weight: 500 !important;
 }
 
 .select-district {
@@ -436,10 +464,9 @@ watch(selectorValue, () => {
 
   .elp-select {
     width: 8vw;
-    height: 3.2vh;
+    height: 4vh;
   }
 }
-
 
 .container {
   position: relative;
@@ -447,13 +474,13 @@ watch(selectorValue, () => {
   .footer-right {
     position: absolute;
 
-    .subtitle {
-      position: absolute;
-      width: 12vw;
-      font-size: 0.7vw;
-      top: -2vh;
-      right: -31vw;
-    }
+    // .subtitle {
+    //   position: absolute;
+    //   width: 12vw;
+    //   font-size: 0.7vw;
+    //   top: -2vh;
+    //   right: -31vw;
+    // }
 
     .arr-left {
       position: absolute;
@@ -473,4 +500,5 @@ watch(selectorValue, () => {
       cursor: pointer;
     }
   }
-}</style>
+}
+</style>
