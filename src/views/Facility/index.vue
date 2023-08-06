@@ -9,8 +9,7 @@ import FacilityMap from './components/FacilityMap.vue';
       <FacilityHeader></FacilityHeader>
     </div>
   </div>
-
-  <div>
+  <div class="facility-map">
     <FacilityMap></FacilityMap>
   </div>
 
@@ -20,5 +19,9 @@ import FacilityMap from './components/FacilityMap.vue';
 .facility-header {
   width: 100%;
   height: 10vh;
+}
+.facility-map{
+  height: 90vh;
+  max-height: 90vh;
 }
 </style>

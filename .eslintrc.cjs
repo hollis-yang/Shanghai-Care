@@ -10,5 +10,9 @@ module.exports = {
   },
   rules: {
     'vue/multi-word-component-names': 0, // 不强制要求组件命名
+  },
+  env: {
+    "jquery": true,
+    "amd": true
   }
 }
