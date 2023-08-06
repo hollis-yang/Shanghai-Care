@@ -70,7 +70,7 @@ const initChart = async () => {
 // SQL
 const sqlResult = ref([])
 const getData = async () => {
-  const sql = `SELECT district, elder_density FROM old_pop
+  const sql = `SELECT district, elder_density FROM oldpop
               WHERE district IN ('徐汇区', '长宁区', '黄浦区', '静安区', '虹口区', '普陀区', '杨浦区');`
   const res = await getSQLAPI(sql)
 

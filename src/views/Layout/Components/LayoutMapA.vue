@@ -70,7 +70,7 @@ const initChart = async () => {
 // SQL
 const sqlResult = ref([])
 const getData = async () => {
-  const sql = `SELECT district, elder_density FROM old_pop;`
+  const sql = `SELECT district, elder_density FROM oldpop;`
   const res = await getSQLAPI(sql)
 
   sqlResult.value = res
