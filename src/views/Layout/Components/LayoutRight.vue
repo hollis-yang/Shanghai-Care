@@ -397,7 +397,7 @@ import { Decoration2 } from '@kjgl77/datav-vue3'
 
 .table {
   width: 25vw;
-  height: 39.5vh;
+  height: 40.5vh;
 }
 
 .detail-info {
@@ -440,7 +440,7 @@ import { Decoration2 } from '@kjgl77/datav-vue3'
 .pie {
   margin-top: 3vh;
   width: 27vw;
-  height: 41vh;
+  height: 40.5vh;
 }
 
 /deep/ .el-input__inner {
