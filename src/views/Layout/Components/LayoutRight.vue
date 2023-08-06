@@ -59,56 +59,6 @@ const lcSumResult = ref([])
 let hcData_sum
 let lcData_sum
 
-// const getData = async () => {
-//   const sql1 = `SELECT
-//               district,
-//               healthy_s,
-//               basichealth_s,
-//               sickability_s,
-//               inability_s
-//               FROM health_condition;`
-//   const res1 = await getSQLAPI(sql1)
-
-//   const sql2 = `SELECT 
-//                 SUM(healthy_s),
-//                 SUM(basichealth_s),
-//                 SUM(sickability_s),
-//                 SUM(inability_s)
-//                 FROM health_condition;`
-//   const res2 = await getSQLAPI(sql2)
-//   hcResult.value = res1
-//   hcSumResult.value = res2
-
-//   const sql3 = `SELECT
-//                 district,
-//                 withfamily_s,
-//                 withspouse_s,
-//                 withkids_s,
-//                 solitudenurse_s,
-//                 solitude_s,
-//                 institution_s,
-//                 other_s
-//                 FROM living_condition;`
-//   const res3 = await getSQLAPI(sql3)
-//   const sql4 = `SELECT
-//                 SUM(withfamily_s),
-//                 SUM(withspouse_s),
-//                 SUM(withkids_s),
-//                 SUM(solitudenurse_s),
-//                 SUM(solitude_s),
-//                 SUM(institution_s),
-//                 SUM(other_s)
-//                 FROM living_condition;`
-//   const res4 = await getSQLAPI(sql4)
-//   lcResult.value = res3
-//   lcSumResult.value = res4
-
-//   // 准备选择'全市'时的数据
-//   hcData_sum = Array.from(hcSumResult.value[0]).map(item => Number(item))
-//   lcData_sum = Array.from(lcSumResult.value[0]).map(item => Number(item))
-
-//   updateChart()
-// }
 const getHealthConditionData = async () => {
   const sql1 = `SELECT
               district,
@@ -120,16 +70,8 @@ const getHealthConditionData = async () => {
   const res1 = await getSQLAPI(sql1)
   hcResult.value = res1.slice(1)
 
-  // const sql2 = `SELECT 
-  //               SUM(healthy_s),
-  //               SUM(basichealth_s),
-  //               SUM(sickability_s),
-  //               SUM(inability_s)
-  //               FROM health_condition;`
-  // const res2 = await getSQLAPI(sql2)
-  hcSumResult.value = res1[0]
-
-  hcData_sum = Array.from(hcSumResult.value[0]).map(item => Number(item))
+  hcSumResult.value = res1[0].slice(1)
+  hcData_sum = Array.from(hcSumResult.value).map(item => Number(item))
 }
 
 const getLivingConditionData = async () => {
@@ -146,25 +88,16 @@ const getLivingConditionData = async () => {
   const res3 = await getSQLAPI(sql3)
   lcResult.value = res3.slice(1)
 
-  // const sql4 = `SELECT
-  //               SUM(withfamily_s),
-  //               SUM(withspouse_s),
-  //               SUM(withkids_s),
-  //               SUM(solitudenurse_s),
-  //               SUM(solitude_s),
-  //               SUM(institution_s),
-  //               SUM(other_s)
-  //               FROM living_condition;`
-  // const res4 = await getSQLAPI(sql4)
-  lcSumResult.value = res3[0]
+  lcSumResult.value = res3[0].slice(1)
 
-  lcData_sum = Array.from(lcSumResult.value[0]).map(item => Number(item))
+  lcData_sum = Array.from(lcSumResult.value).map(item => Number(item))
 }
-// const getData = async () => {
-//   await getHealthConditionData()
-//   await getLivingConditionData()
-//   updateChart()
-// }
+
+const getData = async () => {
+  await getHealthConditionData()
+  await getLivingConditionData()
+  updateChart()
+}
 
 
 // 区和下标对应关系
@@ -305,13 +238,7 @@ const screenAdapter = () => {
 
 onMounted(async () => {
   initChart()
-
-  // getData()
-  getHealthConditionData()
-  getLivingConditionData()
-  updateChart()
-
-
+  getData()
   // 监听window大小变化以进行分辨率适配
   window.addEventListener('resize', screenAdapter)
   // 界面加载完成后主动进行分辨率适配
@@ -359,7 +286,7 @@ const getRenderData = () => {
   } else {
     renderData.value = tableSQLData.value[districtIndex[selectorValue.value] + 1]
   }
-  console.log(renderData.value)
+
   // 准备符合表格下标的数组
   finalData.value = [`${renderData.value[3]} km²`,
   `${renderData.value[13]} 人`,
@@ -452,6 +379,13 @@ import { Decoration2 } from '@kjgl77/datav-vue3'
 </template>
 
 <style lang="less" scoped>
+/deep/ .el-select.el-select--large.elp-select,
+/deep/ .el-input__wrapper {
+  width: 7vw !important;
+  height: 3.5vh !important;
+  margin-bottom: 1vh !important;
+}
+
 .datav {
   position: fixed;
   width: 10vw;
@@ -504,7 +438,7 @@ import { Decoration2 } from '@kjgl77/datav-vue3'
 }
 
 .pie {
-  margin-top: 2vh;
+  margin-top: 3vh;
   width: 27vw;
   height: 41vh;
 }
