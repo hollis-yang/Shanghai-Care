@@ -307,17 +307,17 @@ const togglePie = () => {
       <br>
       <!-- 具体信息表格 -->
       <div class="detail-info">
-        <el-descriptions :column="1" border>
-          <el-descriptions-item label="面积">20 km²</el-descriptions-item>
-          <el-descriptions-item label="常驻人口总数"><span class="desc">80.23 万人</span></el-descriptions-item>
-          <el-descriptions-item label="户籍人口总数">70.13 万人</el-descriptions-item>
-          <el-descriptions-item label="老年人口密度">15115 人/km²</el-descriptions-item>
-          <el-descriptions-item label="60岁及以上老年人口数">30.23 万人 （43.1%）</el-descriptions-item>
-          <el-descriptions-item label="65岁及以上老年人口数">22.89 万人 （32.6%）</el-descriptions-item>
-          <el-descriptions-item label="80岁及以上老年人口数">4.31 万人 （14.3%）</el-descriptions-item>
-          <el-descriptions-item label="百岁老人数">299 人</el-descriptions-item>
-          <el-descriptions-item label="每10万人百岁老人数">42.6 人</el-descriptions-item>
-        </el-descriptions>
+        <!-- 还要再加一个v-for -->
+        <!-- <div class="left">
+          <div class="icon">
+            <Icon></Icon>
+          </div>
+        </div>
+        {{ titleObj }}
+
+        <div class="right">
+          {{  }}
+        </div> -->
       </div>
     </div>
 
@@ -334,16 +334,6 @@ const togglePie = () => {
 </template>
 
 <style lang="less" scoped>
-/deep/ .el-descriptions__cell {
-  height: 3.6vh !important;
-}
-
-/deep/ .el-descriptions__label,
-/deep/ .el-descriptions__content {
-  font-size: 1.5vh !important;
-}
-
-
 .table {
   width: 25vw;
   height: 39.5vh;
