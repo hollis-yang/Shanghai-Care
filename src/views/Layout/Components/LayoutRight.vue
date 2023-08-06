@@ -280,7 +280,40 @@ const togglePie = () => {
 
 
 // 表格代码
+const tableSQLData = ref([])
+// 1. SQL
+const getTableData = async () => {
+  const sql = `SELECT * FROM oldpop;`
+  const res = await getSQLAPI(sql)
+  tableSQLData.value = res
+}
 
+// 2. 获取渲染表格所需数据
+const renderData = ref([])
+const getRenderData = () => {
+  if (selectorValue.value === 'Shanghai') {
+    renderData.value = tableSQLData.value[0]
+  } else {
+    renderData.value = tableSQLData.value[districtIndex[selectorValue.value] + 1]
+  }
+  console.log(renderData.value)
+}
+
+// 3. 准备每项要渲染的内容
+const tableTitle = ['面积', '常住人口数', '户籍人口数', '老年人口密度',
+  '60岁及以上老年人口数', '65岁及以上老年人口数', '80岁及以上老年人口数',
+  '百岁老人数', '每10万人百岁老人数']
+
+
+onMounted(async () => {
+  await getTableData()
+  getRenderData()
+})
+
+// 所选区发生变化时重新获得表格中的数据
+watch(selectorValue, () => {
+  getRenderData()
+})
 </script>
 
 <template>
@@ -307,17 +340,16 @@ const togglePie = () => {
       <br>
       <!-- 具体信息表格 -->
       <div class="detail-info">
-        <!-- 还要再加一个v-for -->
-        <!-- <div class="left">
-          <div class="icon">
-            <Icon></Icon>
+        <!-- v-for遍历 -->
+        <div class="detail-box" v-for="(item, index) in tableTitle" :key="index">
+          <!-- 左侧icon + label -->
+          <div class="left">
+            <div class="icon"></div>
+            {{ item }}
           </div>
-        </div>
-        {{ titleObj }}
 
-        <div class="right">
-          {{  }}
-        </div> -->
+          <div class="right"></div>
+        </div>
       </div>
     </div>
 
@@ -338,6 +370,53 @@ const togglePie = () => {
   width: 25vw;
   height: 39.5vh;
 }
+
+.detail-info {
+  background-color: rgba(0, 0, 0, 0.25);
+  color: rgb(255, 255, 255);
+  border-radius: 1vw;
+  padding: 0.5vh 0.5vw;
+
+  .detail-box {
+    display: flex;
+    margin-top: 1.5vh;
+    justify-content: space-between;
+
+    &:last-child {
+      margin-bottom: 1.5vh;
+    }
+    
+    .left {
+      display: flex;
+      align-items: center;
+      padding-left: 1vw;
+      font-size: 1.4vh;
+
+      // .icon {
+      //   width: 16px;
+      //   height: 16px;
+      //   margin-right: 0.5em;
+      // }
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .pie {
   margin-top: 1vh;
@@ -394,5 +473,4 @@ const togglePie = () => {
       cursor: pointer;
     }
   }
-}
-</style>
+}</style>
