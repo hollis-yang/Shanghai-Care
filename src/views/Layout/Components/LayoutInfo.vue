@@ -1,17 +1,56 @@
-<script setup></script>
+<script setup>
+import { ref, onMounted } from 'vue'
+
+const numArr1 = [24870895, 15051900]
+const numArr2 = [5815462, 5536600]
+const nameArr1 = ['上海市常驻人口数', '上海市户籍人口数']
+const num1 = ref(numArr1[0])
+const num2 = ref(numArr2[0])
+const name1 = ref(nameArr1[0])
+
+const current = ref(0)
+
+const timeId = ref(null)
+
+const startInterval = () => {
+  timeId.value = setInterval(() => {
+    if (current.value === 0) {
+      current.value = 1
+    } else {
+      current.value = 0
+    }
+    num1.value = numArr1[current.value]
+    num2.value = numArr2[current.value]
+    name1.value = nameArr1[current.value]
+  }, 3000)
+}
+
+onMounted(() => {
+  startInterval()
+})
+
+
+// 监听.no的mouseover/out
+const noMouseOver = () => {
+  clearInterval(timeId.value)
+}
+const noMouseOut = () => {
+  startInterval()
+}
+</script>
 
 <template>
-  <div class="no">
+  <div class="no" @mouseover="noMouseOver" @mouseout="noMouseOut">
     <div class="no-hd">
       <ul>
-        <li>24870895</li>
-        <li>5815462</li>
+        <li>{{ num1 }}</li>
+        <li>{{ num2 }}</li>
       </ul>
     </div>
     <div class="no-bd">
       <ul>
-        <li>上海市人口总数</li>
-        <li>60岁以上老年人口数</li>
+        <li>{{ name1 }}</li>
+        <li>其中老年人口数</li>
       </ul>
     </div>
   </div>
