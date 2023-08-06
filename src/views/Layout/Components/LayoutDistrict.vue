@@ -111,7 +111,7 @@ const endValue = ref(5)
 const sqlResult = ref([])
 const getData = async () => {
   const sql = `SELECT district, pop_60, percent_60
-              FROM old_pop
+              FROM oldpop
               WHERE district <> '全市';`
   const res = await getSQLAPI(sql)
 

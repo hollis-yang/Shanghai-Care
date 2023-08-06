@@ -59,56 +59,112 @@ const lcSumResult = ref([])
 let hcData_sum
 let lcData_sum
 
-const getData = async () => {
+// const getData = async () => {
+//   const sql1 = `SELECT
+//               district,
+//               healthy_s,
+//               basichealth_s,
+//               sickability_s,
+//               inability_s
+//               FROM health_condition;`
+//   const res1 = await getSQLAPI(sql1)
+
+//   const sql2 = `SELECT 
+//                 SUM(healthy_s),
+//                 SUM(basichealth_s),
+//                 SUM(sickability_s),
+//                 SUM(inability_s)
+//                 FROM health_condition;`
+//   const res2 = await getSQLAPI(sql2)
+//   hcResult.value = res1
+//   hcSumResult.value = res2
+
+//   const sql3 = `SELECT
+//                 district,
+//                 withfamily_s,
+//                 withspouse_s,
+//                 withkids_s,
+//                 solitudenurse_s,
+//                 solitude_s,
+//                 institution_s,
+//                 other_s
+//                 FROM living_condition;`
+//   const res3 = await getSQLAPI(sql3)
+//   const sql4 = `SELECT
+//                 SUM(withfamily_s),
+//                 SUM(withspouse_s),
+//                 SUM(withkids_s),
+//                 SUM(solitudenurse_s),
+//                 SUM(solitude_s),
+//                 SUM(institution_s),
+//                 SUM(other_s)
+//                 FROM living_condition;`
+//   const res4 = await getSQLAPI(sql4)
+//   lcResult.value = res3
+//   lcSumResult.value = res4
+
+//   // 准备选择'全市'时的数据
+//   hcData_sum = Array.from(hcSumResult.value[0]).map(item => Number(item))
+//   lcData_sum = Array.from(lcSumResult.value[0]).map(item => Number(item))
+
+//   updateChart()
+// }
+const getHealthConditionData = async () => {
   const sql1 = `SELECT
               district,
-              healthy_m + healthy_f AS hc_category1,
-              basichealth_m + basichealth_f AS hc_category2,
-              sickability_m + sickability_f AS hc_category3,
-              inability_m + inability_f AS hc_category4
+              healthy_s,
+              basichealth_s,
+              sickability_s,
+              inability_s
               FROM health_condition;`
   const res1 = await getSQLAPI(sql1)
+  hcResult.value = res1.slice(1)
 
-  const sql2 = `SELECT 
-                SUM(healthy_m) + SUM(healthy_f) AS hc_category1_sum,
-                SUM(basichealth_m) + SUM(basichealth_f) AS hc_category2_sum,
-                SUM(sickability_m) + SUM(sickability_f) AS hc_category3_sum,
-                SUM(inability_m) + SUM(inability_f) AS hc_category4_sum
-                FROM health_condition;`
-  const res2 = await getSQLAPI(sql2)
-  hcResult.value = res1
-  hcSumResult.value = res2
+  // const sql2 = `SELECT 
+  //               SUM(healthy_s),
+  //               SUM(basichealth_s),
+  //               SUM(sickability_s),
+  //               SUM(inability_s)
+  //               FROM health_condition;`
+  // const res2 = await getSQLAPI(sql2)
+  hcSumResult.value = res1[0]
 
+  hcData_sum = Array.from(hcSumResult.value[0]).map(item => Number(item))
+}
+
+const getLivingConditionData = async () => {
   const sql3 = `SELECT
                 district,
-                withfamily_m + withfamily_f AS lc_category1,
-                withspouse_m + withspouse_f AS lc_category2,
-                withkids_m + withkids_f AS lc_category3,
-                solitudenurse_m + solitudenurse_f AS lc_category4,
-                solitude_m + solitude_f AS lc_category5,
-                institution_m + institution_f AS lc_category6,
-                other_m + other_f AS lc_category7
+                withfamily_s,
+                withspouse_s,
+                withkids_s,
+                solitudenurse_s,
+                solitude_s,
+                institution_s,
+                other_s
                 FROM living_condition;`
   const res3 = await getSQLAPI(sql3)
-  const sql4 = `SELECT
-                SUM(withfamily_m) + SUM(withfamily_f) AS lc_category1_sum,
-                SUM(withspouse_m) + SUM(withspouse_f) AS lc_category2_sum,
-                SUM(withkids_m) + SUM(withkids_f) AS lc_category3_sum,
-                SUM(solitudenurse_m) + SUM(solitudenurse_f) AS lc_category4_sum,
-                SUM(solitude_m) + SUM(solitude_f) AS lc_category5_sum,
-                SUM(institution_m) + SUM(institution_f) AS lc_category6_sum,
-                SUM(other_m) + SUM(other_f) AS lc_category7_sum
-                FROM living_condition;`
-  const res4 = await getSQLAPI(sql4)
-  lcResult.value = res3
-  lcSumResult.value = res4
+  lcResult.value = res3.slice(1)
 
-  // 准备选择'全市'时的数据
-  hcData_sum = Array.from(hcSumResult.value[0]).map(item => Number(item))
+  // const sql4 = `SELECT
+  //               SUM(withfamily_s),
+  //               SUM(withspouse_s),
+  //               SUM(withkids_s),
+  //               SUM(solitudenurse_s),
+  //               SUM(solitude_s),
+  //               SUM(institution_s),
+  //               SUM(other_s)
+  //               FROM living_condition;`
+  // const res4 = await getSQLAPI(sql4)
+  lcSumResult.value = res3[0]
+
   lcData_sum = Array.from(lcSumResult.value[0]).map(item => Number(item))
-
-  updateChart()
 }
+// const getData = async () => {
+//   await getHealthConditionData()
+//   await getLivingConditionData()
+//   updateChart()
+// }
 
 
 // 区和下标对应关系
@@ -247,9 +303,15 @@ const screenAdapter = () => {
 }
 
 
-onMounted(() => {
+onMounted(async () => {
   initChart()
-  getData()
+
+  // getData()
+  getHealthConditionData()
+  getLivingConditionData()
+  updateChart()
+
+
   // 监听window大小变化以进行分辨率适配
   window.addEventListener('resize', screenAdapter)
   // 界面加载完成后主动进行分辨率适配

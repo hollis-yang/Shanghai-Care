@@ -43,6 +43,30 @@ def query():
         return jsonify({'error': str(e)})
 
 
+@app.route('/backup', methods=['GET'])
+def query_backup():
+    try:
+        # 创建游标对象
+        cursor = connection.cursor()
+        # 获取查询参数
+        sql = request.args.get('sql')
+        # 互斥锁
+        lock.acquire()
+        # 执行查询
+        cursor.execute(sql)
+        # 解锁
+        lock.release()
+        # 获取查询结果
+        results = cursor.fetchall()
+        # 关闭游标
+        cursor.close()
+        # 返回查询结果
+        return jsonify(results)
+
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+
 @app.route('/insert', methods=['POST'])
 def add_data():
     try:
