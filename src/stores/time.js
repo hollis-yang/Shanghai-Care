@@ -16,6 +16,20 @@ export const useTime = defineStore('time', () => {
     competition: '',
     id: '',
   })
+  const infoHealthObj = ref({
+    name: '',
+    age: '',
+    gender: '',
+    phone: '',
+    address: '',
+    child_phone: '',
+    medical_history: '',
+    allergy: '',
+    elevator: '',
+    district: '',
+    diet: '',
+    solitude: '',
+  })
   // 更新变量
   const update = ref(false);
   const updateTime = () => {
@@ -37,6 +51,9 @@ export const useTime = defineStore('time', () => {
   const setInfoObj = (obj) => {
     infoObj.value = obj
   }
+  const setInfoHealthObj = (obj) => {
+    infoHealthObj.value = obj;
+  }
   // 在组件挂载时开始定时器
   setInterval(() => {
     updateTime()
@@ -47,6 +64,8 @@ export const useTime = defineStore('time', () => {
     infoObj,
     setInfoObj,
     update,
-    setUpdate
+    setUpdate,
+    infoHealthObj,
+    setInfoHealthObj
   }
 })
