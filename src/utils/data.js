@@ -154,3 +154,94 @@ export const some = [
     id: '9',
   },
 ]
+
+// Health下拉框数据1
+export const conditionSelectHealth = [
+  {
+    label: '全部',
+    id: '9',
+  },
+  {
+    label: '性别',
+    id: '1',
+  },
+  {
+    label: '年龄',
+    id: '2',
+  },
+  {
+    label: '所在街道',
+    id: '3',
+  },
+  {
+    label: '住址有无电梯',
+    id: '4',
+  },
+  {
+    label: '是否独居',
+    id: '5',
+  },
+  {
+    label: '病史',
+    id: '6',
+  },
+  {
+    label: '过敏药物',
+    id: '7',
+  },
+]
+// Health下拉框数据2
+export const ageHealth = [
+  {
+    label: '全部',
+    id: '9',
+  },
+  {
+    label: '60-69岁',
+    id: '1',
+  },
+  {
+    label: '70-79岁',
+    id: '2',
+  },
+  {
+    label: '80-89岁',
+    id: '3',
+  },
+  {
+    label: '90-99岁',
+    id: '4',
+  },
+  {
+    label: '100岁以上',
+    id: '5',
+  },
+]
+export const isLift = [
+  {
+    label: '全部',
+    id: '9',
+  },
+  {
+    label: '有',
+    id: '1',
+  },
+  {
+    label: '无',
+    id: '2',
+  },
+]
+export const isLivingAlone = [
+  {
+    label: '全部',
+    id: '9',
+  },
+  {
+    label: '是',
+    id: '1',
+  },
+  {
+    label: '否',
+    id: '2',
+  },
+]
