@@ -34,7 +34,7 @@
               <span class="gender"><Icon  class="icon" :Components='iconObj.gender'></Icon>{{ item[2] }}</span>
               <span class="age"><Icon  class="icon" :Components='iconObj.age'></Icon>{{ item[1] }}</span>
             </div>
-            <span class="domicile text-ellipsis"><Icon  class="icon" :Components='iconObj.organization'></Icon>{{ item[9] }}{{ item[10] }}{{ item[4] }}</span>
+            <span class="domicile text-ellipsis"><Icon  class="icon" :Components='iconObj.address'></Icon>{{ item[9] }}{{ item[10] }}{{ item[4] }}</span>
             <div class="btn item-detail">
                 <el-button size="small" type="primary" @click="onToDetail(item)">详情</el-button>
             </div>
@@ -55,14 +55,14 @@
   </div>
 </template>
 <script setup>
-import { reactive, computed, watch } from "vue"
-import { conditionSelectHealth, gender, ageHealth,isLift, isLivingAlone, some } from '@/utils/data'
-import { User, MagicStick, Files, Phone, HomeFilled, PhoneOutline, Collection, EditPen, Refrigerator, Tableware, Coordinate } from '@element-plus/icons-vue'
-import Icon from './Icon.vue'
+import { reactive, computed, watch } from "vue";
+import { conditionSelectHealth, gender, ageHealth,isLift, isLivingAlone, some } from '@/utils/data';
+import { User, MagicStick, Files, Phone, HomeFilled, Collection, EditPen, Refrigerator, Postcard, Coordinate } from '@element-plus/icons-vue'
+import Icon from './Icon.vue';
 import { BorderBox8 as DvBorderBox8 } from '@kjgl77/datav-vue3'
-import { getSQLAPI } from "@/apis/mysql"
-import { useTime } from '@/stores/time'
-const infoObj = useTime()
+import { getSQLAPI } from "@/apis/mysql";
+import { useTime } from '@/stores/time';
+const infoObj = useTime();
 const updateData = computed(()=> infoObj.update)
 const iconObj = {
   name: User,
@@ -70,11 +70,11 @@ const iconObj = {
   age: Files,
   phone: Phone,
   address: HomeFilled,
-  child_phone: PhoneOutline,
+  child_phone: Phone,
   medical_history: Collection,
   allergy: EditPen,
   elevator: Refrigerator,
-  diet: Tableware,
+  diet: Postcard,
   solitude: Coordinate
 }
 const state = reactive({
@@ -122,14 +122,14 @@ const screenArr = computed(() => {
       state.selectValue = some[0].label
       return some
   }
-})
+});
 // 切换分页后更新数据
 const informationData = computed(() => {
   const data = JSON.parse(JSON.stringify(state.information))
-  return data.splice((Number(state.page) - 1) * 6, 6)
-})
+  return data.splice((Number(state.page) - 1) * 6, 6);
+});
 const onChangePage = (page) => {
-  state.page = page
+  state.page = page;
 }
 // 筛选判断
 const onSelect = () => {
@@ -195,7 +195,7 @@ const init = () => {
     console.log(11111111, res)
     
     state.street = [...new Set((res).map((item) =>item[10]))].map((item, index)=> {return {label: item, index}})
-    const medicalHistory = [...new Set((res).map((item) =>item[6]))].map((item)=> item)
+    const medicalHistory = [...new Set((res).map((item) =>item[6]))].map((item, index)=> item)
     state.allergy = [...new Set((res).map((item) => item[7]))].map((item, index) => { return { label: item, index } })
     const medicalHistoryArr = (medicalHistory.map(item => {
       if (item.includes('、')) {
@@ -205,11 +205,12 @@ const init = () => {
         }
       })).flat()
     state.medicalHistory = [...new Set(medicalHistoryArr)].map((item, index) => { return { label: item, index } })
-    state.information = res
+    state.information = res;
   })
 }
 init()
 </script>
+
 <style lang="less" scoped>
 .detail {
   width: 100%;

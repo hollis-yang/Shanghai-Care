@@ -39,7 +39,7 @@
 </template>
 
 <script setup>
-import { User, MagicStick, Files, Phone, HomeFilled, PhoneOutline, Collection, EditPen, Refrigerator, Tableware, Coordinate } from '@element-plus/icons-vue'
+import { User, MagicStick, Files, Phone, HomeFilled, Collection, EditPen, Refrigerator, Postcard, Coordinate } from '@element-plus/icons-vue'
 import { ref, computed } from 'vue'
 import { getSQLAPI } from '../../../apis/mysql'
 import { insertSQLAPI } from '@/apis/insertsql'
@@ -55,11 +55,11 @@ const iconObj = {
   age: Files,
   phone: Phone,
   address: HomeFilled,
-  child_phone: PhoneOutline,
+  child_phone: Phone,
   medical_history: Collection,
   allergy: EditPen,
   elevator: Refrigerator,
-  diet: Tableware,
+  diet: Postcard,
   solitude: Coordinate
 }
 const TitleObj = {
@@ -91,8 +91,8 @@ const onDel = () => {
   const sql = `DELETE FROM health_files WHERE id='${infoObj.value.id}';`
   insertSQLAPI(sql).then(() => {
     // 处理后端返回的响应数据
-    isSet.value = true
-    isAdd.value = false
+    isSet.value = true;
+    isAdd.value = false;
     time.setInfoHealthObj({
       name: '',
       age: '',
@@ -141,7 +141,7 @@ const onSetAndAdd = () => {
       time.setUpdate()
     })
   }
-  isSet.value = !isSet.value
+  isSet.value = !isSet.value;
 }
 async function queryInfo() {
   let isInfo = false
@@ -274,4 +274,14 @@ async function queryInfo() {
     }
   }
 }
+</style>
+
+<style>
+/* 三种方法选择自己喜欢的一个即可 */
+/* .el-input--prefix .el-input__inner{
+  border: none;
+} */
+/* .el-input--small .el-input__inner {
+    border: none;
+} */
 </style>
