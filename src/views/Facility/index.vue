@@ -1,6 +1,16 @@
 <script setup>
 import FacilityHeader from './components/FacilityHeader.vue'
-import FacilityMap from './components/FacilityMap.vue';
+import FacilityMap from './components/FacilityMap.vue'
+// import FacilityStatistics from './components/FacilityStatistics.vue';
+import FacilityQuery from './components/FacilityQuery.vue'
+import {ref} from "@vue/runtime-core"
+
+const pois = ref([])
+
+const getQueryResults = (results) => {
+  pois.value = results
+}
+
 </script>
 
 <template>
@@ -10,7 +20,9 @@ import FacilityMap from './components/FacilityMap.vue';
     </div>
   </div>
   <div class="facility-map">
-    <FacilityMap></FacilityMap>
+<!--    <FacilityStatistics></FacilityStatistics>-->
+    <FacilityMap :pois=pois></FacilityMap>
+    <FacilityQuery @passResults="getQueryResults"></FacilityQuery>
   </div>
 
 </template>
@@ -21,7 +33,12 @@ import FacilityMap from './components/FacilityMap.vue';
   height: 10vh;
 }
 .facility-map{
-  height: 90vh;
+  position: relative;
+  height: 86vh;
   max-height: 90vh;
+  width: 96vw;
+  margin: auto;
+  //border: 1px solid;
 }
 </style>
+
