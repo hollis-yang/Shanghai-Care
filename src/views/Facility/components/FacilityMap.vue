@@ -16,11 +16,12 @@ let hospitalLayer = null
 
 let map = null
 let mapView = null
+// 坐标系
+let spatialReference = null
 // 切换模式
 let isDarkMode = ref(true)
 
 watch(() => props.pois, (n, o) => {
-  console.log(props.pois)
   addPoints()
 })
 
@@ -34,8 +35,9 @@ const addPoints = async () => {
     const pointGraphic = new Graphic({
       geometry: {
         type: "point",
-        longitude: parseFloat(p[10]),
-        latitude: parseFloat(p[11]),
+        x: p[10],
+        y: p[11],
+        spatialReference
       },
       symbol: {
         type: "simple-marker",
@@ -48,7 +50,8 @@ const addPoints = async () => {
         }
       },
       attributes: {
-        ...p
+        ...p,
+        type: 'facilityPoint'
       }
     })
 
@@ -65,7 +68,8 @@ const initMap = async () => {
     "esri/geometry/SpatialReference", "esri/layers/WebTileLayer", "esri/geometry/Point", "esri/Graphic", "esri/layers/GraphicsLayer", "esri/geometry/Extent"])
 
   // 基础坐标系统
-  let spatialReference = new SpatialReference({
+  spatialReference = new SpatialReference({
+    // wkid: 3857
     wkid: 3857
   });
 
@@ -75,20 +79,20 @@ const initMap = async () => {
   });
 
   // apikey
-  const apiKey = "4cbe0c2ea845e274ee8ba10d2785e590"
+  const apiKey = "8d915f545dada286c4465188fb436171"
   // 天地图-矢量
   let tiandituLayer = new WebTileLayer({
     urlTemplate: "http://{subDomain}.tianditu.com/DataServer?T=vec_w&x={col}&y={row}&l={level}&tk=" + apiKey,
     subDomains: ["t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7"],
     minScale: 74000000,
-    spatialReference: spatialReference
+    spatialReference
   })
   // 天地图-注记
   let tiandituTextLayer = new WebTileLayer({
     urlTemplate: "http://{subDomain}.tianditu.com/DataServer?T=cva_w&x={col}&y={row}&l={level}&tk=" + apiKey,
     subDomains: ["t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7"],
     minScale: 74000000,
-    spatialReference: spatialReference
+    spatialReference
   })
   map.addMany([tiandituLayer, tiandituTextLayer])
 
@@ -105,9 +109,16 @@ const initMap = async () => {
   mapView.center = new Point({
     longitude: 121.472644,
     latitude: 31.231706,
-    spatialReference: spatialReference
+    // x: 13513700,
+    // y: 3658510,
+    spatialReference
   })
+  // 去掉控件
   mapView.ui.components = []
+  // 去掉底部文字
+  mapView.isAttributionTextVisible = false
+  // 左键单击可以展示弹窗
+  mapView.popup.autoOpenEnabled = false
   mapView.when(() => {
     if (isDarkMode.value) {
       // 设置暗黑模式
@@ -140,20 +151,26 @@ const initMap = async () => {
 
   // 获取点击位置元素
   mapView.on('click', (e) => {
+
     mapView.hitTest(e).then((e2) => {
       e2.results.forEach(e3 => {
         let attrs = e3.graphic.attributes
-        console.log(attrs)
-        if(attrs.id === 'polygon_1') { // 判断是否点击了多边形图层
+        if(attrs && attrs.type === 'facilityPoint') { // 判断是否点击地图上展示的设施点位
           mapView.popup.open({
-            title: '标题',
-            content: `<p>这是一段内容</p>`,
-            location: e.mapPoint
+            title: attrs[1],
+            content: `<div style="color: rgb(209, 209, 209); background-color: rgb(36, 36, 36)">123</div>`,
+            location: new Point({
+              x: attrs[10],
+              y: attrs[11],
+              spatialReference
+            }),
+            // featureMenuOpen: true
           })
         }
       })
     })
   })
+
 }
 
 onMounted(() => {
@@ -161,6 +178,16 @@ onMounted(() => {
 });
 
 </script>
+
+<style lang="less">
+// 自定义arcgis弹窗样式
+.esri-popup__inline-actions-container,
+.esri-popup__button--dock {
+  display: none;
+}
+
+
+</style>
 
 <style scoped lang="less">
 #facilityMapId {
