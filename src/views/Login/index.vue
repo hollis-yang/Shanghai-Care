@@ -1,10 +1,20 @@
 <script setup>
-import insertTest from './insertTest.vue'
 </script>
 
 <template>
-  <insertTest></insertTest>
+  <div class="login">
+
+  </div>
 </template>
 
-<style scoped>
+<style lang="less" scoped>
+/* 覆盖global.less中的背景 */
+.login {
+  background: url(../../assets/img/login.jpg);
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 100% 100%;
+  width: 100%;
+  height: 100%;
+}
 </style>
