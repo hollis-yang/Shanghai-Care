@@ -1,7 +1,7 @@
 <script setup>
 import {onMounted, ref, onUnmounted, reactive, computed} from 'vue'
 import {districtOptions} from '@/utils/district'
-import {getSQLAPI} from "@/apis/mysql";
+import {getSQLAPI} from "@/apis/mysql"
 import {BorderBox8 as DvBorderBox8} from '@kjgl77/datav-vue3'
 import Icon from '../../NursingQuery/components/Icon.vue'
 import { House, MapLocation, Tickets, Document } from '@element-plus/icons-vue'
@@ -21,12 +21,14 @@ const state = reactive({
   page: 1,
   pageSize: 4,
   total: 1,
+  currentShow: 0,
   nursingQuery: {
     bedAvailable: [],
     minPrice: '',
     maxPrice: '',
     district: ''
   },
+
   results: []
 })
 
@@ -36,8 +38,8 @@ const onChangePage = (page) => {
   state.page = page
 }
 
-const searchFacilities = () => {
-  let sql = 'select * from nursing_homes'
+const searchNursingHomes = () => {
+  let sql = 'select * from nursinghome'
   getSQLAPI(sql).then(data => {
     // 筛选数据
     let bedAvailable = state.nursingQuery.bedAvailable
@@ -86,6 +88,7 @@ const searchFacilities = () => {
   })
 }
 
+// 分页
 const results = computed(() => {
   if (state.results.length === 0) {
     return []
@@ -108,31 +111,32 @@ const results = computed(() => {
 <template>
   <div class="container">
     <div class="positions">
-      <el-button color="#2642AA" size="small" class="el-button" plain>
+      <el-button @click="state.currentShow=0" color="#2642AA" size="small" class="el-button" plain>
         <span class="desc">养老院</span>
       </el-button>
-      <el-button color="#2642AA" size="small" class="el-button" plain>
+      <el-button @click="state.currentShow=1" color="#2642AA" size="small" class="el-button" plain>
         <span class="desc">医院</span>
       </el-button>
-      <el-button color="#2642AA" size="small" class="el-button" plain>
+      <el-button @click="state.currentShow=2" color="#2642AA" size="small" class="el-button" plain>
         <span class="desc">药店</span>
       </el-button>
-      <el-button color="#2642AA" size="small" class="el-button" plain>
+      <el-button @click="state.currentShow=3" color="#2642AA" size="small" class="el-button" plain>
         <span class="desc">公园</span>
       </el-button>
-      <el-button color="#2642AA" size="small" class="el-button" plain>
+      <el-button @click="state.currentShow=4" color="#2642AA" size="small" class="el-button" plain>
         <span class="desc">其他</span>
       </el-button>
     </div>
     <div class="conditions">
       <p class="title">丨筛选条件</p>
-      <div class="nursing content">
+      <div class="nursing content" v-if="state.currentShow===0">
         <el-row>
           <el-col :span="7">
-            <div class="label" style="padding-top: 4px">有无床位：</div>
+            <div class="label standard-font-size">有无床位：</div>
           </el-col>
           <el-col :span="14">
-            <el-checkbox-group v-model="state.nursingQuery.bedAvailable" style="margin-top: 5px;">
+
+            <el-checkbox-group v-model="state.nursingQuery.bedAvailable" style="margin-top: 1.0vh;">
               <el-checkbox label="has" style="height: auto">有床位</el-checkbox>
               <el-checkbox label="hasnot" style="height: auto">无床位</el-checkbox>
             </el-checkbox-group>
@@ -140,20 +144,20 @@ const results = computed(() => {
         </el-row>
         <el-row>
           <el-col :span="7">
-            <div class="label">价格区间：</div>
+            <div class="label standard-font-size">价格区间：</div>
           </el-col>
           <el-col :span="14">
-            <el-input v-model="state.nursingQuery.minPrice" size="small" style="width: 40%; font-size: 1vw"></el-input>
+            <el-input v-model="state.nursingQuery.minPrice" style="width: 40%; font-size: 1vw"></el-input>
             <span style="display: inline-block; width: 20%; text-align: center">-</span>
-            <el-input v-model="state.nursingQuery.maxPrice" size="small" style="width: 40%; font-size: 1vw"></el-input>
+            <el-input v-model="state.nursingQuery.maxPrice" style="width: 40%; font-size: 1vw"></el-input>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="7">
-            <div class="label">所在区：</div>
+            <div class="label standard-font-size">所在区：</div>
           </el-col>
           <el-col :span="9">
-            <el-select v-model="state.nursingQuery.district" popper-class="mapSelect" placeholder="请选择" size="small"
+            <el-select v-model="state.nursingQuery.district" popper-class="mapSelect" placeholder="请选择"
                        style="font-size: 1vw; z-index: 100001; width: 100%">
               <el-option v-for="item in districtOptions" :key="item.value" :label="item.label" :value="item.label">
             <span style="
@@ -169,7 +173,7 @@ const results = computed(() => {
             </el-select>
           </el-col>
           <el-col :span="5" style="text-align: right;">
-            <el-button @click="searchFacilities" type="primary" size="small" style="font-size: 1vw">搜索</el-button>
+            <el-button @click="searchNursingHomes" type="primary" style="font-size: 1vw">搜索</el-button>
           </el-col>
         </el-row>
       </div>
@@ -181,22 +185,22 @@ const results = computed(() => {
           <div class="con-item-box">
             <div class="con-item" v-for="(item, index) in results" :key="index">
               <dv-border-box8 :reverse="true">
-                <div style="padding: 10px;">
-                  <el-row>
+                <div style="padding: 0.5vw;">
+                  <el-row class="standard-font-size">
                     <el-col :span="24">
                       <span><Icon class="icon" :Components='House'></Icon></span>
                       <span>{{ item[1] }}</span>
                     </el-col>
                   </el-row>
 
-                  <el-row>
+                  <el-row class="standard-font-size">
                     <el-col :span="24">
                       <span><Icon class="icon" :Components='MapLocation'></Icon></span>
                       <span>{{ item[3] }}</span>
                     </el-col>
                   </el-row>
 
-                  <el-row>
+                  <el-row class="standard-font-size">
                     <el-col :span="12">
                       <span><Icon class="icon" :Components='Tickets'></Icon></span>
                       <span>可用床位：</span>
@@ -212,7 +216,7 @@ const results = computed(() => {
               </dv-border-box8>
             </div>
           </div>
-          <div v-if="results.length === 0" style="text-align: center; color: #c4bbbb; padding: 10px">
+          <div v-if="results.length === 0" class="standard-font-size" style="text-align: center; color: #c4bbbb; padding: 0.75vw">
             暂无数据
           </div>
         </div>
@@ -258,14 +262,18 @@ const results = computed(() => {
 
 <style scoped lang="less">
 
+.standard-font-size {
+  font-size: 1.0vw;
+}
+
 .container {
   position: absolute;
-  padding-right: 15px;
-  padding-bottom: 15px;
+  padding-right: 1vw;
+  padding-bottom: 1vh;
   width: 30vw;
   z-index: 10000;
-  top: 15px;
-  right: 15px;
+  top: 1vw;
+  right: 1vh;
 
   .positions {
     display: flex;
@@ -273,58 +281,59 @@ const results = computed(() => {
 
     .el-button {
       font-size: 1vw;
-      padding: 15px 10px;
+      padding: 1vw 1vh;
     }
   }
 
   .conditions {
-    margin-top: 15px;
+    margin-top: 1.2vh;
     background-color: #0000006b;
-    border-radius: 7px;
+    border-radius: 0.5vw;
 
     .title {
       margin-top: 0;
-      margin-bottom: 10px;
+      margin-bottom: 1vh;
       font-size: 1.2vw;
-      padding-top: 10px;
-      padding-left: 5px;
+      padding-top: 1vh;
+      padding-left: 0.5vw;
       font-weight: 600
     }
 
     .content {
-      padding: 0 15px;
-      padding-bottom: 15px;
+      padding: 0 1vw;
+      padding-bottom: 1vw;
       font-size: 1.0vw !important;
 
       .label {
         text-align: right;
+        margin-top: 0.5vh;
       }
 
       .el-row {
-        padding: 7px 0;
+        padding: 1vh 0;
       }
     }
   }
 
   .results {
-    margin-top: 15px;
+    margin-top: 1.2vh;
     background-color: #0000006b;
-    border-radius: 7px;
+    border-radius: 0.5vw;
 
     .title {
       margin-top: 0;
-      margin-bottom: 10px;
+      margin-bottom: 1vh;
       font-size: 1.2vw;
-      padding-top: 10px;
-      padding-left: 5px;
+      padding-top: 1vh;
+      padding-left: 0.5vw;
       font-weight: 600
     }
 
     .content {
-      padding: 0 10px 20px 10px;
+      padding: 0 0.75vw 2vh 0.75vw;
 
       .page {
-        margin-top: 15px;
+        margin-top: 1.5vh;
         display: flex;
         justify-content: center;
       }
@@ -346,28 +355,25 @@ const results = computed(() => {
     justify-content: space-between;
     flex-shrink: 0;
     flex-wrap: wrap;
-    //padding: 20px;
-    padding: 10px;
-    width: calc(100% - 20px);
-    gap: 5px;
+    padding: 1.0vh;
+    width: calc(100% - 1.5vw);
+    gap: 0.5vh;
     flex: 1;
     align-content: flex-start;
 
     .con-item {
       cursor: pointer;
       width: 100%;
-      //min-height: 75px;
-      border: 1px solid #000;
+      border: 0.1vh solid #000;
       background-color: #0000006b;
       color: #fff;
-      //height: 109px;
 
       .domicile {
-        font-size: 14px;
+        font-size: 1.0vw;
 
         .icon {
           position: relative;
-          top: 3px;
+          top: 0.3vh;
         }
       }
 
@@ -375,7 +381,7 @@ const results = computed(() => {
         display: flex;
         justify-content: space-between;
         font-weight: 600;
-        padding-bottom: 5px;
+        padding-bottom: 0.5vh;
 
         span {
           display: flex;
@@ -384,13 +390,13 @@ const results = computed(() => {
       }
 
       .el-row {
-        padding: 5px 0;
+        padding: 0.5vh 0;
       }
 
       .item-detail {
         display: flex;
         justify-content: flex-end;
-        padding-bottom: 5px;
+        padding-bottom: 0.5vh;
       }
     }
   }
@@ -402,8 +408,8 @@ const results = computed(() => {
 }
 
 .icon {
-  width: 16px;
-  height: 16px;
+  width: 1.0vw;
+  height: 1.0vw;
   margin-right: 0.5em;
 }
 </style>
