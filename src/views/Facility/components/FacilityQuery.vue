@@ -1,14 +1,15 @@
 <script setup>
 import {onMounted, ref, onUnmounted, reactive, computed} from 'vue'
 import {districtOptions} from '@/utils/district'
-import {getSQLAPI} from "@/apis/mysql"
+import {getSQLAPI} from "@/apis/mysql";
 import {BorderBox8 as DvBorderBox8} from '@kjgl77/datav-vue3'
 import Icon from '../../NursingQuery/components/Icon.vue'
 import { House, MapLocation, Tickets, Document } from '@element-plus/icons-vue'
 
 // 挂载
 onMounted(() => {
-
+  // 获取搜索条件
+  fetchConditions()
 })
 onUnmounted(() => {
 
@@ -28,11 +29,21 @@ const state = reactive({
     maxPrice: '',
     district: ''
   },
-
+  hospitalQuery: {
+    kinds: [],
+    categories: [],
+    keyDepartments: [],
+    district: ''
+  },
+  hospitalConditions: {
+    kinds: [],
+    categories: [],
+    keyDepartments: [],
+  },
   results: []
 })
 
-const emits = defineEmits(['passResults'])
+const emits = defineEmits(['passResults']);
 
 const onChangePage = (page) => {
   state.page = page
@@ -106,6 +117,42 @@ const results = computed(() => {
   return results
 })
 
+// 查询筛选条件中选择框使用的选项数据
+const fetchConditions = () => {
+  getSQLAPI('SELECT DISTINCT kind FROM hospitals').then(res => {
+    state.hospitalConditions.kinds = res.map(item => {return item[0]})
+  })
+  getSQLAPI('SELECT DISTINCT category FROM hospitals').then(res => {
+    state.hospitalConditions.categories = res.map(item => {return item[0]})
+  })
+  getSQLAPI('SELECT DISTINCT key_department FROM hospitals').then(res => {
+    let temp = res.map(item => {
+      if (item[0]) {
+        if (item[0].indexOf(',') !== -1) {
+          return item[0].split(',')
+        } else if (item[0].indexOf('、') !== -1) {
+          return item[0].split('、')
+        } else if (item[0].indexOf('，') !== -1) {
+          return item[0].split('，')
+        } else {
+          return item
+        }
+      }
+    }).flat()
+
+    let emptyIndex = temp.indexOf('')
+    let undefinedIndex = temp.indexOf(undefined)
+    temp.splice(emptyIndex, 1)
+    temp.splice(undefinedIndex, 1)
+
+    temp.forEach(e => {
+      if (!state.hospitalConditions.keyDepartments.includes(e)) {
+        state.hospitalConditions.keyDepartments.push(e)
+      }
+    })
+  })
+}
+
 </script>
 
 <template>
@@ -165,7 +212,99 @@ const results = computed(() => {
           font-size: 1.6vh;">{{ item.label }}</span>
                 <span style="
           float: right;
-          color: var(--el-text-color-secondary)
+          color: var(--el-text-color-secondary);
+          font-size: 1.6vh;
+          padding-left: 2vh;
+        ">{{ item.value }}</span>
+              </el-option>
+            </el-select>
+          </el-col>
+          <el-col :span="5" style="text-align: right;">
+            <el-button @click="searchNursingHomes" type="primary" style="font-size: 1vw">搜索</el-button>
+          </el-col>
+        </el-row>
+      </div>
+      <div class="hospital content" v-if="state.currentShow===1">
+        <el-row>
+          <el-col :span="7">
+            <div class="label standard-font-size">性质：</div>
+          </el-col>
+          <el-col :span="14">
+            <el-select
+                v-model="state.hospitalQuery.kinds"
+                multiple
+                collapse-tags
+                style="font-size: 1vw; width: 100%"
+                popper-class="mapSelect"
+                filterable
+                placeholder="请选择">
+              <el-option
+                  v-for="item in state.hospitalConditions.kinds"
+                  :key="item"
+                  :label="item"
+                  :value="item">
+              </el-option>
+            </el-select>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="7">
+            <div class="label standard-font-size">类型：</div>
+          </el-col>
+          <el-col :span="14">
+            <el-select
+                v-model="state.hospitalQuery.categories"
+                multiple
+                collapse-tags
+                style="font-size: 1vw; width: 100%"
+                popper-class="mapSelect"
+                filterable
+                placeholder="请选择">
+              <el-option
+                  v-for="item in state.hospitalConditions.categories"
+                  :key="item"
+                  :label="item"
+                  :value="item">
+              </el-option>
+            </el-select>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="7">
+            <div class="label standard-font-size">重点科室：</div>
+          </el-col>
+          <el-col :span="14">
+            <el-select
+                v-model="state.hospitalQuery.keyDepartments"
+                multiple
+                collapse-tags
+                style="font-size: 1vw; width: 100%"
+                popper-class="mapSelect"
+                filterable
+                placeholder="请选择">
+              <el-option
+                  v-for="item in state.hospitalConditions.keyDepartments"
+                  :key="item"
+                  :label="item"
+                  :value="item">
+              </el-option>
+            </el-select>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="7">
+            <div class="label standard-font-size">所在区：</div>
+          </el-col>
+          <el-col :span="9">
+            <el-select v-model="state.hospitalQuery.district" popper-class="mapSelect" placeholder="请选择"
+                       style="font-size: 1vw; width: 100%">
+              <el-option v-for="item in districtOptions" :key="item.value" :label="item.label" :value="item.label">
+            <span style="
+          float: left;
+          font-size: 1.6vh;">{{ item.label }}</span>
+                <span style="
+          float: right;
+          color: var(--el-text-color-secondary);
           font-size: 1.6vh;
           padding-left: 2vh;
         ">{{ item.value }}</span>
