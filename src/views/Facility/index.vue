@@ -6,9 +6,11 @@ import FacilityQuery from './components/FacilityQuery.vue'
 import {ref} from "@vue/runtime-core"
 
 const pois = ref([])
+const displayId = ref(0)
 
 const getQueryResults = (results) => {
-  pois.value = results
+  pois.value = results.points
+  displayId.value = results.idx
 }
 
 </script>
@@ -21,7 +23,7 @@ const getQueryResults = (results) => {
   </div>
   <div class="facility-map">
 <!--    <FacilityStatistics></FacilityStatistics>-->
-    <FacilityMap :pois=pois></FacilityMap>
+    <FacilityMap :pois=pois :display-id="displayId"></FacilityMap>
     <FacilityQuery @passResults="getQueryResults"></FacilityQuery>
   </div>
 
@@ -41,4 +43,3 @@ const getQueryResults = (results) => {
   //border: 1px solid;
 }
 </style>
-
