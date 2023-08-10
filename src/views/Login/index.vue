@@ -6,6 +6,29 @@ const isRegister = ref(false)
 function changePage() {
   isRegister.value = !isRegister.value
 }
+
+// v-model双向绑定获取用户填写的数据
+const username = ref('')
+const password1 = ref('')
+const password2 = ref('')
+
+// 登录验证
+import { getSQLAPI } from '@/apis/mysql'
+import { useRouter } from 'vue-router'
+
+const isAdmin = ref(null)
+
+const checkResult = ref([])
+const checkLoginData = async () => {
+  const sql = `
+    SELECT *
+    FROM admin_accounts
+    WHERE password = ${password1.value} AND account = ${username.value};`
+  const res = await getSQLAPI(sql)
+  checkResult.value = res
+  console.log(res)
+}
+checkLoginData()
 </script>
 
 <template>
@@ -15,7 +38,7 @@ function changePage() {
       <form>
         <div class="form-control">
           <!-- 必填项 required -->
-          <input type="text" required class="text">
+          <input type="text" required class="text" v-model="username">
           <label>
             <span v-for="(item, index) in '用户名 / Username'" :key="index" :style="`transition-delay:${index * 30}ms`">
               {{ item }}</span>
@@ -24,7 +47,7 @@ function changePage() {
 
         <div class="form-control">
           <!-- 必填项 required -->
-          <input type="password" required class="text">
+          <input type="password" required class="text" v-model="password1">
           <label>
             <span v-for="(item, index) in '密码 / Password'" :key="index" :style="`transition-delay:${index * 30}ms`">
               {{ item }}</span>
@@ -33,7 +56,7 @@ function changePage() {
 
         <div class="form-control" v-if="isRegister">
           <!-- 必填项 required -->
-          <input type="password" required class="text">
+          <input type="password" required class="text" v-model="password2">
           <label>
             <span v-for="(item, index) in '再次输入密码 / Password'" :key="index" :style="`transition-delay:${index * 30}ms`">
               {{ item }}</span>
