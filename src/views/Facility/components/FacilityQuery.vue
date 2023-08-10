@@ -4,7 +4,7 @@ import {districtOptions} from '@/utils/district'
 import {getSQLAPI} from "@/apis/mysql";
 import {BorderBox8 as DvBorderBox8} from '@kjgl77/datav-vue3'
 import Icon from '../../NursingQuery/components/Icon.vue'
-import { House, MapLocation, Tickets, Document } from '@element-plus/icons-vue'
+import { House, MapLocation, Tickets, Document, HomeFilled, Loading, Star, PictureRounded, Position, LocationInformation  } from '@element-plus/icons-vue'
 
 // 挂载
 onMounted(() => {
@@ -39,6 +39,9 @@ const state = reactive({
     kinds: [],
     categories: [],
     keyDepartments: [],
+  },
+  configs: {
+    contentMaxHeight: ['35vh', '26vh', '', '', '']
   },
   results: []
 })
@@ -92,7 +95,59 @@ const searchNursingHomes = () => {
       })
     }
 
-    emits('passResults', data)
+    emits('passResults', {
+      idx: 0,
+      points: data
+    })
+
+    state.results = data
+    state.total = data.length
+  })
+}
+
+const searchHospitals = () => {
+  let sql = 'select * from hospitals'
+  getSQLAPI(sql).then(data => {
+    // 筛选数据
+    let kinds = state.hospitalQuery.kinds
+    // 性质
+    if (kinds.length !== 0) {
+      data = data.filter(item => {
+        return kinds.includes(item[3].trim())
+      })
+    }
+
+    // 类型
+    let categories = state.hospitalQuery.categories
+    if (categories.length !== 0) {
+      data = data.filter(item => {
+        return categories.includes(item[4].trim())
+      })
+    }
+
+    // 重点科室
+    let keyDepartments = state.hospitalQuery.keyDepartments
+    if (keyDepartments.length !== 0) {
+      data = data.filter(item => {
+        for (let kd of keyDepartments) {
+          if (item[6].indexOf(kd) !== -1) return true
+        }
+        return false
+      })
+    }
+
+    // 区域
+    let district = state.hospitalQuery.district
+    if (district && district !== '全市') {
+      data = data.filter(item => {
+        return item[4] === district
+      })
+    }
+
+    emits('passResults', {
+      idx: 1,
+      points: data
+    })
 
     state.results = data
     state.total = data.length
@@ -153,24 +208,36 @@ const fetchConditions = () => {
   })
 }
 
+const changeDisplay = (idx) => {
+  state.currentShow = idx
+  state.results = []
+  state.page = 1
+  state.total = 0
+}
+
 </script>
 
 <template>
   <div class="container">
     <div class="positions">
-      <el-button @click="state.currentShow=0" color="#2642AA" size="small" class="el-button" plain>
+      <el-button @click="changeDisplay(0)" color="#2642AA" size="small" :class="{'chosen-btn': state.currentShow===0}" class="el-button" plain>
+        <Icon class="icon" :Components='HomeFilled'></Icon>
         <span class="desc">养老院</span>
       </el-button>
-      <el-button @click="state.currentShow=1" color="#2642AA" size="small" class="el-button" plain>
+      <el-button @click="changeDisplay(1)" color="#2642AA" size="small" :class="{'chosen-btn': state.currentShow===1}" class="el-button" plain>
+        <Icon class="icon" :Components='Loading'></Icon>
         <span class="desc">医院</span>
       </el-button>
-      <el-button @click="state.currentShow=2" color="#2642AA" size="small" class="el-button" plain>
+      <el-button @click="changeDisplay(2)" color="#2642AA" size="small" :class="{'chosen-btn': state.currentShow===2}" class="el-button" plain>
+        <Icon class="icon" :Components='Star'></Icon>
         <span class="desc">药店</span>
       </el-button>
-      <el-button @click="state.currentShow=3" color="#2642AA" size="small" class="el-button" plain>
+      <el-button @click="changeDisplay(3)" color="#2642AA" size="small" :class="{'chosen-btn': state.currentShow===3}" class="el-button" plain>
+        <Icon class="icon" :Components='PictureRounded'></Icon>
         <span class="desc">公园</span>
       </el-button>
-      <el-button @click="state.currentShow=4" color="#2642AA" size="small" class="el-button" plain>
+      <el-button @click="changeDisplay(4)" color="#2642AA" size="small" :class="{'chosen-btn': state.currentShow===4}" class="el-button" plain>
+        <Icon class="icon" :Components='Position'></Icon>
         <span class="desc">其他</span>
       </el-button>
     </div>
@@ -220,7 +287,7 @@ const fetchConditions = () => {
             </el-select>
           </el-col>
           <el-col :span="5" style="text-align: right;">
-            <el-button @click="searchNursingHomes" type="primary" style="font-size: 1vw">搜索</el-button>
+            <el-button color="#2642AA" @click="searchNursingHomes" type="primary" style="font-size: 1vw">搜索</el-button>
           </el-col>
         </el-row>
       </div>
@@ -312,7 +379,7 @@ const fetchConditions = () => {
             </el-select>
           </el-col>
           <el-col :span="5" style="text-align: right;">
-            <el-button @click="searchNursingHomes" type="primary" style="font-size: 1vw">搜索</el-button>
+            <el-button color="#2642AA" @click="searchHospitals" type="primary" style="font-size: 1vw">搜索</el-button>
           </el-col>
         </el-row>
       </div>
@@ -320,7 +387,7 @@ const fetchConditions = () => {
     <div class="results">
       <p class="title">丨检索结果</p>
       <div class="content">
-        <div class="con">
+        <div class="con" v-if="state.currentShow===0" :style="{maxHeight: state.configs.contentMaxHeight[state.currentShow]}">
           <div class="con-item-box">
             <div class="con-item" v-for="(item, index) in results" :key="index">
               <dv-border-box8 :reverse="true">
@@ -349,6 +416,53 @@ const fetchConditions = () => {
                       <span><Icon class="icon" :Components='Document'></Icon></span>
                       <span>全部床位：</span>
                       <span>{{ item[5] }}</span>
+                    </el-col>
+                  </el-row>
+                </div>
+              </dv-border-box8>
+            </div>
+          </div>
+          <div v-if="results.length === 0" class="standard-font-size" style="text-align: center; color: #c4bbbb; padding: 0.75vw">
+            暂无数据
+          </div>
+        </div>
+        <div class="con" v-if="state.currentShow===1" :style="{maxHeight: state.configs.contentMaxHeight[state.currentShow]}">
+          <div class="con-item-box">
+            <div class="con-item" v-for="(item, index) in results" :key="index">
+              <dv-border-box8 :reverse="true" :key="item[0]" style="height: 100%">
+                <div style="padding: 0.5vw;">
+                  <el-row class="standard-font-size">
+                    <el-col :span="24">
+                      <span><Icon class="icon" :Components='House'></Icon></span>
+                      <span>{{ item[1] }}</span>
+                    </el-col>
+                  </el-row>
+
+                  <el-row class="standard-font-size">
+                    <el-col :span="24">
+                      <span><Icon class="icon" :Components='MapLocation'></Icon></span>
+                      <span>{{ item[2] }}</span>
+                    </el-col>
+                  </el-row>
+
+                  <el-row class="standard-font-size">
+                    <el-col :span="8">
+                      <span><Icon class="icon" :Components='Tickets'></Icon></span>
+                      <span>性质：</span>
+                      <span>{{ item[3] }}</span>
+                    </el-col>
+                    <el-col :span="16">
+                      <span><Icon class="icon" :Components='Document'></Icon></span>
+                      <span>类型：</span>
+                      <span>{{ item[4] }}</span>
+                    </el-col>
+                  </el-row>
+
+                  <el-row v-if="item[6]" class="standard-font-size">
+                    <el-col :span="24">
+                      <span><Icon class="icon" :Components='Tickets'></Icon></span>
+                      <span>重要科室：</span>
+                      <span>{{ item[6] }}</span>
                     </el-col>
                   </el-row>
                 </div>
@@ -400,6 +514,13 @@ const fetchConditions = () => {
 </style>
 
 <style scoped lang="less">
+
+.chosen-btn {
+  color: var(--el-button-hover-text-color);
+  border-color: var(--el-button-hover-border-color);
+  background-color: var(--el-button-hover-bg-color);
+  outline: 0;
+}
 
 .standard-font-size {
   font-size: 1.0vw;
