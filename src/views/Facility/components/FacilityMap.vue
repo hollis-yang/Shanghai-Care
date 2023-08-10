@@ -3,16 +3,14 @@
 </template>
 
 <script setup>
-import {loadModules} from "esri-loader"
-import {onMounted, ref, watch} from "vue"
-import {getSQLAPI} from "@/apis/mysql"
+import {loadModules} from "esri-loader";
+import {onMounted, ref, watch} from "vue";
+import {getSQLAPI} from "@/apis/mysql";
 
 const props = defineProps({
-  pois: Array
+  pois: Array,
+  displayId: Number
 });
-
-let nursingLayer = null
-let hospitalLayer = null
 
 let map = null
 let mapView = null
@@ -21,7 +19,68 @@ let spatialReference = null
 // 切换模式
 let isDarkMode = ref(true)
 
-watch(() => props.pois, (n, o) => {
+// 展示信息配置项
+const configs = [{
+  xIdx: 10,
+  yIdx: 11,
+  symbolUrl: 'static/svg/HomeFilled.svg',
+  facilityLayer: null,
+  detailPopup: (attrs) => {
+    let foundDate = new Date(attrs[2])
+    return `
+      <div style="color: rgb(209, 209, 209); background-color: rgb(36, 36, 36)">
+        <div>成立时间：${foundDate.getFullYear()}年${foundDate.getMonth() + 1}月${foundDate.getDate()}日</div>
+        <div>地址：${attrs[3]}</div>
+        <div>所在区：${attrs[4]}</div>
+        <div>可用/全部床位：${attrs[6]}/${attrs[5]}</div>
+        <div>价格：${attrs[7]}</div>
+      </div>`
+  }
+},{
+  xIdx: 7,
+  yIdx: 8,
+  symbolUrl: 'static/svg/Loading.svg',
+  facilityLayer: null,
+  detailPopup: (attrs) => {
+    return `
+      <div style="color: rgb(209, 209, 209); background-color: rgb(36, 36, 36)">
+        <div>地址：${attrs[2]}</div>
+        <div>性质：${attrs[3]}医院</div>
+        <div>类型：${attrs[4]}</div>
+        <div>等级：${attrs[5] ? attrs[5]+'医院' : '暂无信息'}</div>
+        <div>重要科室：${attrs[6] ? attrs[6] : '暂无信息'}</div>
+      </div>`
+  }
+},{
+  xIdx: 3,
+  yIdx: 4,
+  symbolUrl: 'static/svg/Star.svg',
+  facilityLayer: null,
+  detailPopup: (attrs) => {
+    return `
+      <div style="color: rgb(209, 209, 209); background-color: rgb(36, 36, 36)">
+        <div>地址：${attrs[2]}</div>
+      </div>`
+  }
+},{
+  xIdx: 10,
+  yIdx: 11,
+  symbolUrl: 'static/svg/PictureRounded.svg',
+  facilityLayer: null,
+  detailPopup: (attrs) => {
+    return ``
+  }
+},{
+  xIdx: 10,
+  yIdx: 11,
+  symbolUrl: 'static/svg/Position.svg',
+  facilityLayer: null
+}]
+
+// 当前展示的配置项
+let currentConfig = null
+
+watch(() => props.pois, () => {
   addPoints()
 })
 
@@ -29,25 +88,26 @@ const addPoints = async () => {
   const [Map, MapView, SpatialReference, WebTileLayer, Point, Graphic, Extent] = await loadModules(["esri/Map", "esri/views/MapView",
     "esri/geometry/SpatialReference", "esri/layers/WebTileLayer", "esri/geometry/Point", "esri/Graphic", "esri/geometry/Extent"])
 
-  nursingLayer.removeAll()
+
+  currentConfig = configs[props.displayId]
+
+  // 移除所有图层上的全部点位
+  configs.forEach(c => c.facilityLayer.removeAll())
+
   let points = []
   props.pois.forEach(p => {
     const pointGraphic = new Graphic({
       geometry: {
         type: "point",
-        x: p[10],
-        y: p[11],
+        x: p[currentConfig.xIdx],
+        y: p[currentConfig.yIdx],
         spatialReference
       },
       symbol: {
-        type: "simple-marker",
-        style: "square",
-        color: "blue",
-        size: "18px",
-        outline: {
-          color: [ 255, 255, 0 ],
-          width: 3
-        }
+        type: 'picture-marker',
+        url: currentConfig.symbolUrl,
+        width: 15,
+        height: 15,
       },
       attributes: {
         ...p,
@@ -58,7 +118,7 @@ const addPoints = async () => {
     points.push(pointGraphic)
   })
 
-  nursingLayer.addMany(points)
+  currentConfig.facilityLayer.addMany(points)
 }
 
 const initMap = async () => {
@@ -79,7 +139,7 @@ const initMap = async () => {
   });
 
   // apikey
-  const apiKey = "8d915f545dada286c4465188fb436171"
+  const apiKey = "4cbe0c2ea845e274ee8ba10d2785e590"
   // 天地图-矢量
   let tiandituLayer = new WebTileLayer({
     urlTemplate: "http://{subDomain}.tianditu.com/DataServer?T=vec_w&x={col}&y={row}&l={level}&tk=" + apiKey,
@@ -114,18 +174,18 @@ const initMap = async () => {
     spatialReference
   })
   // 去掉控件
-  mapView.ui.components = []
+  mapView.ui.components = [];
   // 去掉底部文字
   mapView.isAttributionTextVisible = false
   // 左键单击可以展示弹窗
-  mapView.popup.autoOpenEnabled = false
+  mapView.popup.autoOpenEnabled = false;
   mapView.when(() => {
     if (isDarkMode.value) {
       // 设置暗黑模式
-      const mapViewCanvas = mapView.container.querySelector('canvas')
+      const mapViewCanvas = mapView.container.querySelector('canvas');
       if (mapViewCanvas) {
-        mapViewCanvas.style.filter = 'grayscale(100%) invert(100%)'
-        mapViewCanvas.style.opacity = 0.7
+        mapViewCanvas.style.filter = 'grayscale(100%) invert(100%)';
+        mapViewCanvas.style.opacity = 0.7;
       }
     }
     mapView.on("mouse-wheel", function(event){
@@ -143,11 +203,10 @@ const initMap = async () => {
   })
 
   // 点位图层
-  nursingLayer = new GraphicsLayer()
-  hospitalLayer = new GraphicsLayer()
-
-  map.add(nursingLayer)
-  map.add(hospitalLayer)
+  configs.forEach(c => {
+    c.facilityLayer = new GraphicsLayer()
+    map.add(c.facilityLayer)
+  })
 
   // 获取点击位置元素
   mapView.on('click', (e) => {
@@ -158,10 +217,10 @@ const initMap = async () => {
         if(attrs && attrs.type === 'facilityPoint') { // 判断是否点击地图上展示的设施点位
           mapView.popup.open({
             title: attrs[1],
-            content: `<div style="color: rgb(209, 209, 209); background-color: rgb(36, 36, 36)">123</div>`,
+            content: currentConfig.detailPopup(attrs),
             location: new Point({
-              x: attrs[10],
-              y: attrs[11],
+              x: attrs[currentConfig.xIdx],
+              y: attrs[currentConfig.yIdx],
               spatialReference
             }),
             // featureMenuOpen: true
