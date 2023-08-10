@@ -12,7 +12,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/screen',
+      redirect: '/login',
     },
     // 主页概述
     {

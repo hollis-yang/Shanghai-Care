@@ -1,10 +1,13 @@
 <script setup>
 import { ref } from 'vue'
 
-const isRegister = ref(false)
+const isRegister = ref(false)  // 初始为登录界面
 
 function changePage() {
   isRegister.value = !isRegister.value
+  username.value = ''
+  password1.value = ''
+  password2.value = ''
 }
 
 // v-model双向绑定获取用户填写的数据
@@ -14,28 +17,85 @@ const password2 = ref('')
 
 // 登录验证
 import { getSQLAPI } from '@/apis/mysql'
-import { useRouter } from 'vue-router'
+import router from '@/router'
+import { ElMessage } from 'element-plus'
 
-const isAdmin = ref(null)
+const isAdmin = ref(null)  // 1表示是admin
+const checkResult = ref(null)  // 1表示信息正确
 
-const checkResult = ref([])
 const checkLoginData = async () => {
   const sql = `
-    SELECT *
-    FROM admin_accounts
-    WHERE password = ${password1.value} AND account = ${username.value};`
+    SELECT COUNT(*), isadmin
+    FROM user_accounts
+    WHERE password = '${password1.value}' AND username = '${username.value}';`
   const res = await getSQLAPI(sql)
-  checkResult.value = res
-  console.log(res)
+
+  checkResult.value = res[0][0]
+  isAdmin.value = res[0][1]
 }
-checkLoginData()
+
+const checkRegister = async () => {
+
+}
+
+const submitForm = async () => {
+  // 如果是登录的情况
+  if (!isRegister.value) {
+    await checkLoginData()
+    if (checkResult.value) {
+      // 用户名密码填写正确时
+      clickSuccess()
+      router.push('/screen')
+      // 清空数据
+      username.value = ''
+      password1.value = ''
+    } else {
+      // 用户名密码错误
+      clickWarning()
+    }
+  } else {
+    // 如果是注册的情况
+
+    // 检查注册内容是否符合要求
+    let check = await checkRegister()
+
+    if (check) {
+      // check满足
+      isRegister.value = false
+      // 清空数据
+      username.value = ''
+      password1.value = ''
+      password2.value = ''
+    } else {
+      // check不满足
+    }
+
+  }
+}
+
+
+const clickSuccess = () => {
+  ElMessage({
+    showClose: false,
+    message: '登录成功！',
+    type: 'success'
+  })
+}
+
+const clickWarning= () => {
+  ElMessage({
+    showClose: false,
+    message: '用户名不存在或密码错误！',
+    type: 'error'
+  })
+}
 </script>
 
 <template>
   <div id="app">
     <div class="container">
       <h1>上海市智慧养老系统</h1>
-      <form>
+      <form @submit.prevent="submitForm">
         <div class="form-control">
           <!-- 必填项 required -->
           <input type="text" required class="text" v-model="username">
@@ -63,8 +123,8 @@ checkLoginData()
           </label>
         </div>
 
-        <button class="btn login" v-show="!isRegister">登录</button>
-        <button class="btn register" v-show="isRegister">注册</button>
+        <button class="btn login" v-show="!isRegister" type="submit">登录</button>
+        <button class="btn register" v-show="isRegister" type="submit">注册</button>
 
         <div class="change">
           <p v-show="!isRegister" @click="changePage">没有账号？前往注册</p>
@@ -75,6 +135,8 @@ checkLoginData()
 
       </form>
     </div>
+    <el-button :plain="true" @click="clickSuccess" class="elbtn"></el-button>
+    <el-button :plain="true" @click="clickWarning" class="elbtn"></el-button>
   </div>
 </template>
 
