@@ -11,6 +11,8 @@ import './assets/css/global.less'
 // 引入iconfont
 import './assets/font/iconfont.css'
 
+import 'element-plus/dist/index.css'
+
 const app = createApp(App)
 
 app.use(createPinia())

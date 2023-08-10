@@ -12,7 +12,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/screen',
+      redirect: '/login',
+      component: Login
     },
     // 主页概述
     {
