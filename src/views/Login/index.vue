@@ -21,8 +21,11 @@ import { insertSQLAPI } from '@/apis/insertsql'
 import router from '@/router'
 import { ElMessage } from 'element-plus'
 
-
+// 用pinia管理是否是admin
+import { useAdminStore } from '@/stores/admin'
 const isAdmin = ref(null)  // 1表示是admin
+const adminStore = useAdminStore()
+
 const checkResult = ref(null)  // 1表示信息正确
 
 const checkLoginData = async () => {
@@ -34,6 +37,7 @@ const checkLoginData = async () => {
 
   checkResult.value = res[0][0]
   isAdmin.value = res[0][1]
+  adminStore.setIsAdmin(isAdmin.value)
 }
 
 
@@ -125,6 +129,7 @@ const clickWarning = () => {
     type: 'warning'
   })
 }
+
 </script>
 
 <template>
