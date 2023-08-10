@@ -184,8 +184,8 @@ const initMap = async () => {
       // 设置暗黑模式
       const mapViewCanvas = mapView.container.querySelector('canvas');
       if (mapViewCanvas) {
-        mapViewCanvas.style.filter = 'grayscale(100%) invert(100%)';
-        mapViewCanvas.style.opacity = 0.7;
+        mapViewCanvas.style.filter = 'bluescale(100%) invert(100%)';
+        mapViewCanvas.style.opacity = 1;
       }
     }
     mapView.on("mouse-wheel", function(event){
