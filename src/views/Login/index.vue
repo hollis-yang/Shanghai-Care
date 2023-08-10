@@ -1,13 +1,7 @@
 <script setup>
-const labels = document.querySelectorAll('.form-control label')
+import { ref } from 'vue'
 
-labels.forEach(label => {
-  // innerHtml带标签; innerText仅文字
-  label.innerHTML = label.innerText
-    .split('')
-    .map((letter, idx) => `<span style="transition-delay:${idx * 50}ms">${letter}</span>`)  // 每个字母动画的延迟
-    .join('')
-})
+const isRegister = ref(false)
 </script>
 
 <template>
@@ -17,7 +11,7 @@ labels.forEach(label => {
       <form>
         <div class="form-control">
           <!-- 必填项 required -->
-          <input type="text" required>
+          <input type="text" required class="text">
           <label>
             <span v-for="(item, index) in '用户名 / Username'" :key="index" :style="`transition-delay:${index * 30}ms`">
               {{ item }}</span>
@@ -26,14 +20,24 @@ labels.forEach(label => {
 
         <div class="form-control">
           <!-- 必填项 required -->
-          <input type="password" required>
+          <input type="password" required class="text">
           <label>
             <span v-for="(item, index) in '密码 / Password'" :key="index" :style="`transition-delay:${index * 30}ms`">
               {{ item }}</span>
           </label>
         </div>
 
-        <button class="btn">登录</button>
+        <div class="form-control" v-if="isRegister">
+          <!-- 必填项 required -->
+          <input type="password" required class="text">
+          <label>
+            <span v-for="(item, index) in '再次输入密码 / Password'" :key="index" :style="`transition-delay:${index * 30}ms`">
+              {{ item }}</span>
+          </label>
+        </div>
+
+        <button class="btn login" v-show="!isRegister">登录</button>
+        <button class="btn register" v-show="isRegister">注册</button>
       </form>
     </div>
   </div>

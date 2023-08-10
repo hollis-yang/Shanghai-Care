@@ -26,17 +26,13 @@
 
 .container {
   background-color: rgba(0, 0, 0, 0.4);
-  padding: 40px 60px;
-  border-radius: 10px;
+  padding: 7vh 7vh 6vh;
+  border-radius: 2vh;
 
   h1 {
     text-align: center;
-    margin-bottom: 30px;
-  }
-
-  a {
-    text-decoration: none;
-    color: skyblue;
+    margin-top: -2vh;
+    margin-bottom: 4vh;
   }
 
   .btn {
@@ -44,10 +40,11 @@
     display: inline-block;
     width: 100%;
     background-color: skyblue;
-    padding: 15px;
-    font-size: 16px;
+    padding: 1.3vh;
+    font-size: 1.3vh;
     border: 0;
-    border-radius: 5px;
+    border-radius: 0.5vh;
+    margin-top: 1vh;
 
     &:focus {
       outline: none;
@@ -59,21 +56,21 @@
   }
 
   .text {
-    margin-top: 30px;
+    margin-top: 2vh;
   }
 
   .form-control {
     position: relative;
-    margin: 20px 0 40px;
+    margin: 1.7vh 0 3.4vh;
 
     input {
       background-color: transparent; // 外层div透明
       border: 0;
-      border-bottom: 2px #fff solid;
+      border-bottom: 0.2vh #fff solid;
       display: block;
       width: 100%;
-      padding: 15px 0;  // 撑开输入框
-      font-size: 18px;
+      padding: 1.3vh 0;  // 撑开输入框
+      font-size: 1.5vh;
       color: #fff;
 
       // 有文字内容或聚焦时都能触发
@@ -86,14 +83,13 @@
 
     label {
       position: absolute;
-      top: 15px;
+      top: 1.2vh;
       left: 0;
       pointer-events: none;
 
       span {
         display: inline-block;
-        font-size: 18px;
-        min-width: 5px;
+        font-size: 1.5vh;
         // 波浪效果
         transition: 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);  // transition-timing-function
       }
@@ -103,7 +99,7 @@
     input:focus + label span,
     input:valid + label span {
       color: skyblue;
-      transform: translateY(-30px);
+      transform: translateY(-2.65vh);
     }
   }
 }
