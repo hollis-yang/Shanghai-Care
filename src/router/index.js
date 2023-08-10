@@ -13,6 +13,7 @@ const router = createRouter({
     {
       path: '/',
       redirect: '/login',
+      component: Login
     },
     // 主页概述
     {
