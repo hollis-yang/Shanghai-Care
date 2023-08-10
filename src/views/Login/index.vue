@@ -15,10 +15,12 @@ const username = ref('')
 const password1 = ref('')
 const password2 = ref('')
 
-// 登录验证
+// 登录与注册
 import { getSQLAPI } from '@/apis/mysql'
+import { insertSQLAPI } from '@/apis/insertsql'
 import router from '@/router'
 import { ElMessage } from 'element-plus'
+
 
 const isAdmin = ref(null)  // 1表示是admin
 const checkResult = ref(null)  // 1表示信息正确
@@ -34,16 +36,37 @@ const checkLoginData = async () => {
   isAdmin.value = res[0][1]
 }
 
-const checkRegister = async () => {
 
+const warningText = ref('')
+const checkRegister = async () => {
+  // 1. 两次密码不一致
+  if (password1.value !== password2.value) {
+    warningText.value = '两次密码不一致！请重新输入！'
+    clickWarning()
+    return false
+  }
+
+  // 2. 用户名已被注册
+  const sql = `SELECT COUNT(*) FROM user_accounts WHERE username = '${username.value}';`
+  const res = await getSQLAPI(sql)
+
+  if (res[0][0] === 1) {
+    warningText.value = '用户名已被注册！'
+    clickWarning()
+    return false
+  }
+  return true
 }
 
+
+const successText = ref('')
 const submitForm = async () => {
   // 如果是登录的情况
   if (!isRegister.value) {
     await checkLoginData()
     if (checkResult.value) {
       // 用户名密码填写正确时
+      successText.value = '登录成功！'
       clickSuccess()
       router.push('/screen')
       // 清空数据
@@ -60,16 +83,21 @@ const submitForm = async () => {
     let check = await checkRegister()
 
     if (check) {
-      // check满足
+      // 添加数据到数据库
+      const insertCode = `INSERT INTO user_accounts VALUES ('${username.value}', '${password1.value}', 0);`
+      insertSQLAPI(insertCode)
+        .then(() => {
+          successText.value = '注册成功！'
+          clickSuccess()
+        })
+
+      // 切换回登录
       isRegister.value = false
       // 清空数据
       username.value = ''
       password1.value = ''
       password2.value = ''
-    } else {
-      // check不满足
     }
-
   }
 }
 
@@ -77,16 +105,24 @@ const submitForm = async () => {
 const clickSuccess = () => {
   ElMessage({
     showClose: false,
-    message: '登录成功！',
+    message: successText.value,
     type: 'success'
   })
 }
 
-const clickWarning= () => {
+const clickError = () => {
   ElMessage({
     showClose: false,
     message: '用户名不存在或密码错误！',
     type: 'error'
+  })
+}
+
+const clickWarning = () => {
+  ElMessage({
+    showClose: false,
+    message: warningText.value,
+    type: 'warning'
   })
 }
 </script>
@@ -136,6 +172,7 @@ const clickWarning= () => {
       </form>
     </div>
     <el-button :plain="true" @click="clickSuccess" class="elbtn"></el-button>
+    <el-button :plain="true" @click="clickError" class="elbtn"></el-button>
     <el-button :plain="true" @click="clickWarning" class="elbtn"></el-button>
   </div>
 </template>
