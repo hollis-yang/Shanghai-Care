@@ -2,6 +2,10 @@
 import { ref } from 'vue'
 
 const isRegister = ref(false)
+
+function changePage() {
+  isRegister.value = !isRegister.value
+}
 </script>
 
 <template>
@@ -38,6 +42,14 @@ const isRegister = ref(false)
 
         <button class="btn login" v-show="!isRegister">登录</button>
         <button class="btn register" v-show="isRegister">注册</button>
+
+        <div class="change">
+          <p v-show="!isRegister" @click="changePage">没有账号？前往注册</p>
+        </div>
+        <div class="change">
+          <p v-show="isRegister" @click="changePage">已有账号？前往登录</p>
+        </div>
+
       </form>
     </div>
   </div>
