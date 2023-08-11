@@ -3,13 +3,16 @@
 </template>
 
 <script setup>
-import {loadModules} from "esri-loader";
-import {onMounted, ref, watch} from "vue";
-import {getSQLAPI} from "@/apis/mysql";
+import {loadModules} from "esri-loader"
+import {onMounted, ref, watch} from "vue"
+import {formatDistance} from "@/utils/distance"
+
+const emits = defineEmits(['passSelectedPoint'])
 
 const props = defineProps({
   pois: Array,
-  displayId: Number
+  displayId: Number,
+  mapMode: String,  // normal：常规模式；selectPoint：选点模式
 });
 
 let map = null
@@ -18,6 +21,8 @@ let mapView = null
 let spatialReference = null
 // 切换模式
 let isDarkMode = ref(true)
+
+let selectPointLayer = null
 
 // 展示信息配置项
 const configs = [{
@@ -36,7 +41,7 @@ const configs = [{
         <div>价格：${attrs[7]}</div>
       </div>`
   }
-},{
+}, {
   xIdx: 7,
   yIdx: 8,
   symbolUrl: 'static/svg/Loading.svg',
@@ -47,11 +52,11 @@ const configs = [{
         <div>地址：${attrs[2]}</div>
         <div>性质：${attrs[3]}医院</div>
         <div>类型：${attrs[4]}</div>
-        <div>等级：${attrs[5] ? attrs[5]+'医院' : '暂无信息'}</div>
+        <div>等级：${attrs[5] ? attrs[5] + '医院' : '暂无信息'}</div>
         <div>重要科室：${attrs[6] ? attrs[6] : '暂无信息'}</div>
       </div>`
   }
-},{
+}, {
   xIdx: 3,
   yIdx: 4,
   symbolUrl: 'static/svg/Star.svg',
@@ -60,21 +65,32 @@ const configs = [{
     return `
       <div style="color: rgb(209, 209, 209); background-color: rgb(36, 36, 36)">
         <div>地址：${attrs[2]}</div>
+        <div>据当前位置距离：${formatDistance(attrs[5])}</div>
       </div>`
   }
-},{
-  xIdx: 10,
-  yIdx: 11,
+}, {
+  xIdx: 2,
+  yIdx: 3,
   symbolUrl: 'static/svg/PictureRounded.svg',
   facilityLayer: null,
   detailPopup: (attrs) => {
-    return ``
+    return `
+      <div style="color: rgb(209, 209, 209); background-color: rgb(36, 36, 36)">
+      <div>据当前位置距离：${formatDistance(attrs[4])}</div>
+      </div>`
   }
-},{
-  xIdx: 10,
-  yIdx: 11,
+}, {
+  xIdx: 2,
+  yIdx: 3,
   symbolUrl: 'static/svg/Position.svg',
-  facilityLayer: null
+  facilityLayer: null,
+  detailPopup: (attrs) => {
+    return `
+      <div style="color: rgb(209, 209, 209); background-color: rgb(36, 36, 36)">
+      <div>类型：${attrs[4]}</div>
+      <div>所在区：${attrs[5]}</div>
+      </div>`
+  }
 }]
 
 // 当前展示的配置项
@@ -93,6 +109,9 @@ const addPoints = async () => {
 
   // 移除所有图层上的全部点位
   configs.forEach(c => c.facilityLayer.removeAll())
+
+  // 移除当前展示点位
+
 
   let points = []
   props.pois.forEach(p => {
@@ -207,26 +226,60 @@ const initMap = async () => {
     c.facilityLayer = new GraphicsLayer()
     map.add(c.facilityLayer)
   })
+  selectPointLayer = new GraphicsLayer()
+  map.add(selectPointLayer)
 
   // 获取点击位置元素
   mapView.on('click', (e) => {
-
     mapView.hitTest(e).then((e2) => {
-      e2.results.forEach(e3 => {
-        let attrs = e3.graphic.attributes
-        if(attrs && attrs.type === 'facilityPoint') { // 判断是否点击地图上展示的设施点位
-          mapView.popup.open({
-            title: attrs[1],
-            content: currentConfig.detailPopup(attrs),
-            location: new Point({
-              x: attrs[currentConfig.xIdx],
-              y: attrs[currentConfig.yIdx],
-              spatialReference
-            }),
-            // featureMenuOpen: true
+      // 点击空白处
+      if (e2.results.length === 0) {
+        if (props.mapMode === 'selectPoint') {
+          // 传递选中点位信息
+          emits('passSelectedPoint', {
+            x: e.mapPoint.x,
+            y: e.mapPoint.y,
+            longitude: e.mapPoint.longitude,
+            latitude: e.mapPoint.latitude
           })
+          // 添加选中点位展示
+          selectPointLayer && selectPointLayer.removeAll()
+          const pointGraphic = new Graphic({
+            geometry: {
+              type: "point",
+              x: e.mapPoint.x,
+              y: e.mapPoint.y,
+              spatialReference
+            },
+            symbol: {
+              type: 'picture-marker',
+              url: 'static/svg/Point.svg',
+              width: 15,
+              height: 15,
+            },
+            attributes: {
+              type: 'selectPoint'
+            }
+          })
+          selectPointLayer && selectPointLayer.add(pointGraphic)
         }
-      })
+      } else {
+        e2.results.forEach(e3 => {
+          let attrs = e3.graphic.attributes
+          if (attrs && attrs.type === 'facilityPoint') { // 判断是否点击地图上展示的设施点位
+            mapView.popup.open({
+              title: attrs[1],
+              content: currentConfig.detailPopup(attrs),
+              location: new Point({
+                x: attrs[currentConfig.xIdx],
+                y: attrs[currentConfig.yIdx],
+                spatialReference
+              }),
+              // featureMenuOpen: true
+            })
+          }
+        })
+      }
     })
   })
 
