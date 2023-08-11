@@ -1,10 +1,12 @@
 <script setup>
-import {onMounted, ref, onUnmounted, reactive, computed} from 'vue'
+import {onMounted, ref, onUnmounted, reactive, computed, watch} from 'vue'
 import {districtOptions} from '@/utils/district'
 import {getSQLAPI} from "@/apis/mysql";
 import {BorderBox8 as DvBorderBox8} from '@kjgl77/datav-vue3'
 import Icon from '../../NursingQuery/components/Icon.vue'
-import { House, MapLocation, Tickets, Document, HomeFilled, Loading, Star, PictureRounded, Position, LocationInformation  } from '@element-plus/icons-vue'
+import { House, MapLocation, Tickets, Document, HomeFilled, StarFilled, PictureFilled, HelpFilled, Promotion, LocationInformation  } from '@element-plus/icons-vue'
+import {calculateDistance, formatDistance} from "@/utils/distance"
+import {ElMessage} from 'element-plus'
 
 // 挂载
 onMounted(() => {
@@ -14,6 +16,20 @@ onMounted(() => {
 onUnmounted(() => {
 
 })
+
+const props = defineProps({
+  selectedPoint: {
+    type: Object,
+    default: () => {
+      return {
+        x: '',
+        y: '',
+        longitude: '',
+        latitude: ''
+      }
+    }
+  },
+});
 
 const state = reactive({
   conditionSelectValue: '全部',
@@ -40,13 +56,26 @@ const state = reactive({
     categories: [],
     keyDepartments: [],
   },
-  configs: {
-    contentMaxHeight: ['35vh', '26vh', '', '', '']
+  facilityQuery: {
+    types: [],
+    district: ''
   },
-  results: []
+  facilityConditions: {
+    types: []
+  },
+  configs: {
+    contentMaxHeight: ['35vh', '26vh', '47vh', '47vh', '']
+  },
+  results: [],
+  selectedPoint: {
+    x: 0.0,
+    y: 0.0,
+    longitude: 0.0,
+    latitude: 0.0
+  }
 })
 
-const emits = defineEmits(['passResults']);
+const emits = defineEmits(['passResults', 'changeMapMode']);
 
 const onChangePage = (page) => {
   state.page = page
@@ -154,6 +183,86 @@ const searchHospitals = () => {
   })
 }
 
+const searchDrugStores = () => {
+  let sql = 'select * from drugstores'
+  getSQLAPI(sql).then(res => {
+    // 计算与选中点位距离
+    let x = parseFloat(state.selectedPoint.x)
+    let y = parseFloat(state.selectedPoint.y)
+    res.forEach(e => {
+      e[5] = parseFloat(calculateDistance(e[3], e[4], x, y))
+    })
+
+    // 按距离排序
+    res.sort((a, b) => {
+      return a[5] - b[5]
+    })
+
+    emits('passResults', {
+      idx: 2,
+      points: res
+    })
+
+    state.results = res
+    state.total = res.length
+  })
+}
+
+const searchParks = () => {
+  let sql = 'select * from parks'
+  getSQLAPI(sql).then(res => {
+    // 计算与选中点位距离
+    let x = parseFloat(state.selectedPoint.x)
+    let y = parseFloat(state.selectedPoint.y)
+    res.forEach(e => {
+      e[4] = parseFloat(calculateDistance(e[2], e[3], x, y))
+    })
+
+    // 按距离排序
+    res.sort((a, b) => {
+      return a[4] - b[4]
+    })
+
+    emits('passResults', {
+      idx: 3,
+      points: res
+    })
+
+    state.results = res
+    state.total = res.length
+  })
+}
+
+const searchFacilities = () => {
+  let sql = 'select * from facilities'
+  getSQLAPI(sql).then(data => {
+    // 筛选数据
+    let types = state.facilityQuery.types
+    // 性质
+    if (types.length !== 0) {
+      data = data.filter(item => {
+        return types.includes(item[4].trim())
+      })
+    }
+
+    // 区域
+    let district = state.facilityQuery.district
+    if (district && district !== '全市') {
+      data = data.filter(item => {
+        return item[5].trim() === district
+      })
+    }
+
+    emits('passResults', {
+      idx: 4,
+      points: data
+    })
+
+    state.results = data
+    state.total = data.length
+  })
+}
+
 // 分页
 const results = computed(() => {
   if (state.results.length === 0) {
@@ -170,6 +279,19 @@ const results = computed(() => {
   }
 
   return results
+})
+
+watch(() => props.selectedPoint, () => {
+  Object.assign(state.selectedPoint, props.selectedPoint)
+})
+
+const pointInfo = computed(() => {
+
+  if (state.selectedPoint.longitude && state.selectedPoint.latitude) {
+    return state.selectedPoint.longitude.toFixed(4) + ',' + state.selectedPoint.latitude.toFixed(4)
+  } else {
+    return ''
+  }
 })
 
 // 查询筛选条件中选择框使用的选项数据
@@ -206,6 +328,9 @@ const fetchConditions = () => {
       }
     })
   })
+  getSQLAPI('SELECT DISTINCT type FROM facilities').then(res => {
+    state.facilityConditions.types = res.map(item => {return item[0]})
+  })
 }
 
 const changeDisplay = (idx) => {
@@ -213,6 +338,16 @@ const changeDisplay = (idx) => {
   state.results = []
   state.page = 1
   state.total = 0
+  if (idx === 0 || idx === 1) {
+    emits('changeMapMode', 'normal')
+  } else if (idx === 2 || idx === 3) {
+    alert('请点击地图选取位置')
+    // ElMessage({
+    //   type: 'info',
+    //   message: '请点击地图选取位置'
+    // })
+    emits('changeMapMode', 'selectPoint')
+  }
 }
 
 </script>
@@ -225,19 +360,19 @@ const changeDisplay = (idx) => {
         <span class="desc">养老院</span>
       </el-button>
       <el-button @click="changeDisplay(1)" color="#2642AA" size="small" :class="{'chosen-btn': state.currentShow===1}" class="el-button" plain>
-        <Icon class="icon" :Components='Loading'></Icon>
+        <Icon class="icon" :Components='StarFilled'></Icon>
         <span class="desc">医院</span>
       </el-button>
       <el-button @click="changeDisplay(2)" color="#2642AA" size="small" :class="{'chosen-btn': state.currentShow===2}" class="el-button" plain>
-        <Icon class="icon" :Components='Star'></Icon>
+        <Icon class="icon" :Components='PictureFilled'></Icon>
         <span class="desc">药店</span>
       </el-button>
       <el-button @click="changeDisplay(3)" color="#2642AA" size="small" :class="{'chosen-btn': state.currentShow===3}" class="el-button" plain>
-        <Icon class="icon" :Components='PictureRounded'></Icon>
+        <Icon class="icon" :Components='HelpFilled'></Icon>
         <span class="desc">公园</span>
       </el-button>
       <el-button @click="changeDisplay(4)" color="#2642AA" size="small" :class="{'chosen-btn': state.currentShow===4}" class="el-button" plain>
-        <Icon class="icon" :Components='Position'></Icon>
+        <Icon class="icon" :Components='Promotion'></Icon>
         <span class="desc">其他</span>
       </el-button>
     </div>
@@ -383,6 +518,80 @@ const changeDisplay = (idx) => {
           </el-col>
         </el-row>
       </div>
+      <div class="drag-store content" v-if="state.currentShow===2">
+        <el-row>
+          <el-col :span="7">
+            <div class="label standard-font-size">您的位置：</div>
+          </el-col>
+          <el-col :span="9">
+            <el-input disabled v-model="pointInfo" style="width: 100%; font-size: 1vw"></el-input>
+          </el-col>
+          <el-col :span="5" style="text-align: right;">
+            <el-button color="#2642AA" @click="searchDrugStores" type="primary" style="font-size: 1vw">搜索</el-button>
+          </el-col>
+        </el-row>
+      </div>
+      <div class="park content" v-if="state.currentShow===3">
+        <el-row>
+          <el-col :span="7">
+            <div class="label standard-font-size">您的位置：</div>
+          </el-col>
+          <el-col :span="9">
+            <el-input disabled v-model="pointInfo" style="width: 100%; font-size: 1vw"></el-input>
+          </el-col>
+          <el-col :span="5" style="text-align: right;">
+            <el-button color="#2642AA" @click="searchParks" type="primary" style="font-size: 1vw">搜索</el-button>
+          </el-col>
+        </el-row>
+      </div>
+      <div class="facility content" v-if="state.currentShow===4">
+        <el-row>
+          <el-col :span="7">
+            <div class="label standard-font-size">类型：</div>
+          </el-col>
+          <el-col :span="14">
+            <el-select
+                v-model="state.facilityQuery.types"
+                multiple
+                collapse-tags
+                style="font-size: 1vw; width: 100%"
+                popper-class="mapSelect"
+                filterable
+                placeholder="请选择">
+              <el-option
+                  v-for="item in state.facilityConditions.types"
+                  :key="item"
+                  :label="item"
+                  :value="item">
+              </el-option>
+            </el-select>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="7">
+            <div class="label standard-font-size">所在区：</div>
+          </el-col>
+          <el-col :span="9">
+            <el-select v-model="state.facilityQuery.district" popper-class="mapSelect" placeholder="请选择"
+                       style="font-size: 1vw; width: 100%">
+              <el-option v-for="item in districtOptions" :key="item.value" :label="item.label" :value="item.label">
+            <span style="
+          float: left;
+          font-size: 1.6vh;">{{ item.label }}</span>
+                <span style="
+          float: right;
+          color: var(--el-text-color-secondary);
+          font-size: 1.6vh;
+          padding-left: 2vh;
+        ">{{ item.value }}</span>
+              </el-option>
+            </el-select>
+          </el-col>
+          <el-col :span="5" style="text-align: right;">
+            <el-button color="#2642AA" @click="searchFacilities" type="primary" style="font-size: 1vw">搜索</el-button>
+          </el-col>
+        </el-row>
+      </div>
     </div>
     <div class="results">
       <p class="title">丨检索结果</p>
@@ -463,6 +672,99 @@ const changeDisplay = (idx) => {
                       <span><Icon class="icon" :Components='Tickets'></Icon></span>
                       <span>重要科室：</span>
                       <span>{{ item[6] }}</span>
+                    </el-col>
+                  </el-row>
+                </div>
+              </dv-border-box8>
+            </div>
+          </div>
+          <div v-if="results.length === 0" class="standard-font-size" style="text-align: center; color: #c4bbbb; padding: 0.75vw">
+            暂无数据
+          </div>
+        </div>
+        <div class="con" v-if="state.currentShow===2" :style="{maxHeight: state.configs.contentMaxHeight[state.currentShow]}">
+          <div class="con-item-box">
+            <div class="con-item" v-for="(item, index) in results" :key="index">
+              <dv-border-box8 :reverse="true" :key="item[0]" style="height: 100%">
+                <div style="padding: 0.5vw;">
+                  <el-row class="standard-font-size">
+                    <el-col :span="24">
+                      <span><Icon class="icon" :Components='House'></Icon></span>
+                      <span>{{ item[1] }}</span>
+                    </el-col>
+                  </el-row>
+
+                  <el-row class="standard-font-size">
+                    <el-col :span="24">
+                      <span><Icon class="icon" :Components='MapLocation'></Icon></span>
+                      <span>{{ item[2] }}</span>
+                    </el-col>
+                  </el-row>
+
+                  <el-row class="standard-font-size">
+                    <el-col :span="24">
+                      <span><Icon class="icon" :Components='Tickets'></Icon></span>
+                      <span>据当前位置距离：</span>
+                      <span>{{ formatDistance(item[5]) }}</span>
+                    </el-col>
+                  </el-row>
+                </div>
+              </dv-border-box8>
+            </div>
+          </div>
+          <div v-if="results.length === 0" class="standard-font-size" style="text-align: center; color: #c4bbbb; padding: 0.75vw">
+            暂无数据
+          </div>
+        </div>
+        <div class="con" v-if="state.currentShow===3" :style="{maxHeight: state.configs.contentMaxHeight[state.currentShow]}">
+          <div class="con-item-box">
+            <div class="con-item" v-for="(item, index) in results" :key="index">
+              <dv-border-box8 :reverse="true" :key="item[0]" style="height: 100%">
+                <div style="padding: 0.5vw;">
+                  <el-row class="standard-font-size">
+                    <el-col :span="24">
+                      <span><Icon class="icon" :Components='House'></Icon></span>
+                      <span>{{ item[1] }}</span>
+                    </el-col>
+                  </el-row>
+
+                  <el-row class="standard-font-size">
+                    <el-col :span="24">
+                      <span><Icon class="icon" :Components='Tickets'></Icon></span>
+                      <span>据当前位置距离：</span>
+                      <span>{{ formatDistance(item[4]) }}</span>
+                    </el-col>
+                  </el-row>
+                </div>
+              </dv-border-box8>
+            </div>
+          </div>
+          <div v-if="results.length === 0" class="standard-font-size" style="text-align: center; color: #c4bbbb; padding: 0.75vw">
+            暂无数据
+          </div>
+        </div>
+        <div class="con" v-if="state.currentShow===4" :style="{maxHeight: state.configs.contentMaxHeight[state.currentShow]}">
+          <div class="con-item-box">
+            <div class="con-item" v-for="(item, index) in results" :key="index">
+              <dv-border-box8 :reverse="true" :key="item[0]" style="height: 100%">
+                <div style="padding: 0.5vw;">
+                  <el-row class="standard-font-size">
+                    <el-col :span="24">
+                      <span><Icon class="icon" :Components='House'></Icon></span>
+                      <span>{{ item[1] }}</span>
+                    </el-col>
+                  </el-row>
+
+                  <el-row class="standard-font-size">
+                    <el-col :span="12">
+                      <span><Icon class="icon" :Components='Tickets'></Icon></span>
+                      <span>类型：</span>
+                      <span>{{ item[4] }}</span>
+                    </el-col>
+                    <el-col :span="12">
+                      <span><Icon class="icon" :Components='Document'></Icon></span>
+                      <span>所在区：</span>
+                      <span>{{ item[5] }}</span>
                     </el-col>
                   </el-row>
                 </div>

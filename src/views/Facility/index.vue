@@ -1,16 +1,26 @@
 <script setup>
 import FacilityHeader from './components/FacilityHeader.vue'
-import FacilityMap from './components/FacilityMap.vue'
+import FacilityMap from './components/FacilityMap.vue';
 // import FacilityStatistics from './components/FacilityStatistics.vue';
-import FacilityQuery from './components/FacilityQuery.vue'
-import {ref} from "@vue/runtime-core"
+import FacilityQuery from './components/FacilityQuery.vue';
+import {ref} from "@vue/runtime-core";
 
 const pois = ref([])
 const displayId = ref(0)
+const mapMode = ref('normal')
+const selectedPoint = ref(null)
 
 const getQueryResults = (results) => {
   pois.value = results.points
   displayId.value = results.idx
+}
+
+const passSelectedPoint = (point) => {
+  selectedPoint.value = point
+}
+
+const changeMapMode = (mode) => {
+  mapMode.value = mode
 }
 
 </script>
@@ -23,8 +33,15 @@ const getQueryResults = (results) => {
   </div>
   <div class="facility-map">
 <!--    <FacilityStatistics></FacilityStatistics>-->
-    <FacilityMap :pois=pois :display-id="displayId"></FacilityMap>
-    <FacilityQuery @passResults="getQueryResults"></FacilityQuery>
+    <FacilityMap
+        :pois=pois
+        :display-id="displayId"
+        :map-mode="mapMode"
+        @passSelectedPoint="passSelectedPoint"></FacilityMap>
+    <FacilityQuery
+        :selected-point="selectedPoint"
+        @passResults="getQueryResults"
+        @changeMapMode="changeMapMode"></FacilityQuery>
   </div>
 
 </template>
