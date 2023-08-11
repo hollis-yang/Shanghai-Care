@@ -1,8 +1,17 @@
 <script setup>
-import { useTime } from '@/stores/time'
+// import { useTime } from '@/stores/time'
 // 使用pinia管理时间
-const time = useTime()
+// const time = useTime()
 
+import { User, SwitchButton } from '@element-plus/icons-vue'
+import { useNameStore } from '@/stores/username'
+import { ref } from 'vue'
+
+
+const nameStore = useNameStore()
+const userName = ref('')
+userName.value = nameStore.userName
+// console.log(nameStore.)
 </script>
 
 <template>
@@ -60,8 +69,17 @@ const time = useTime()
         </div>
       </RouterLink>
       <!-- 最右侧时间 -->
-      <div class="right-item datetime">
+      <!-- <div class="right-item datetime">
         <div class="desc">{{ time.currentTime }}</div>
+      </div> -->
+      <div class="right-item user">
+        <el-icon class="usericon">
+          <User />
+        </el-icon>
+        <span class="username">{{ userName }}</span>
+        <el-icon class="officon">
+          <SwitchButton />
+        </el-icon>
       </div>
     </div>
   </div>
@@ -69,4 +87,30 @@ const time = useTime()
 
 <style scoped lang="less">
 @import '../../../assets/css/header.less';
-</style>
+
+.user {
+  font-size: 2.5vh;
+  position: absolute;
+  top: 0.5vh;
+  left: -1vw;
+
+  .username {
+    display: inline-block;
+    width: 5vw;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    font-size: 1.9vh;
+    position: absolute;
+    top: 0.2vh;
+    right: 1.5vw;
+  }
+
+  .officon {
+    position: absolute;
+    right: 0.2vw;
+    top: 0.5vh;
+    font-size: 2vh;
+  }
+}</style>

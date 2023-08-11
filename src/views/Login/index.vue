@@ -26,6 +26,10 @@ import { useAdminStore } from '@/stores/admin'
 const isAdmin = ref(null)  // 1表示是admin
 const adminStore = useAdminStore()
 
+// 用pinia管理当前登录的用户名
+import { useNameStore } from '@/stores/username'
+const nameStore = useNameStore()
+
 const checkResult = ref(null)  // 1表示信息正确
 
 const checkLoginData = async () => {
@@ -72,7 +76,10 @@ const submitForm = async () => {
       // 用户名密码填写正确时
       successText.value = '登录成功！'
       clickSuccess()
+      // 跳转路由到主页
       router.push('/screen')
+      // 把用户名存入pinia
+      nameStore.setUserName(username.value)
       // 清空数据
       username.value = ''
       password1.value = ''
