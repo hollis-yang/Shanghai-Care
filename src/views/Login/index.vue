@@ -85,7 +85,7 @@ const submitForm = async () => {
       password1.value = ''
     } else {
       // 用户名密码错误
-      clickWarning()
+      clickError()
     }
   } else {
     // 如果是注册的情况

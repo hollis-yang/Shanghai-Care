@@ -4,13 +4,33 @@
 // const time = useTime()
 
 import { User, SwitchButton } from '@element-plus/icons-vue'
+import { InfoFilled } from '@element-plus/icons-vue'
 import { useNameStore } from '@/stores/username'
 import { ref } from 'vue'
+import router from '@/router'
+import { ElMessage } from 'element-plus'
 
 
 const nameStore = useNameStore()
 const userName = ref('')
 userName.value = nameStore.userName
+
+const confirmEvent = () => {
+  // push路由到login
+  router.push('/login')
+  // 显示退出成功
+  logoutSuccess()
+  // 清除pinia
+  nameStore.setUserName('')
+}
+
+const logoutSuccess = () => {
+  ElMessage({
+    showClose: false,
+    message: '退出成功！',
+    type: 'success'
+  })
+}
 </script>
 
 <template>
@@ -76,12 +96,19 @@ userName.value = nameStore.userName
           <User />
         </el-icon>
         <span class="username">{{ userName }}</span>
-        <el-icon class="officon">
-          <SwitchButton />
-        </el-icon>
+        <el-popconfirm width="10vw" confirm-button-text="确定" cancel-button-text="留在此页" :icon="InfoFilled"
+          icon-color="#626AEF" title="确定要退出吗？" @confirm="confirmEvent">
+          <template #reference>
+            <el-icon class="officon">
+              <SwitchButton />
+            </el-icon>
+          </template>
+        </el-popconfirm>
       </div>
     </div>
   </div>
+
+  <el-button :plain="true" @click="logoutSuccess" style="display: none;"></el-button>
 </template>
 
 <style scoped lang="less">
