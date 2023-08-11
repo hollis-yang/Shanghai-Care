@@ -1,5 +1,5 @@
 <script setup>
-import LayoutHeader from './components/LayoutHeader.vue'
+import Header from '../Header.vue'
 import LayoutAge from './components/LayoutAge.vue'
 import LayoutDistrict from './components/LayoutDistrict.vue'
 import LayoutExpectLifeA from './components/LayoutExpectLifeA.vue'
@@ -50,7 +50,7 @@ const toggleMap = () => {
 <template>
   <div class="layout-container">
     <div class="layout-header">
-      <LayoutHeader></LayoutHeader>
+      <Header></Header>
     </div>
 
     <div class="layout-info">

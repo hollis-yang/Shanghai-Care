@@ -1,5 +1,5 @@
 <script setup>
-import NursingHeader from './components/NursingHeader.vue'
+import Header from '../Header.vue'
 import NursingAge from './components/NursingAge.vue'
 import NursingMap from './components/NursingMap.vue'
 import NursingDistrict from './components/NursingDistrict.vue'
@@ -13,7 +13,7 @@ import { BorderBox8 as DvBorderBox8 } from '@kjgl77/datav-vue3'
 <template>
   <div class="nursing-container">
     <div class="nursing-header">
-      <NursingHeader></NursingHeader>
+      <Header></Header>
     </div>
 
     <div class="nursing-route">

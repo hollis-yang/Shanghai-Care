@@ -1,11 +1,11 @@
 <script setup>
-import ActivityHeader from './components/ActivityHeader.vue'
+import Header from '../Header.vue'
 </script>
 
 <template>
   <div class="activity-container">
     <div class="activity-header">
-      <ActivityHeader></ActivityHeader>
+      <Header></Header>
     </div>
   </div>
 </template>

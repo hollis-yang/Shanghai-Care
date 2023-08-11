@@ -1,6 +1,6 @@
 <script setup>
-import FacilityHeader from './components/FacilityHeader.vue'
-import FacilityMap from './components/FacilityMap.vue';
+import Header from '../Header.vue'
+import FacilityMap from './components/FacilityMap.vue'
 // import FacilityStatistics from './components/FacilityStatistics.vue';
 import FacilityQuery from './components/FacilityQuery.vue';
 import {ref} from "@vue/runtime-core";
@@ -28,7 +28,7 @@ const changeMapMode = (mode) => {
 <template>
   <div class="facility-container">
     <div class="facility-header">
-      <FacilityHeader></FacilityHeader>
+      <Header></Header>
     </div>
   </div>
   <div class="facility-map">

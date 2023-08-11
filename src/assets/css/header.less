@@ -66,7 +66,40 @@
   color: white;
 }
 
-.right-item.datetime {
-  text-align: center;
-  cursor: default;
+// .right-item.datetime {
+//   text-align: center;
+//   cursor: default;
+// }
+
+.user {
+  font-size: 2.5vh;
+  position: absolute;
+  top: 0.5vh;
+  left: -1vw;
+
+  .username {
+    display: inline-block;
+    width: 5vw;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    font-size: 1.9vh;
+    position: absolute;
+    top: 0.2vh;
+    right: 1.5vw;
+  }
+
+  .officon {
+    position: absolute;
+    right: 0.2vw;
+    top: 0.5vh;
+    font-size: 2vh;
+  }
+}
+
+.active {
+  img {
+    content: url(../img/bntactive.png);
+  }
 }
