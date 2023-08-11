@@ -11,7 +11,6 @@ import { ref } from 'vue'
 const nameStore = useNameStore()
 const userName = ref('')
 userName.value = nameStore.userName
-// console.log(nameStore.)
 </script>
 
 <template>
@@ -87,30 +86,4 @@ userName.value = nameStore.userName
 
 <style scoped lang="less">
 @import '../../../assets/css/header.less';
-
-.user {
-  font-size: 2.5vh;
-  position: absolute;
-  top: 0.5vh;
-  left: -1vw;
-
-  .username {
-    display: inline-block;
-    width: 5vw;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    text-align: center;
-    font-size: 1.9vh;
-    position: absolute;
-    top: 0.2vh;
-    right: 1.5vw;
-  }
-
-  .officon {
-    position: absolute;
-    right: 0.2vw;
-    top: 0.5vh;
-    font-size: 2vh;
-  }
-}</style>
+</style>
