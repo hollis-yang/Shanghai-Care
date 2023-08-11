@@ -1,5 +1,5 @@
 <script setup>
-import FacilityHeader from './components/FacilityHeader.vue'
+import Header from '../Header.vue'
 import FacilityMap from './components/FacilityMap.vue'
 // import FacilityStatistics from './components/FacilityStatistics.vue';
 import FacilityQuery from './components/FacilityQuery.vue'
@@ -18,7 +18,7 @@ const getQueryResults = (results) => {
 <template>
   <div class="facility-container">
     <div class="facility-header">
-      <FacilityHeader></FacilityHeader>
+      <Header></Header>
     </div>
   </div>
   <div class="facility-map">

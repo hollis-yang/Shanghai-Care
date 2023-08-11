@@ -1,5 +1,5 @@
 <script setup>
-import NursingHeader from '../Nursing/components/NursingHeader.vue'
+import Header from '../Header.vue'
 import ChangeRoute from './components/ChangeRoute.vue'
 import InformationInquiry from './components/InformationInquiry.vue'
 import Detail from './components/detail.vue'
@@ -8,7 +8,7 @@ import Detail from './components/detail.vue'
 <template>
   <div class="nursing-container">
     <div class="nursing-header">
-      <NursingHeader></NursingHeader>
+      <Header></Header>
     </div>
 
     <div class="nursing-route">

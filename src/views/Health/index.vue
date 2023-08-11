@@ -1,5 +1,5 @@
 <script setup>
-import HealthHeader from './components/HealthHeader.vue'
+import Header from '../Header.vue'
 import InformationInquiry from './components/InformationInquiry.vue'
 import Detail from './components/detail.vue'
 </script>
@@ -7,7 +7,7 @@ import Detail from './components/detail.vue'
 <template>
   <div class="health-container">
     <div class="health-header">
-      <HealthHeader></HealthHeader>
+      <Header></Header>
     </div>
     <div class="nursing-route">
       <InformationInquiry></InformationInquiry>

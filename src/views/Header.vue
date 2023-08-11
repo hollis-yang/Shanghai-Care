@@ -31,6 +31,16 @@ const logoutSuccess = () => {
     type: 'success'
   })
 }
+
+
+// 获取当前路由
+const currentRoute = ref('')
+currentRoute.value = router.currentRoute._value.fullPath
+
+const isActive = (element) => {
+  return element === currentRoute.value
+}
+
 </script>
 
 <template>
@@ -43,24 +53,24 @@ const logoutSuccess = () => {
 
       <!-- 主页概述 -->
       <RouterLink to="/screen">
-        <div class="left-item active">
-          <img src="../../../assets/img/bntactive.png" alt="概述">
+        <div class="left-item" :class="{'active': isActive('/screen')}">
+          <img src="../assets/img/bnt.png" alt="概述">
           <span class="desc">主 页 概 述</span>
         </div>
       </RouterLink>
 
       <!-- 养老设施页 -->
       <RouterLink to="/facility">
-        <div class="left-item">
-          <img src="../../../assets/img/bnt.png" alt="养老设施">
+        <div class="left-item" :class="{'active': isActive('/facility')}">
+          <img src="../assets/img/bnt.png" alt="养老设施">
           <span class="desc">养 老 设 施</span>
         </div>
       </RouterLink>
 
       <!-- 护工信息页 -->
       <RouterLink to="/nursing">
-        <div class="left-item">
-          <img src="../../../assets/img/bnt.png" alt="护理员信息">
+        <div class="left-item" :class="{'active': isActive('/nursing') || isActive('/nursing/query')}">
+          <img src="../assets/img/bnt.png" alt="护理员信息">
           <span class="desc">护 工 信 息</span>
         </div>
       </RouterLink>
@@ -74,16 +84,16 @@ const logoutSuccess = () => {
 
       <!-- 社区活动页 -->
       <RouterLink to="/activity">
-        <div class="right-item">
-          <img src="../../../assets/img/bnt.png" alt="概述">
+        <div class="right-item" :class="{'active': isActive('/activity')}">
+          <img src="../assets/img/bnt.png" alt="概述">
           <span class="desc">社 区 活 动</span>
         </div>
       </RouterLink>
 
       <!-- 健康档案页 -->
       <RouterLink to="/health">
-        <div class="right-item">
-          <img src="../../../assets/img/bnt.png" alt="养老设施">
+        <div class="right-item" :class="{'active': isActive('/health')}">
+          <img src="../assets/img/bnt.png" alt="养老设施">
           <span class="desc">健 康 档 案</span>
         </div>
       </RouterLink>
@@ -112,5 +122,5 @@ const logoutSuccess = () => {
 </template>
 
 <style scoped lang="less">
-@import '../../../assets/css/header.less';
+@import '../assets/css/header.less';
 </style>
