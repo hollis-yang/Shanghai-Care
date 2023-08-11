@@ -20,7 +20,7 @@ let mapView = null
 // 坐标系
 let spatialReference = null
 // 切换模式
-let isDarkMode = ref(true)
+let isDarkMode = ref(false)
 
 let selectPointLayer = null
 
@@ -203,8 +203,10 @@ const initMap = async () => {
       // 设置暗黑模式
       const mapViewCanvas = mapView.container.querySelector('canvas');
       if (mapViewCanvas) {
-        mapViewCanvas.style.filter = 'bluescale(100%) invert(100%)';
-        mapViewCanvas.style.opacity = 1;
+        // mapViewCanvas.style.opacity = 0.7;
+        mapViewCanvas.style.filter = 'invert(100%) hue-rotate(180deg)'
+        mapViewCanvas.style.webkitFilter = 'invert(100%) hue-rotate(180deg)'
+        mapViewCanvas.style.mixBlendMode = 'normal'
       }
     }
     mapView.on("mouse-wheel", function(event){
