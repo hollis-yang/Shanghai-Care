@@ -1,5 +1,5 @@
 <script setup>
-import ActivityHeader from './components/ActivityHeader.vue'
+import Header from '../Header.vue'
 import detail from './components/detail.vue'
 import mytable from './components/tabel.vue'
 import actAlert from './components/actAlert.vue'
@@ -10,7 +10,7 @@ let actStore = useActStore()
 <template>
   <div class="activity-container">
     <div class="activity-header">
-      <ActivityHeader></ActivityHeader>
+      <Header></Header>
     </div>
     <div class="activity-content">
       <div class="activity-nav">
