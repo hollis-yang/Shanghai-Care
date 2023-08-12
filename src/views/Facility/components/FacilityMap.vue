@@ -1,13 +1,15 @@
 <template>
   <div id="facilityMapId"></div>
+  <button @click="addHeatMap">生成热力图</button>
 </template>
 
 <script setup>
-import {loadModules} from "esri-loader"
-import {onMounted, ref, watch} from "vue"
-import {formatDistance} from "@/utils/distance"
+import {loadModules} from "esri-loader";
+import {onMounted, ref, watch} from "vue";
+import {formatDistance} from "@/utils/distance";
+import {getSQLAPI} from "@/apis/mysql";
 
-const emits = defineEmits(['passSelectedPoint'])
+const emits = defineEmits(['passSelectedPoint']);
 
 const props = defineProps({
   pois: Array,
@@ -23,6 +25,50 @@ let spatialReference = null
 let isDarkMode = ref(false)
 
 let selectPointLayer = null
+
+let heatMapLayer = null
+const heatMapLevel = {
+  x: 200,
+  y: 200
+}
+
+// const districtPositions = [{
+//   name: '黄浦区',
+//   longitude: 121.472644,
+//   latitude: 31.231706
+// },{
+//   name: '徐汇区',
+//   longitude: 121.43676,
+//   latitude: 31.18831
+// },{
+//   name: '长宁区',
+//   longitude: 121.42462,
+//   latitude: 31.22036
+// },{
+//   name: '静安区',
+//   longitude: 121.4444,
+//   latitude: 31.22884
+// },{
+//   name: '普陀区',
+//   longitude: 121.39703,
+//   latitude: 31.24951
+// },{
+//   name: '闸北区',
+//   longitude: 121.44636,
+//   latitude: 31.28075
+// },{
+//   name: '虹口区',
+//   longitude: 121.48162,
+//   latitude: 31.27788
+// },{
+//   name: '杨浦区',
+//   longitude: 121.526,
+//   latitude: 31.2595
+// },{
+//   name: '杨浦区',
+//   longitude: 121.526,
+//   latitude: 31.2595
+// }]
 
 // 展示信息配置项
 const configs = [{
@@ -100,6 +146,13 @@ watch(() => props.pois, () => {
   addPoints()
 })
 
+// 当地图模式变为 'normal' 时，清空选择点位标记
+watch(() => props.mapMode, () => {
+  if ('normal' === props.mapMode) {
+    selectPointLayer.removeAll()
+  }
+})
+
 const addPoints = async () => {
   const [Map, MapView, SpatialReference, WebTileLayer, Point, Graphic, Extent] = await loadModules(["esri/Map", "esri/views/MapView",
     "esri/geometry/SpatialReference", "esri/layers/WebTileLayer", "esri/geometry/Point", "esri/Graphic", "esri/geometry/Extent"])
@@ -143,13 +196,32 @@ const addPoints = async () => {
 const initMap = async () => {
 
   // 引入地图组件
-  const [Map, MapView, SpatialReference, WebTileLayer, Point, Graphic, GraphicsLayer, Extent] = await loadModules(["esri/Map", "esri/views/MapView",
-    "esri/geometry/SpatialReference", "esri/layers/WebTileLayer", "esri/geometry/Point", "esri/Graphic", "esri/layers/GraphicsLayer", "esri/geometry/Extent"])
+  const [Map,
+    MapView,
+    SpatialReference,
+    WebTileLayer,
+    Point,
+    Graphic,
+    GraphicsLayer,
+    Extent,
+    FeatureLayer,
+    HeatmapRenderer
+  ] = await loadModules([
+    "esri/Map",
+    "esri/views/MapView",
+    "esri/geometry/SpatialReference",
+    "esri/layers/WebTileLayer",
+    "esri/geometry/Point",
+    "esri/Graphic",
+    "esri/layers/GraphicsLayer",
+    "esri/geometry/Extent",
+    "esri/layers/FeatureLayer",
+    "esri/renderers/HeatmapRenderer"])
 
   // 基础坐标系统
   spatialReference = new SpatialReference({
-    // wkid: 3857
     wkid: 3857
+    // wkid: 4326
   });
 
   // 创建地图
@@ -158,7 +230,8 @@ const initMap = async () => {
   });
 
   // apikey
-  const apiKey = "8d915f545dada286c4465188fb436171"
+  // const apiKey = "4cbe0c2ea845e274ee8ba10d2785e590"
+  const apiKey = "7b13a4031f051b6317cdcca67ae391f1"
   // 天地图-矢量
   let tiandituLayer = new WebTileLayer({
     urlTemplate: "http://{subDomain}.tianditu.com/DataServer?T=vec_w&x={col}&y={row}&l={level}&tk=" + apiKey,
@@ -204,7 +277,7 @@ const initMap = async () => {
       const mapViewCanvas = mapView.container.querySelector('canvas');
       if (mapViewCanvas) {
         mapViewCanvas.style.filter = 'grayscale(100%) invert(100%)';
-        mapViewCanvas.style.opacity = 0.8;
+        mapViewCanvas.style.opacity = 0.7;
       }
     }
     mapView.on("mouse-wheel", function(event){
@@ -282,7 +355,115 @@ const initMap = async () => {
       }
     })
   })
+}
 
+const addHeatMap = async () => {
+
+  // 引入地图组件
+  let [Map,
+    MapView,
+    SpatialReference,
+    WebTileLayer,
+    Point,
+    Graphic,
+    GraphicsLayer,
+    Extent,
+    FeatureLayer,
+    HeatmapRenderer
+  ] = await loadModules([
+    "esri/Map",
+    "esri/views/MapView",
+    "esri/geometry/SpatialReference",
+    "esri/layers/WebTileLayer",
+    "esri/geometry/Point",
+    "esri/Graphic",
+    "esri/layers/GraphicsLayer",
+    "esri/geometry/Extent",
+    "esri/layers/FeatureLayer",
+    "esri/renderers/HeatmapRenderer"])
+
+  // getSQLAPI('SELECT district, COUNT(*) as num FROM `nursinghome` GROUP BY district').then(res => {
+  //   console.log(res)
+  // })
+  let [xMax, yMax, xMin, yMin] = (await getSQLAPI('SELECT max(x), max(y), min(x), min(y) FROM `nursinghome`'))[0]
+  let response = await getSQLAPI('SELECT * FROM `nursinghome`')
+
+  let xInterval = (xMax - xMin) / heatMapLevel.x
+  let yInterval = (yMax - yMin) / heatMapLevel.y
+
+  let data1 = []
+  for (let i = 0; i < heatMapLevel.x; i++) {
+    data1.push([])
+    for (let j = 0; j < heatMapLevel.y; j++) {
+      data1[i].push({
+        // 方格中心点位坐标
+        x: xMin + xInterval * i,
+        y: yMin + yInterval * j,
+        count: 0
+      })
+    }
+  }
+
+  response.forEach(e => {
+    let xIdx = Math.floor((e[10] - xMin) / xInterval)
+    let yIdx = Math.floor((e[11] - yMin) / yInterval)
+    if (xIdx >= heatMapLevel.x) {
+      xIdx = heatMapLevel.x - 1
+    }
+    if (yIdx >= heatMapLevel.y) {
+      yIdx = heatMapLevel.y - 1
+    }
+
+    data1[xIdx][yIdx].count++
+  })
+
+  if (heatMapLayer) map.remove(heatMapLayer)
+
+  let rendererT = {
+    type: "heatmap",
+    field: 'crime_count',
+    colorStops: [
+      {color: "rgba(63, 40, 102, 0)", ratio: 0},
+      {color: "#00AFFF", ratio: 0.1},
+      {color: "#14B441", ratio: 0.3},
+      {color: "#FFFA00", ratio: 0.7},
+      {color: "#FF4600", ratio: 1}
+    ],
+    maxPixelIntensity: 100,
+    minPixelIntensity: 0
+  };
+
+  let features = [];
+  let data = data1.flat()
+  for (let i = 0; i < data.length; i++) {
+    features.push({
+      geometry: {
+        type: "point",
+        x: data[i].x,//经度
+        y: data[i].y,//纬度
+        spatialReference: spatialReference,//坐标系
+      },
+      attributes: {
+        ObjectID: i,
+        crime_count: data[i].count
+      }
+    })
+  }
+
+  heatMapLayer = new FeatureLayer({
+    geometryType: "point",
+    source: features,
+    title: "热力图",
+    fields: [{name: "ObjectID", alias: "ObjectID", type: "oid"}, {
+      name: "crime_count",
+      alias: "crime_count",
+      type: "integer"
+    }],
+    objectIdField: "ObjectID",
+    renderer: rendererT,
+  });
+
+  map.add(heatMapLayer)
 }
 
 onMounted(() => {
