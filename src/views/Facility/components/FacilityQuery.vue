@@ -169,7 +169,7 @@ const searchHospitals = () => {
     let district = state.hospitalQuery.district
     if (district && district !== '全市') {
       data = data.filter(item => {
-        return item[4] === district
+        return item[9] === district
       })
     }
 
@@ -849,7 +849,7 @@ const changeDisplay = (idx) => {
 
   .conditions {
     margin-top: 1.2vh;
-    background-color: #0000006b;
+    background-color: rgba(0, 0, 0, 0.7);
     border-radius: 0.5vw;
 
     .title {
@@ -879,7 +879,7 @@ const changeDisplay = (idx) => {
 
   .results {
     margin-top: 1.2vh;
-    background-color: #0000006b;
+    background-color: rgba(0, 0, 0, 0.7);
     border-radius: 0.5vw;
 
     .title {
