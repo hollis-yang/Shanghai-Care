@@ -10,7 +10,7 @@
       </el-input>
       <div class="btn">
         <el-button @click="queryInfo" type="primary">查询</el-button>
-        <el-button @click="onAdd" type="primary">新增档案</el-button>
+        <el-button v-if="adminStore.isadmin" @click="onAdd" type="primary">新增档案</el-button>
       </div>
     </div>
     <div class="bottom">
@@ -30,7 +30,7 @@
     </div>
     <div class="btn footer" :class="!isSet ? 'footer-position' : ''">
         <el-button type="primary" v-if="!isSet" @click="onSetAndAdd">保存</el-button>
-        <div v-else-if="infoObj.name && infoObj.name !== '-'">
+        <div v-else-if="infoObj.name && infoObj.name !== '-' &&  adminStore.isadmin">
           <el-button type="primary" @click="onSetAndAdd">编辑</el-button>
           <el-button type="primary" @click="onDel">删除</el-button>
         </div>
@@ -45,6 +45,8 @@ import { getSQLAPI } from '../../../apis/mysql'
 import { insertSQLAPI } from '@/apis/insertsql'
 import Icon from './Icon.vue'
 import { useTime } from '@/stores/time'
+import { useAdminStore } from '@/stores/admin'
+let adminStore = useAdminStore()
 const time = useTime()
 const input1 = ref('')
 const isSet = ref(true)
@@ -274,14 +276,4 @@ async function queryInfo() {
     }
   }
 }
-</style>
-
-<style>
-/* 三种方法选择自己喜欢的一个即可 */
-/* .el-input--prefix .el-input__inner{
-  border: none;
-} */
-/* .el-input--small .el-input__inner {
-    border: none;
-} */
 </style>
