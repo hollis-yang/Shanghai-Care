@@ -110,8 +110,9 @@ input {
 
   .actAlert {
     width: 380px;
-    height: 200px;
+    min-height: 200px;
     padding: 20px;
+    padding-bottom: 0;
     background-color: #fff;
     color: #272827;
     border: 2px solid;
