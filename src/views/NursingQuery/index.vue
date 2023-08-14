@@ -13,7 +13,7 @@ import Detail from './components/detail.vue'
 
     <div class="nursing-route">
       <ChangeRoute></ChangeRoute>
-        <InformationInquiry></InformationInquiry>
+      <InformationInquiry></InformationInquiry>
     </div>
     <div class="nursing-right">
       <Detail></Detail>
@@ -25,12 +25,14 @@ import Detail from './components/detail.vue'
 .nursing-container {
   position: relative;
 }
+
 .nursing-right {
   position: absolute;
   right: 10%;
   width: calc(60vw - 10%);
   top: 18vh;
 }
+
 .nursing-route {
   position: absolute;
   top: 12vh;
