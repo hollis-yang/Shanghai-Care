@@ -207,10 +207,10 @@ async function queryInfo() {
 <style lang='less' scoped>
 .InformationInquiry {
   position: fixed;
-  font-size: 16px;
+  font-size: 1vh;
   top: 50%;
-  width: 500px;
-  height: 500px;
+  width: 30vw;
+  height: 50vh;
   transform: translate(0%, -50%);
   .top {
     position: absolute;
@@ -225,7 +225,7 @@ async function queryInfo() {
     
   }
   .btn {
-      margin-left: 30px;
+    margin-left: 3vw;
       display: flex;
       /deep/ .el-button {
         background-color: #1827c4 !important;
@@ -234,16 +234,16 @@ async function queryInfo() {
     }
     .footer {
       justify-content: flex-end;
-      padding: 10px 0;    
+      padding: 1vh 0;
     }
     .footer-position {
       position: absolute;
-      right: -75px;
+      right: -1vw;
       top: 103%;
     }
     .information {
         border: 0;
-        border-bottom: 1px solid #ccc;
+        border-bottom: 0.1vh solid #ccc;
       /deep/ .el-input__wrapper {
         background: none;
         border: 0;
@@ -254,24 +254,27 @@ async function queryInfo() {
   .bottom {
     background-color: #0000006b;
     color: rgb(255, 255, 255);
-    padding: 10px 20px 30px;
-    margin-top: 50px;
-    border-radius: 5px;
+    padding: 1vh 2vw;
+    margin-top: 5vh;
+    border-radius: 0.1vh;
     .bottom-box {
       display: flex;
       justify-content: space-between;
+      height: 4vh;
       .left {
         display: flex;
         align-items: center;
-        margin-top: 18px;
+        font-size: 1vw;
+        // margin-top: 0.2vh;
         .icon {
-          width: 16px;
-          height: 16px;
+          width: 1vw;
+          height: 1.5vh;
           margin-right: 0.5em;
         }
       }
       .right {
-        margin-top: 18px;
+        margin-top: 1vh;
+        font-size: 1vw;
       }
     }
   }

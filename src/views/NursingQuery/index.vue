@@ -28,8 +28,7 @@ import Detail from './components/detail.vue'
 .nursing-right {
   position: absolute;
   right: 10%;
-  width: 620px;
-  height: 553px;
+  width: calc(60vw - 10%);
   top: 18vh;
 }
 .nursing-route {
