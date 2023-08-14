@@ -214,7 +214,7 @@ async function queryInfo() {
   transform: translate(0%, -50%);
   .top {
     position: absolute;
-    top: 0;
+    top: -1vh;
     width: 100%;
     display: flex;
     /deep/ .el-input-group__prepend {
@@ -234,7 +234,7 @@ async function queryInfo() {
     }
     .footer {
       justify-content: flex-end;
-      padding: 1vh 0;
+      padding: 1.5vh 0;
     }
     .footer-position {
       position: absolute;
@@ -260,7 +260,8 @@ async function queryInfo() {
     .bottom-box {
       display: flex;
       justify-content: space-between;
-      height: 4vh;
+      max-height: 4vh;
+      padding: 0.5vh 0;
       .left {
         display: flex;
         align-items: center;
