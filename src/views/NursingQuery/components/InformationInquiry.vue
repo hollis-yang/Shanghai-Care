@@ -215,11 +215,11 @@ async function queryInfo() {
       background-color: #1827c4 !important;
       color: #fff !important;
       box-shadow: none !important;
-      font-size: 1.5vh;
+      font-size: 1.8vh;
     }
 
     /deep/ .el-input__inner {
-      font-size: 1.5vh;
+      font-size: 1.8vh;
     }
   }
 
@@ -231,7 +231,7 @@ async function queryInfo() {
       background-color: #1827c4 !important;
       border: none;
       height: 100%;
-      font-size: 1.5vh;
+      font-size: 1.8vh;
     }
   }
 
@@ -266,6 +266,7 @@ async function queryInfo() {
   .information {
     border: 0;
     border-bottom: 0.1vh solid #ccc;
+    font-size: 1.8vh;
 
     /deep/ .el-input__wrapper {
       background: none;
@@ -285,7 +286,7 @@ async function queryInfo() {
     margin-top: 5vh;
     border-radius: 1vh;
     width: 28vw;
-    height: 55vh;
+    height: 56.4vh;
 
     .bottom-box {
       display: flex;

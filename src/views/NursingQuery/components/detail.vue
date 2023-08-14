@@ -254,7 +254,7 @@ init();
           font-size: 1.5vh;
           margin-left: 1vw;
           margin-right: 1vw;
-          margin-top: 1vh;
+          margin-top: 0.5vh;
           font-size: 2vh;
 
           .icon {
@@ -289,7 +289,7 @@ init();
         .item-detail {
           position: absolute;
           right: -0.5vw;
-          bottom: 1.7vh;
+          bottom: 2vh;
           margin-right: 2vw;
 
           /deep/ .el-button {
