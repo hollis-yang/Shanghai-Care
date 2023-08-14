@@ -1,13 +1,62 @@
 <template>
   <div id="facilityMapId"></div>
-  <button @click="addHeatMap">生成热力图</button>
+  <div class="layers">
+    <p class="title">
+      <span class="icon-span"><svg t="1692010984183" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5214" width="18" height="18" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M510.3 754.4c-22.9 0-45.7-7.5-63.6-22.6L91.5 537.2l-1.9-1.7C55.8 505.1 51.7 456 80 421.1l34.7 28.2c-12.7 15.7-11.3 36.9 3.1 51.3L472.6 695l1.9 1.7c19.4 17.4 52.1 17.5 71.5 0l1.9-1.7 354.8-194.3c14.4-14.4 15.8-35.6 3.1-51.3l34.7-28.2c28.3 34.8 24.2 84-9.6 114.3l-1.9 1.7-355.2 194.6c-17.8 15-40.7 22.6-63.5 22.6z" p-id="5215" fill="#ffffff"></path><path d="M510.3 946.6c-22.9 0-45.7-7.5-63.6-22.6L91.5 729.4l-1.9-1.7c-33.7-30.4-37.8-79.5-9.6-114.3l34.7 28.2c-12.7 15.7-11.3 36.9 3.1 51.3l354.8 194.3 1.9 1.7c19.4 17.4 52.1 17.5 71.5 0l1.9-1.7 354.8-194.3c14.4-14.4 15.8-35.6 3.1-51.3l34.7-28.2c28.3 34.8 24.2 84-9.6 114.3l-1.9 1.7L573.8 924c-17.8 15.1-40.7 22.6-63.5 22.6zM916.1 275.6L561 85.6c-28-25.2-73.4-25.2-101.4 0l-355.1 190c-25.3 22.8-27.7 58.4-7.2 83.6 2.2 2.7 4.5 5.2 7.2 7.7l56.1 30.7 299 163.8c28 25.2 73.4 25.2 101.4 0l299-163.8 56.1-30.7c2.7-2.4 5-5 7.2-7.7 20.4-25.2 18.1-60.8-7.2-83.6z" p-id="5216" fill="#ffffff"></path></svg></span>
+      <span>图层</span>
+    </p>
+<!--    <el-tooltip-->
+<!--        class="box-item"-->
+<!--        effect="dark"-->
+<!--        content="天地图底图"-->
+<!--        placement="right"-->
+<!--    >-->
+<!--      <div class="item">-->
+<!--        <el-checkbox v-model="state.layers.showMap" @change="handleShowMap" style="height: auto; color: white;">地图</el-checkbox>-->
+<!--      </div>-->
+<!--    </el-tooltip>-->
+    <el-tooltip
+        class="box-item"
+        effect="dark"
+        content="反映上海全市范围内养老设施相关地点分布情况"
+        placement="right"
+    >
+      <div class="item">
+        <el-checkbox v-model="state.layers.showHeatMap" @change="handleShowHeatMap" style="height: auto; color: white;">热力图</el-checkbox>
+      </div>
+    </el-tooltip>
+    <el-tooltip
+        class="box-item"
+        effect="dark"
+        content="反映上海各区老年人口和养老院的比例"
+        placement="right"
+    >
+      <div class="item">
+        <el-checkbox v-model="state.layers.showRatioMap" @change="handleShowRatioMap" style="height: auto; color: white;">比例图</el-checkbox>
+      </div>
+    </el-tooltip>
+  </div>
+  <div class="legends">
+    <div class="ratio-map-legend" v-if="state.ratioMapLegend.length !== 0">
+      <p class="title">比例图图例 </p>
+      <p class="unit">单位：人/设施</p>
+      <div class="row" v-for="l in state.ratioMapLegend">
+        <span class="color" :style="{'background-color': l.color}"></span>
+        <span class="value">
+          {{ l.min }} ~ {{ l.max }}
+        </span>
+      </div>
+    </div>
+  </div>
+<!--  <button @click="addHeatMap">生成热力图</button>-->
 </template>
 
 <script setup>
 import {loadModules} from "esri-loader";
-import {onMounted, ref, watch} from "vue";
+import {onMounted, reactive, ref, watch} from "vue";
 import {formatDistance} from "@/utils/distance";
 import {getSQLAPI} from "@/apis/mysql";
+import {mapRangeToColor} from "@/utils/color";
 
 const emits = defineEmits(['passSelectedPoint']);
 
@@ -26,54 +75,21 @@ let isDarkMode = ref(false)
 
 let selectPointLayer = null
 
+let tiandituLayer = null
+let tiandituTextLayer = null
+
 let heatMapLayer = null
 const heatMapLevel = {
   x: 200,
   y: 200
 }
 
-// const districtPositions = [{
-//   name: '黄浦区',
-//   longitude: 121.472644,
-//   latitude: 31.231706
-// },{
-//   name: '徐汇区',
-//   longitude: 121.43676,
-//   latitude: 31.18831
-// },{
-//   name: '长宁区',
-//   longitude: 121.42462,
-//   latitude: 31.22036
-// },{
-//   name: '静安区',
-//   longitude: 121.4444,
-//   latitude: 31.22884
-// },{
-//   name: '普陀区',
-//   longitude: 121.39703,
-//   latitude: 31.24951
-// },{
-//   name: '闸北区',
-//   longitude: 121.44636,
-//   latitude: 31.28075
-// },{
-//   name: '虹口区',
-//   longitude: 121.48162,
-//   latitude: 31.27788
-// },{
-//   name: '杨浦区',
-//   longitude: 121.526,
-//   latitude: 31.2595
-// },{
-//   name: '杨浦区',
-//   longitude: 121.526,
-//   latitude: 31.2595
-// }]
+let ratioMapLayer = null
 
 // 展示信息配置项
 const configs = [{
-  xIdx: 10,
-  yIdx: 11,
+  xIdx: 14,
+  yIdx: 15,
   symbolUrl: 'static/svg/HomeFilled.svg',
   facilityLayer: null,
   detailPopup: (attrs) => {
@@ -88,8 +104,8 @@ const configs = [{
       </div>`
   }
 }, {
-  xIdx: 7,
-  yIdx: 8,
+  xIdx: 11,
+  yIdx: 12,
   symbolUrl: 'static/svg/Loading.svg',
   facilityLayer: null,
   detailPopup: (attrs) => {
@@ -103,8 +119,8 @@ const configs = [{
       </div>`
   }
 }, {
-  xIdx: 3,
-  yIdx: 4,
+  xIdx: 7,
+  yIdx: 8,
   symbolUrl: 'static/svg/Star.svg',
   facilityLayer: null,
   detailPopup: (attrs) => {
@@ -115,8 +131,8 @@ const configs = [{
       </div>`
   }
 }, {
-  xIdx: 2,
-  yIdx: 3,
+  xIdx: 6,
+  yIdx: 7,
   symbolUrl: 'static/svg/PictureRounded.svg',
   facilityLayer: null,
   detailPopup: (attrs) => {
@@ -126,8 +142,8 @@ const configs = [{
       </div>`
   }
 }, {
-  xIdx: 2,
-  yIdx: 3,
+  xIdx: 8,
+  yIdx: 9,
   symbolUrl: 'static/svg/Position.svg',
   facilityLayer: null,
   detailPopup: (attrs) => {
@@ -139,8 +155,15 @@ const configs = [{
   }
 }]
 
+let districtMap = {}
+
 // 当前展示的配置项
 let currentConfig = null
+
+watch(() => props.displayId, () => {
+  clearFacilityLayer()
+  clearSelectPoint()
+})
 
 watch(() => props.pois, () => {
   addPoints()
@@ -153,10 +176,28 @@ watch(() => props.mapMode, () => {
   }
 })
 
+const state = reactive({
+  layers: {
+    showMap: true,
+    showHeatMap: false,
+    showRatioMap: false
+  },
+  ratioMapLegend: []
+})
+
+const fetchDistrictMap = () => {
+  fetch('json/shanghai.json').then(res => {
+    res.json().then(data => {
+      data.features.forEach(e => {
+        districtMap[e.properties.name] = e.geometry.coordinates.flat()
+      })
+    })
+  })
+}
+
 const addPoints = async () => {
   const [Map, MapView, SpatialReference, WebTileLayer, Point, Graphic, Extent] = await loadModules(["esri/Map", "esri/views/MapView",
     "esri/geometry/SpatialReference", "esri/layers/WebTileLayer", "esri/geometry/Point", "esri/Graphic", "esri/geometry/Extent"])
-
 
   currentConfig = configs[props.displayId]
 
@@ -171,8 +212,10 @@ const addPoints = async () => {
     const pointGraphic = new Graphic({
       geometry: {
         type: "point",
-        x: p[currentConfig.xIdx],
-        y: p[currentConfig.yIdx],
+        // x: p[currentConfig.xIdx],
+        // y: p[currentConfig.yIdx],
+        longitude: p[currentConfig.xIdx],
+        latitude: p[currentConfig.yIdx],
         spatialReference
       },
       symbol: {
@@ -191,6 +234,16 @@ const addPoints = async () => {
   })
 
   currentConfig.facilityLayer.addMany(points)
+}
+
+const clearFacilityLayer = () => {
+  configs.forEach(c => {
+    c.facilityLayer.removeAll()
+  })
+}
+
+const clearSelectPoint = () => {
+  if (selectPointLayer) selectPointLayer.removeAll()
 }
 
 const initMap = async () => {
@@ -230,17 +283,17 @@ const initMap = async () => {
   });
 
   // apikey
-  // const apiKey = "4cbe0c2ea845e274ee8ba10d2785e590"
-  const apiKey = "7b13a4031f051b6317cdcca67ae391f1"
+  const apiKey = "4cbe0c2ea845e274ee8ba10d2785e590"
+  // const apiKey = "7b13a4031f051b6317cdcca67ae391f1"
   // 天地图-矢量
-  let tiandituLayer = new WebTileLayer({
+  tiandituLayer = new WebTileLayer({
     urlTemplate: "http://{subDomain}.tianditu.com/DataServer?T=vec_w&x={col}&y={row}&l={level}&tk=" + apiKey,
     subDomains: ["t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7"],
     minScale: 74000000,
     spatialReference
   })
   // 天地图-注记
-  let tiandituTextLayer = new WebTileLayer({
+  tiandituTextLayer = new WebTileLayer({
     urlTemplate: "http://{subDomain}.tianditu.com/DataServer?T=cva_w&x={col}&y={row}&l={level}&tk=" + apiKey,
     subDomains: ["t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7"],
     minScale: 74000000,
@@ -280,18 +333,6 @@ const initMap = async () => {
         mapViewCanvas.style.opacity = 0.7;
       }
     }
-    mapView.on("mouse-wheel", function(event){
-      //
-      const baseScale = 10000;
-      if(event.deltaY > 0 && mapView.scale > 100 * baseScale){
-        event.stopPropagation()
-        return false
-      }
-      if(event.deltaY < 0 && mapView.scale < 1 * baseScale){
-        event.stopPropagation()
-        return false
-      }
-    })
   })
 
   // 点位图层
@@ -301,6 +342,10 @@ const initMap = async () => {
   })
   selectPointLayer = new GraphicsLayer()
   map.add(selectPointLayer)
+
+  // 比例图图层
+  ratioMapLayer = new GraphicsLayer()
+  map.add(ratioMapLayer)
 
   // 获取点击位置元素
   mapView.on('click', (e) => {
@@ -344,8 +389,10 @@ const initMap = async () => {
               title: attrs[1],
               content: currentConfig.detailPopup(attrs),
               location: new Point({
-                x: attrs[currentConfig.xIdx],
-                y: attrs[currentConfig.yIdx],
+                // x: attrs[currentConfig.xIdx],
+                // y: attrs[currentConfig.yIdx],
+                longitude: attrs[currentConfig.xIdx],
+                latitude: attrs[currentConfig.yIdx],
                 spatialReference
               }),
               // featureMenuOpen: true
@@ -357,195 +404,224 @@ const initMap = async () => {
   })
 }
 
+const handleShowMap = () => {
+  if (state.layers.showMap) {
+    if (tiandituLayer) map.add(tiandituLayer)
+    if (tiandituTextLayer) map.add(tiandituTextLayer)
+  } else {
+    if (tiandituLayer) map.remove(tiandituLayer)
+    if (tiandituTextLayer) map.remove(tiandituTextLayer)
+  }
+}
 
-const addHeatMap = async () => {
+const handleShowHeatMap = async () => {
+  // 展示热力图
+  if (state.layers.showHeatMap) {
+    // 引入地图组件
+    let [Map,
+      MapView,
+      SpatialReference,
+      WebTileLayer,
+      Point,
+      Graphic,
+      GraphicsLayer,
+      Extent,
+      FeatureLayer,
+      HeatmapRenderer
+    ] = await loadModules([
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/geometry/SpatialReference",
+      "esri/layers/WebTileLayer",
+      "esri/geometry/Point",
+      "esri/Graphic",
+      "esri/layers/GraphicsLayer",
+      "esri/geometry/Extent",
+      "esri/layers/FeatureLayer",
+      "esri/renderers/HeatmapRenderer"])
 
-  // 引入地图组件
-  let [Map,
-    MapView,
-    SpatialReference,
-    WebTileLayer,
-    Point,
-    Graphic,
-    GraphicsLayer,
-    Extent,
-    FeatureLayer,
-    HeatmapRenderer
-  ] = await loadModules([
-    "esri/Map",
-    "esri/views/MapView",
-    "esri/geometry/SpatialReference",
-    "esri/layers/WebTileLayer",
-    "esri/geometry/Point",
-    "esri/Graphic",
-    "esri/layers/GraphicsLayer",
-    "esri/geometry/Extent",
-    "esri/layers/FeatureLayer",
-    "esri/renderers/HeatmapRenderer"])
+    // getSQLAPI('SELECT district, COUNT(*) as num FROM `nursinghome` GROUP BY district').then(res => {
+    //   console.log(res)
+    // })
+    let [xMax, yMax, xMin, yMin] = (await getSQLAPI('SELECT max(x), max(y), min(x), min(y) FROM `nursing_homes`'))[0]
+    let response = await getSQLAPI('SELECT * FROM `nursing_homes`')
 
-  // getSQLAPI('SELECT district, COUNT(*) as num FROM `nursing_homes` GROUP BY district').then(res => {
-  //   console.log(res)
-  // })
-  let [xMax, yMax, xMin, yMin] = (await getSQLAPI('SELECT max(x), max(y), min(x), min(y) FROM `nursing_homes`'))[0]
-  let response = await getSQLAPI('SELECT * FROM `nursing_homes`')
+    let xInterval = (xMax - xMin) / heatMapLevel.x
+    let yInterval = (yMax - yMin) / heatMapLevel.y
 
-  let xInterval = (xMax - xMin) / heatMapLevel.x
-  let yInterval = (yMax - yMin) / heatMapLevel.y
+    let data1 = []
+    for (let i = 0; i < heatMapLevel.x; i++) {
+      data1.push([])
+      for (let j = 0; j < heatMapLevel.y; j++) {
+        data1[i].push({
+          // 方格中心点位坐标
+          x: xMin + xInterval * i,
+          y: yMin + yInterval * j,
+          count: 0
+        })
+      }
+    }
 
-  let data1 = []
-  for (let i = 0; i < heatMapLevel.x; i++) {
-    data1.push([])
-    for (let j = 0; j < heatMapLevel.y; j++) {
-      data1[i].push({
-        // 方格中心点位坐标
-        x: xMin + xInterval * i,
-        y: yMin + yInterval * j,
-        count: 0
+    response.forEach(e => {
+      let xIdx = Math.floor((e[10] - xMin) / xInterval)
+      let yIdx = Math.floor((e[11] - yMin) / yInterval)
+      if (xIdx >= heatMapLevel.x) {
+        xIdx = heatMapLevel.x - 1
+      }
+      if (yIdx >= heatMapLevel.y) {
+        yIdx = heatMapLevel.y - 1
+      }
+
+      data1[xIdx][yIdx].count++
+    })
+
+    if (heatMapLayer) map.remove(heatMapLayer)
+
+    let rendererT = {
+      type: "heatmap",
+      field: 'crime_count',
+      colorStops: [
+        {color: "rgba(63, 40, 102, 0)", ratio: 0},
+        {color: "#00AFFF", ratio: 0.1},
+        {color: "#14B441", ratio: 0.3},
+        {color: "#FFFA00", ratio: 0.7},
+        {color: "#FF4600", ratio: 1}
+      ],
+      maxPixelIntensity: 100,
+      minPixelIntensity: 0
+    };
+
+    let features = [];
+    let data = data1.flat()
+    for (let i = 0; i < data.length; i++) {
+      features.push({
+        geometry: {
+          type: "point",
+          x: data[i].x,//经度
+          y: data[i].y,//纬度
+          spatialReference,//坐标系
+        },
+        attributes: {
+          ObjectID: i,
+          crime_count: data[i].count
+        }
       })
     }
+
+    heatMapLayer = new FeatureLayer({
+      geometryType: "point",
+      source: features,
+      title: "热力图",
+      fields: [{name: "ObjectID", alias: "ObjectID", type: "oid"}, {
+        name: "crime_count",
+        alias: "crime_count",
+        type: "integer"
+      }],
+      objectIdField: "ObjectID",
+      renderer: rendererT,
+    });
+
+    map.add(heatMapLayer)
+  } else {
+    if (heatMapLayer) map.remove(heatMapLayer)
   }
+}
 
-  response.forEach(e => {
-    let xIdx = Math.floor((e[10] - xMin) / xInterval)
-    let yIdx = Math.floor((e[11] - yMin) / yInterval)
-    if (xIdx >= heatMapLevel.x) {
-      xIdx = heatMapLevel.x - 1
-    }
-    if (yIdx >= heatMapLevel.y) {
-      yIdx = heatMapLevel.y - 1
-    }
+const handleShowRatioMap = async () => {
+  if (state.layers.showRatioMap) {
+    // 引入地图组件
+    let [Map,
+      MapView,
+      SpatialReference,
+      WebTileLayer,
+      Point,
+      Graphic,
+      GraphicsLayer,
+      Extent,
+      FeatureLayer,
+      HeatmapRenderer
+    ] = await loadModules([
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/geometry/SpatialReference",
+      "esri/layers/WebTileLayer",
+      "esri/geometry/Point",
+      "esri/Graphic",
+      "esri/layers/GraphicsLayer",
+      "esri/geometry/Extent",
+      "esri/layers/FeatureLayer",
+      "esri/renderers/HeatmapRenderer"])
 
-    data1[xIdx][yIdx].count++
-  })
+    // 查询 各区常驻老年人口 / 各区养老院设施数量 比率
+    let ratioMap = {}
+    getSQLAPI("SELECT op.district, ((op.100in1million / 100) * op.pop_changzhu) / gnh.num as ratio FROM oldpop as op, (SELECT nh.district, COUNT(nh.id) as num FROM nursing_homes as nh GROUP BY nh.district)as gnh WHERE op.district = gnh.district").then(res => {
+      if (ratioMapLayer) ratioMapLayer.removeAll()
 
-  if (heatMapLayer) map.remove(heatMapLayer)
+      res.forEach(r => {
+        ratioMap[r[0]] = Math.ceil(r[1])
+      })
 
-  let rendererT = {
-    type: "heatmap",
-    field: 'crime_count',
-    colorStops: [
-      {color: "rgba(63, 40, 102, 0)", ratio: 0},
-      {color: "#00AFFF", ratio: 0.1},
-      {color: "#14B441", ratio: 0.3},
-      {color: "#FFFA00", ratio: 0.7},
-      {color: "#FF4600", ratio: 1}
-    ],
-    maxPixelIntensity: 100,
-    minPixelIntensity: 0
-  };
+      let min = Math.min(...Object.values(ratioMap))
+      let max = Math.max(...Object.values(ratioMap))
+      for (let key in ratioMap) {
+        const polygonGraphic = new Graphic({
+          geometry: {
+            type: "polygon",
+            rings: districtMap[key]
+          },
+          symbol: {
+            type: "simple-fill",
+            color: mapRangeToColor(ratioMap[key], min, max, {
+              r: 251,
+              g: 210,
+              b: 188
+            },{
+              r: 204,
+              g: 80,
+              b: 70
+            }),
+            outline: {
+              color: [255, 255, 255],
+              width: 1
+            }
+          }
+        })
 
-  let features = [];
-  let data = data1.flat()
-  for (let i = 0; i < data.length; i++) {
-    features.push({
-      geometry: {
-        type: "point",
-        x: data[i].x,//经度
-        y: data[i].y,//纬度
-        spatialReference: spatialReference,//坐标系
-      },
-      attributes: {
-        ObjectID: i,
-        crime_count: data[i].count
+        ratioMapLayer.add(polygonGraphic)
+      }
+
+      // 写入图例数据
+      let interval = (max - min) / 5
+      for (let i = 0; i < 5; i++) {
+        state.ratioMapLegend.push({
+          color: mapRangeToColor(min + i * interval, min, max, {
+            r: 251,
+            g: 210,
+            b: 188
+          },{
+            r: 204,
+            g: 80,
+            b: 70
+          }),
+          min: Math.round(min + i * interval),
+          max: Math.round(min + (i + 1) * interval)
+        })
       }
     })
+
+  } else {
+    // 移除比例图图层
+    if (ratioMapLayer) ratioMapLayer.removeAll()
+    // 清空图例数据
+    state.ratioMapLegend = []
   }
-
-  heatMapLayer = new FeatureLayer({
-    geometryType: "point",
-    source: features,
-    title: "热力图",
-    fields: [{name: "ObjectID", alias: "ObjectID", type: "oid"}, {
-      name: "crime_count",
-      alias: "crime_count",
-      type: "integer"
-    }],
-    objectIdField: "ObjectID",
-    renderer: rendererT,
-  });
-
-  map.add(heatMapLayer)
 }
 
 onMounted(() => {
   initMap()
+  fetchDistrictMap()
 });
-const addMark = async (e) => {
-   // 添加选中点位展示
-    // 引入地图组件
-  const [Map,
-    MapView,
-    SpatialReference,
-    WebTileLayer,
-    Point,
-    Graphic,
-    GraphicsLayer,
-    Extent,
-    FeatureLayer,
-    HeatmapRenderer
-  ] = await loadModules([
-    "esri/Map",
-    "esri/views/MapView",
-    "esri/geometry/SpatialReference",
-    "esri/layers/WebTileLayer",
-    "esri/geometry/Point",
-    "esri/Graphic",
-    "esri/layers/GraphicsLayer",
-    "esri/geometry/Extent",
-    "esri/layers/FeatureLayer",
-    "esri/renderers/HeatmapRenderer"])
-   selectPointLayer && selectPointLayer.removeAll()
-  const pointGraphic = new Graphic({
-            geometry: {
-              type: "point",
-              x: e.mapPoint.x,
-              y: e.mapPoint.y,
-              spatialReference
-            },
-            symbol: {
-              type: 'picture-marker',
-              url: 'static/svg/Point.svg',
-              width: 15,
-              height: 15,
-            },
-            attributes: {
-              type: 'selectPoint'
-            }
-    })
-    selectPointLayer && selectPointLayer.add(pointGraphic)
-}
-//     // 根据地址名称获取经纬度坐标
-//  const  getPointByAddress = (address) => {
-//       // 创建地理编码实例
-//       const myGeo = new BMap.Geocoder();
-//       return new Promise((resolve, reject) => {
-//         // 对地址进行地理编码
-//         myGeo.getPoint(address, (point) => {
-//           if (point) {
-//             // 地理编码成功，返回经纬度坐标对象
-//             resolve(point);
-//           } else {
-//             // 地理编码失败
-//             reject('地理编码失败');
-//           }
-//         }, '上海市');
-//       });
-// }
-// const getLoaction = async (address) => {
-//   console.log(address,'获取地址')
-//   try {
-//         const point = await getPointByAddress(address);
-//         console.log('经度：', point.lng);
-//         console.log('纬度：', point.lat);
-//     } catch (error) {
-//         console.error(error,'获取经纬度报错');
-//     }
-// }
 
-defineExpose({
-  // getLoaction, 
-  addMark
-});
 </script>
 
 <style lang="less">
@@ -555,14 +631,106 @@ defineExpose({
   display: none;
 }
 
+.el-popper {
+  z-index: 20000!important;
+  font-size: 1.0vw;
+}
+
+.layers {
+  .el-checkbox__label {
+    font-size: 1.0vw;
+  }
+}
 
 </style>
 
 <style scoped lang="less">
+
+.layers {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 1vw;
+  z-index: 20000;
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(150, 127, 127, 0.7);
+  border-radius: 0.5vw;
+
+  .title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0.5vh;
+    text-align: center;
+    font-size: 1.0vw;
+
+    .icon-span {
+      padding-top: 0.15vw;
+      margin-right: 0.15vw;
+    }
+  }
+
+  .item {
+    padding: 0.5vh 0.7vw;
+    cursor: pointer;
+    border-top: 1px solid #eee;
+  }
+}
+
+.legends {
+  position: absolute;
+  bottom: 1.5vh;
+  left: 1vw;
+  z-index: 20000;
+  display: flex;
+
+  .ratio-map-legend {
+    background-color: rgba(150, 127, 127, 0.7);
+    border-radius: 0.5vw;
+    padding: 0.5vh 1.0vh;
+
+    .title {
+      font-size: 1.2vw;
+      margin: 0;
+      padding: 0.5vh 0;
+      text-align: center;
+    }
+
+    .unit {
+      font-size: 1.0vw;
+      margin: 0;
+      padding: 0.5vh 0;
+      text-align: center;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      padding: 0.25vh 0;
+
+      .color {
+        background-color: red;
+        display: inline-block;
+        width: 2.5vw;
+        height: 2.0vh;
+        border-radius: 0.2vw;
+        margin-right: 0.4vw;
+      }
+
+      .value {
+        font-size: 1.0vw;
+      }
+    }
+
+  }
+}
+
 #facilityMapId {
   width: 100%;
   height: 86vh;
   position: relative;
-  z-index: 99;
+  z-index: 9999;
 }
 </style>
