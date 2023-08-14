@@ -222,7 +222,10 @@ init();
   }
 
   .con {
-    width: 100%;
+    position: absolute;
+    top: 0vh;
+    left: 1vw;
+    width: 50vw;
     margin-top: 2vw;
     flex: 1;
     display: flex;
@@ -240,17 +243,25 @@ init();
       align-content: flex-start;
 
       .con-item {
-        width: 20vw;
+        width: 23vw;
+        height: 17vh;
         border: 0.1vh solid #000;
         background-color: #0000006b;
         color: #fff;
+        margin-bottom: 2vh;
 
         .domicile {
           font-size: 1.5vh;
+          margin-left: 1vw;
+          margin-right: 1vw;
+          margin-top: 1vh;
+          font-size: 2vh;
 
           .icon {
             position: relative;
-            top: 0.3vh;
+            top: 0.6vh;
+            width: 2.3vh;
+            height: 2.3vh;
           }
         }
 
@@ -259,6 +270,15 @@ init();
           justify-content: space-between;
           font-weight: 600;
           padding-bottom: 1vh;
+          margin-top: 2vh;
+          margin-left: 1vw;
+          margin-right: 1vw;
+          font-size: 2vh;
+
+          .icon {
+            width: 2.3vh;
+            height: 2.3vh;
+          }
 
           span {
             display: flex;
@@ -267,16 +287,27 @@ init();
         }
 
         .item-detail {
-          display: flex;
-          justify-content: flex-end;
-          padding-bottom: 1vh;
+          position: absolute;
+          right: -0.5vw;
+          bottom: 1.7vh;
+          margin-right: 2vw;
+
+          /deep/ .el-button {
+            background-color: #1827c4 !important;
+            width: 4vw;
+            height: 3.5vh;
+            font-size: 2vh;
+          }
         }
       }
     }
 
     .page {
-      display: flex;
-      justify-content: center;
+      // display: flex;
+      // justify-content: center;
+      position: absolute;
+      bottom: -2vh;
+      left: 15vw;
     }
   }
 
