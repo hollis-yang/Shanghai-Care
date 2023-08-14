@@ -1,59 +1,3 @@
-<template>
-  <div class="detail">
-    <div class="detail-top">
-      <span class="title">筛选条件</span>
-      <el-select class="conditionSelect" v-model="state.conditionSelectValue" placeholder="请选择">
-        <el-option
-          v-for="item in conditionSelect"
-          :key="item.id"
-          :label="item.label"
-          :value="item.label"
-        >
-        </el-option>
-      </el-select>
-      <el-select class="selectValue" v-model="state.selectValue" placeholder="请选择">
-        <el-option
-          v-for="item in screenArr"
-          :key="item.id"
-          :label="item.label"
-          :value="item.label"
-        >
-        </el-option>
-      </el-select>
-      <div class="btn footer">
-          <el-button type="primary" @click="onSelect">筛选</el-button>
-      </div>
-    </div>
-    <div class="con">
-      <div class="con-item-box">
-        <div class="con-item" v-for="(item, index) in informationData" :key="index">
-        <dv-border-box8 :reverse="true">
-          <div style="padding: 10px;">
-            <div class="item-detail-top">
-              <span class="name"><Icon class="icon" :Components='iconObj.name'></Icon>{{ item[0] }}</span>
-              <span class="gender"><Icon  class="icon" :Components='iconObj.gender'></Icon>{{ item[2] }}</span>
-              <span class="age"><Icon  class="icon" :Components='iconObj.age'></Icon>{{ item[3] }}</span>
-            </div>
-            <span class="domicile text-ellipsis"><Icon  class="icon" :Components='iconObj.organization'></Icon>{{ item[1] }}</span>
-            <div class="btn item-detail">
-                <el-button size="small" type="primary" @click="onToDetail(item)">详情</el-button>
-            </div>
-          </div>
-        </dv-border-box8>
-        </div>
-      </div>
-      <div class="page">
-        <el-pagination
-          background
-          :page-size="6"
-          @current-change="onChangePage"
-          layout="prev, pager, next"
-          :total="state.information.length">
-        </el-pagination>
-      </div>
-    </div>
-  </div>
-</template>
 <script setup>
 import { reactive, computed, watch } from "vue"
 import { conditionSelect, gender, age, domicile, situation, grade, some } from '@/utils/data'
@@ -63,7 +7,7 @@ import { BorderBox8 as DvBorderBox8 } from '@kjgl77/datav-vue3'
 import { getSQLAPI } from "@/apis/mysql"
 import { useTime } from '@/stores/time'
 const infoObj = useTime()
-const updateData = computed(()=> infoObj.update)
+const updateData = computed(() => infoObj.update)
 const iconObj = {
   name: User,
   gender: MagicStick,
@@ -135,13 +79,13 @@ const onSelect = () => {
   if (state.conditionSelectValue !== '全部' && state.selectValue !== '全部') {
     if (state.conditionSelectValue === '性别') {
       sql += ` WHERE gender = '${state.selectValue}'`
-    } else if (state.conditionSelectValue === '年龄'){
+    } else if (state.conditionSelectValue === '年龄') {
       if (state.selectValue === '29岁及以下') {
         sql += ` WHERE age < 30`
-      }else if (state.selectValue === '60岁以上') {
+      } else if (state.selectValue === '60岁以上') {
         sql += ` WHERE age >= 60`
       } else {
-        sql += ` WHERE age >= ${state.selectValue.split('-')[0]} AND age <= ${state.selectValue.split('-')[1].slice(0,2)}`
+        sql += ` WHERE age >= ${state.selectValue.split('-')[0]} AND age <= ${state.selectValue.split('-')[1].slice(0, 2)}`
       }
     } else if (state.conditionSelectValue === '户籍情况') {
       sql += ` WHERE census_register = '${state.selectValue}'`
@@ -187,41 +131,103 @@ const init = () => {
 }
 init();
 </script>
+
+<template>
+  <div class="detail">
+    <div class="detail-top">
+      <span class="title">筛选条件</span>
+      <el-select class="conditionSelect" v-model="state.conditionSelectValue" placeholder="请选择">
+        <el-option v-for="item in conditionSelect" :key="item.id" :label="item.label" :value="item.label">
+        </el-option>
+      </el-select>
+      <el-select class="selectValue" v-model="state.selectValue" placeholder="请选择">
+        <el-option v-for="item in screenArr" :key="item.id" :label="item.label" :value="item.label">
+        </el-option>
+      </el-select>
+      <div class="footer">
+        <el-button type="primary" @click="onSelect">筛选</el-button>
+      </div>
+    </div>
+    <div class="con">
+      <div class="con-item-box">
+        <div class="con-item" v-for="(item, index) in informationData" :key="index">
+          <dv-border-box8 :reverse="true">
+            <div style="padding: 10px;">
+              <div class="item-detail-top">
+                <span class="name">
+                  <Icon class="icon" :Components='iconObj.name'></Icon>{{ item[0] }}
+                </span>
+                <span class="gender">
+                  <Icon class="icon" :Components='iconObj.gender'></Icon>{{ item[2] }}
+                </span>
+                <span class="age">
+                  <Icon class="icon" :Components='iconObj.age'></Icon>{{ item[3] }}
+                </span>
+              </div>
+              <span class="domicile text-ellipsis">
+                <Icon class="icon" :Components='iconObj.organization'></Icon>{{ item[1] }}
+              </span>
+              <div class="btn item-detail">
+                <el-button size="small" type="primary" @click="onToDetail(item)">详情</el-button>
+              </div>
+            </div>
+          </dv-border-box8>
+        </div>
+      </div>
+      <div class="page">
+        <el-pagination background :page-size="6" @current-change="onChangePage" layout="prev, pager, next"
+          :total="state.information.length">
+        </el-pagination>
+      </div>
+    </div>
+  </div>
+</template>
+
 <style lang="less" scoped>
 .detail {
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
+
   .detail-top {
+    position: absolute;
+    top: -5vh;
+    right: -7vw;
     padding: 2vh 2vw;
-    width: 46vw;
-    color: #fff;    
+    width: 50vw;
+    color: #fff;
     background-color: #0000006b;
     display: flex;
     align-items: center;
     flex-shrink: 0;
     margin: 0 2vw;
     flex-wrap: wrap;
+
     .title {
       font-weight: 600;
-      padding-right: 1vw;
+      padding-right: 1.5vw;
+      font-size: 2.2vh;
     }
+
     .conditionSelect {
       width: 14vw;
-      margin-right: 1vw;
+      margin-right: 2vw;
     }
+
     .selectValue {
       width: 22vw;
-
     }
   }
+
   .con {
     width: 100%;
     margin-top: 2vw;
     flex: 1;
     display: flex;
     flex-direction: column;
+
     .con-item-box {
       display: flex;
       justify-content: space-between;
@@ -232,29 +238,34 @@ init();
       gap: 1vh 1vw;
       flex: 1;
       align-content: flex-start;
+
       .con-item {
-        width: 40%;
+        width: 20vw;
         border: 0.1vh solid #000;
         background-color: #0000006b;
         color: #fff;
+
         .domicile {
           font-size: 1.5vh;
+
           .icon {
             position: relative;
             top: 0.3vh;
           }
         }
-        
+
         .item-detail-top {
           display: flex;
           justify-content: space-between;
           font-weight: 600;
           padding-bottom: 1vh;
+
           span {
             display: flex;
             align-items: center;
           }
         }
+
         .item-detail {
           display: flex;
           justify-content: flex-end;
@@ -262,30 +273,47 @@ init();
         }
       }
     }
+
     .page {
       display: flex;
       justify-content: center;
     }
   }
+
   .btn {
-      display: flex;
-      margin-top: 1vh;
-      /deep/ .el-button {
-        background-color: #1827c4 !important;
-        border: none;
-      }
+    display: flex;
+    margin-top: 1vh;
+
+    /deep/ .el-button {
+      background-color: #1827c4 !important;
+      border: none;
     }
+  }
+
+  .footer {
+    position: absolute;
+    right: 2.5vw;
+
+    /deep/ .el-button {
+      background-color: #1827c4 !important;
+      border: none;
+    }
+  }
 }
+
 .text-ellipsis {
   display: inline-block;
   width: 100%;
-  white-space: nowrap; /* 防止文字换行 */
-  text-overflow: ellipsis; /* 使用省略号代替超出的部分 */
+  white-space: nowrap;
+  /* 防止文字换行 */
+  text-overflow: ellipsis;
+  /* 使用省略号代替超出的部分 */
   overflow: hidden;
 }
-        .icon {
-          width: 1.5vh;
-          height: 1vw;
-          margin-right: 0.5em;
-        }
+
+.icon {
+  width: 1.5vh;
+  height: 1vw;
+  margin-right: 0.5em;
+}
 </style>

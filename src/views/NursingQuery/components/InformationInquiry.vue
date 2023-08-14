@@ -110,7 +110,7 @@ async function queryInfo() {
   })
   console.log(isInfo)
   if (!isInfo) {
-    alert('暂无查询结果请重新输入')
+    alert('暂无查询结果, 请重新输入!')
     infoObj.value = {
       name: '-',
       gender: '-',
@@ -185,7 +185,7 @@ async function queryInfo() {
     </div>
 
     <div class="btn footer">
-      <el-button type="primary" v-if="!isSet" @click="onSetAndAdd">保存</el-button>
+      <el-button type="primary" v-if="!isSet" @click="onSetAndAdd" class="save-btn">保存</el-button>
       <div v-else-if="infoObj.name && infoObj.name !== '-'" class="footer-btn">
         <el-button v-if="adminStore.isadmin" type="primary" @click="onSetAndAdd">编辑</el-button>
         <el-button v-if="adminStore.isadmin" type="primary" @click="onDel">删除</el-button>
@@ -243,11 +243,19 @@ async function queryInfo() {
   //   padding: 3vh 2vw;
   // }
 
+  .save-btn {
+    position: absolute;
+    bottom: -17vh;
+    width: 4vw !important;
+    height: 4vh !important;
+  }
+
   .footer-btn {
     position: absolute;
-    bottom: -11vh;
+    bottom: -17vh;
     left: 20vw;
     width: 20vw;
+    height: 4vh;
     display: flex;
 
     /deep/ .el-button {
@@ -275,22 +283,23 @@ async function queryInfo() {
     padding-right: 2.5vw;
     padding-top: 1vh;
     margin-top: 5vh;
-    border-radius: 0.5vh;
+    border-radius: 1vh;
     width: 28vw;
+    height: 55vh;
 
     .bottom-box {
       display: flex;
-      margin-top: 3vh;
+      margin-top: 3.2vh;
       justify-content: space-between;
 
       &:first-child {
-        margin-top: 1.5vh;
+        margin-top: 2vh;
       }
 
       .left {
         display: flex;
         align-items: center;
-        font-size: 1.8vh;
+        font-size: 2vh;
 
         .icon {
           width: 2.2vh;
@@ -300,7 +309,7 @@ async function queryInfo() {
       }
 
       .right {
-        font-size: 1.7vh;
+        font-size: 1.9vh;
       }
     }
   }
