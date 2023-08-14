@@ -218,57 +218,54 @@ init()
   display: flex;
   flex-direction: column;
   .detail-top {
-    padding: 10px;
-    width: 600px;
+    padding: 2vh 2vw;
+    width: 46vw;
     color: #fff;    
     background-color: #0000006b;
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    margin: 0 20px;
+    margin: 0 2vw;
     flex-wrap: wrap;
     .title {
       font-weight: 600;
-      padding-right: 10px;
+      padding-right: 1vw;
     }
     .conditionSelect {
-      width: 150px;
-      margin-right: 10px;
+      width: 14vw;
+      margin-right: 1vw;
     }
     .selectValue {
-      width: 330px;
+      width: 22vw;
 
     }
   }
   .con {
     width: 100%;
-    margin-top: 20px;
+    margin-top: 2vw;
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding-bottom: 30px;
     .con-item-box {
       display: flex;
       justify-content: space-between;
       flex-shrink: 0;
       flex-wrap: wrap;
-      padding: 20px;
+      padding: 2vw;
       width: 100%;
-      gap: 5px;
+      gap: 1vh 1vw;
       flex: 1;
       align-content: flex-start;
       .con-item {
         width: 40%;
-        min-height: 75px;
-        border: 1px solid #000;
+        border: 0.1vh solid #000;
         background-color: #0000006b;
         color: #fff;
-        height: 109px;
         .domicile {
-          font-size: 14px;
+          font-size: 1.5vh;
           .icon {
             position: relative;
-            top: 3px;
+            top: 0.3vh;
           }
         }
         
@@ -276,18 +273,16 @@ init()
           display: flex;
           justify-content: space-between;
           font-weight: 600;
-          padding-bottom: 5px;
+          padding-bottom: 1vh;
           span {
             display: flex;
             align-items: center;
-            font-size: 14px;
-            font-weight: 400;
           }
         }
         .item-detail {
           display: flex;
           justify-content: flex-end;
-          padding-bottom: 5px;
+          padding-bottom: 1vh;
         }
       }
     }
@@ -298,7 +293,7 @@ init()
   }
   .btn {
       display: flex;
-      margin-top: 10px;
+      margin-top: 1vh;
       /deep/ .el-button {
         background-color: #1827c4 !important;
         border: none;
@@ -313,8 +308,8 @@ init()
   overflow: hidden;
 }
         .icon {
-          width: 16px;
-          height: 16px;
+          width: 1.5vh;
+          height: 1vw;
           margin-right: 0.5em;
         }
 </style>

@@ -122,13 +122,13 @@ input {
 //   background-color: #656BA7 !important;
 }
 .tables {
-  margin: 20px;
+  margin: 1vw;
 }
 /deep/.el-table__header-wrapper {
 //   background-color: #656BA7
 }
 .activity-table {
-  padding: 1px;
+  padding: 1vw;
 
   ::v-deep td {
     color: #fff !important;
@@ -137,14 +137,13 @@ input {
     width: 90%;
     position: absolute;
     margin: 0 5%;
-    bottom: 10px;
+    bottom: 2vh;
     display: flex;
     justify-content: space-between;
     align-items: center;
 
     .activity-pagination {
-      margin: 10px 30px;
-      padding: 5px 10px;
+      margin: 1vh 2vw;
       
     }
   }

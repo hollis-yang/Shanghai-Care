@@ -105,24 +105,24 @@ input {
 .activity-alert {
   z-index: 9;
   position: fixed;
-  top: calc(50% - 120px);
-  left: calc(50% - 260px);
+  top: calc(50% - 3vh);
+  left: calc(50% - 10vw);
 
   .actAlert {
-    width: 380px;
-    min-height: 200px;
-    padding: 20px;
+    width: 26vw;
+
+    padding: 1vh 1vw;
     padding-bottom: 0;
     background-color: #fff;
     color: #272827;
-    border: 2px solid;
+    border: 0.1vh solid;
 
     p {
       width: 100%;
       display: flex;
 
       .el-input__wrapper {
-        box-shadow: 0 0 0 1px #fff;
+        box-shadow: 0 0 0 0.1vh #fff;
       }
 
       input {
@@ -135,7 +135,7 @@ input {
         display: flex;
         align-items: center;
         .el-icon {
-          padding-right: 5px;
+          padding-right: 1vw;
         }
       }
     }
@@ -143,11 +143,11 @@ input {
     .actAlert-but {
       display: flex;
       justify-content: end;
-      margin-top: 25px;
+      margin-top: 1vh;
     }
   }
   .border {
-    border-bottom: 1px solid #ccc !important;
+    border-bottom: 0.1vh solid #ccc !important;
   }
 }
 </style>
