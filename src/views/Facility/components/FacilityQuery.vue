@@ -84,7 +84,7 @@ const onChangePage = (page) => {
 }
 
 const searchNursingHomes = () => {
-  let sql = 'select * from nursinghome'
+  let sql = 'select * from nursing_homes'
   getSQLAPI(sql).then(data => {
     // 筛选数据
     let bedAvailable = state.nursingQuery.bedAvailable
@@ -137,7 +137,7 @@ const searchNursingHomes = () => {
 }
 
 const searchHospitals = () => {
-  let sql = 'select * from hospitals'
+  let sql = 'select * from hospital'
   getSQLAPI(sql).then(data => {
     // 筛选数据
     let kinds = state.hospitalQuery.kinds
@@ -291,7 +291,7 @@ const searchDrugStores = async () => {
     }
    
 
-  let sql = 'select * from drugstores'
+  let sql = 'select * from drugstore'
   getSQLAPI(sql).then(res => {
     // 计算与选中点位距离
     let x = null;
@@ -361,7 +361,7 @@ const searchDrugStores = async () => {
 }
 
 const searchParks = () => {
-  let sql = 'select * from parks'
+  let sql = 'select * from park'
   getSQLAPI(sql).then(res => {
     // 计算与选中点位距离
     let x = parseFloat(state.selectedPoint.x)
@@ -386,7 +386,7 @@ const searchParks = () => {
 }
 
 const searchFacilities = () => {
-  let sql = 'select * from facilities'
+  let sql = 'select * from facility'
   getSQLAPI(sql).then(data => {
     // 筛选数据
     let types = state.facilityQuery.types
@@ -448,13 +448,13 @@ const pointInfo = computed(() => {
 
 // 查询筛选条件中选择框使用的选项数据
 const fetchConditions = () => {
-  getSQLAPI('SELECT DISTINCT kind FROM hospitals').then(res => {
+  getSQLAPI('SELECT DISTINCT kind FROM hospital').then(res => {
     state.hospitalConditions.kinds = res.map(item => {return item[0]})
   })
-  getSQLAPI('SELECT DISTINCT category FROM hospitals').then(res => {
+  getSQLAPI('SELECT DISTINCT category FROM hospital').then(res => {
     state.hospitalConditions.categories = res.map(item => {return item[0]})
   })
-  getSQLAPI('SELECT DISTINCT key_department FROM hospitals').then(res => {
+  getSQLAPI('SELECT DISTINCT key_department FROM hospital').then(res => {
     let temp = res.map(item => {
       if (item[0]) {
         if (item[0].indexOf(',') !== -1) {
@@ -480,7 +480,7 @@ const fetchConditions = () => {
       }
     })
   })
-  getSQLAPI('SELECT DISTINCT type FROM facilities').then(res => {
+  getSQLAPI('SELECT DISTINCT type FROM facility').then(res => {
     state.facilityConditions.types = res.map(item => {return item[0]})
   })
 }

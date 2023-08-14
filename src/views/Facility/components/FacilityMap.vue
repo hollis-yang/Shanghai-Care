@@ -383,11 +383,11 @@ const addHeatMap = async () => {
     "esri/layers/FeatureLayer",
     "esri/renderers/HeatmapRenderer"])
 
-  // getSQLAPI('SELECT district, COUNT(*) as num FROM `nursinghome` GROUP BY district').then(res => {
+  // getSQLAPI('SELECT district, COUNT(*) as num FROM `nursing_homes` GROUP BY district').then(res => {
   //   console.log(res)
   // })
-  let [xMax, yMax, xMin, yMin] = (await getSQLAPI('SELECT max(x), max(y), min(x), min(y) FROM `nursinghome`'))[0]
-  let response = await getSQLAPI('SELECT * FROM `nursinghome`')
+  let [xMax, yMax, xMin, yMin] = (await getSQLAPI('SELECT max(x), max(y), min(x), min(y) FROM `nursing_homes`'))[0]
+  let response = await getSQLAPI('SELECT * FROM `nursing_homes`')
 
   let xInterval = (xMax - xMin) / heatMapLevel.x
   let yInterval = (yMax - yMin) / heatMapLevel.y
