@@ -407,7 +407,7 @@ const changeDisplay = (idx) => {
           </el-col>
           <el-col :span="9">
             <el-select v-model="state.nursingQuery.district" popper-class="mapSelect" placeholder="请选择"
-                       style="font-size: 1vw; z-index: 100001; width: 100%">
+                       style="font-size: 1vw; z-index: 100; width: 100%">
               <el-option v-for="item in districtOptions" :key="item.value" :label="item.label" :value="item.label">
             <span style="
           float: left;
@@ -833,7 +833,7 @@ const changeDisplay = (idx) => {
   padding-right: 1vw;
   padding-bottom: 1vh;
   width: 30vw;
-  z-index: 10000;
+  z-index: 1000;
   top: 1vw;
   right: 1vh;
 
