@@ -287,7 +287,7 @@ const initMap = async () => {
         event.stopPropagation()
         return false
       }
-      if(event.deltaY < 0 && mapView.scale < 10 * baseScale){
+      if(event.deltaY < 0 && mapView.scale < 1 * baseScale){
         event.stopPropagation()
         return false
       }

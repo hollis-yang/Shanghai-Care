@@ -704,7 +704,7 @@ const changeDisplay = (idx) => {
                   <el-row class="standard-font-size">
                     <el-col :span="24">
                       <span><Icon class="icon" :Components='Tickets'></Icon></span>
-                      <span>据当前位置距离：</span>
+                      <span>距当前位置距离：</span>
                       <span>{{ formatDistance(item[5]) }}</span>
                     </el-col>
                   </el-row>
@@ -731,7 +731,7 @@ const changeDisplay = (idx) => {
                   <el-row class="standard-font-size">
                     <el-col :span="24">
                       <span><Icon class="icon" :Components='Tickets'></Icon></span>
-                      <span>据当前位置距离：</span>
+                      <span>距当前位置距离：</span>
                       <span>{{ formatDistance(item[4]) }}</span>
                     </el-col>
                   </el-row>
