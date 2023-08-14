@@ -6,7 +6,7 @@ export const useActStore = defineStore('activity', {
         return {
             allNum: 0,
             tableData: [],
-            pageSize: 8,
+            pageSize: 10,
             currentPage: 1,
             search: '',
             options1: [
