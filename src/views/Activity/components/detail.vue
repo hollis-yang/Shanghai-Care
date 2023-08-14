@@ -34,7 +34,7 @@ input {
 .nav {
     width: 90%;
     display: flex;
-    margin: 30px auto;
+    margin: 2vw auto;
     justify-content: space-between;
     align-items: center;
 
@@ -44,16 +44,16 @@ input {
         justify-content: space-around;
         align-items: center;
         background-color: rgba(0, 0, 0, 0.3);
-        padding: 10px;
+        padding: 1vw;
     }
 .m-2 {
     width: 30%;
 }
     button {
-        padding: 10px;
+        padding: 1vh;
         background-color: #1827c4;
         color: #fff;
-        border-radius: 5px;
+        border-radius: 0.5vh;
         border: 0;
     }
 
@@ -67,13 +67,13 @@ input {
             align-items: center;
 
             input {
-                width: 200px;
-                padding: 5px 10px;
+                width: 10vw;
+                padding: 1vh 1vw;
             }
 
             span {
                 background-color: #1827c4;
-                padding: 5px 10px;
+                padding: 1vh 1vw;
             }
 
         }

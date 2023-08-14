@@ -1,4 +1,6 @@
+
 <script setup>
+import {loadModules} from "esri-loader";
 import {onMounted, ref, onUnmounted, reactive, computed, watch} from 'vue'
 import {districtOptions} from '@/utils/district'
 import {getSQLAPI} from "@/apis/mysql";
@@ -75,14 +77,14 @@ const state = reactive({
   }
 })
 
-const emits = defineEmits(['passResults', 'changeMapMode']);
+const emits = defineEmits(['passResults', 'changeMapMode','addMark']);
 
 const onChangePage = (page) => {
   state.page = page
 }
 
 const searchNursingHomes = () => {
-  let sql = 'select * from nursinghome'
+  let sql = 'select * from nursing_homes'
   getSQLAPI(sql).then(data => {
     // 筛选数据
     let bedAvailable = state.nursingQuery.bedAvailable
@@ -135,7 +137,7 @@ const searchNursingHomes = () => {
 }
 
 const searchHospitals = () => {
-  let sql = 'select * from hospitals'
+  let sql = 'select * from hospital'
   getSQLAPI(sql).then(data => {
     // 筛选数据
     let kinds = state.hospitalQuery.kinds
@@ -182,22 +184,172 @@ const searchHospitals = () => {
     state.total = data.length
   })
 }
+var LLBAND = [75, 60, 45, 30, 15, 0]
+var LL2MC = [
+    [-0.0015702102444, 111320.7020616939, 1704480524535203, -10338987376042340, 26112667856603880, -35149669176653700, 26595700718403920, -10725012454188240, 1800819912950474, 82.5],
+    [0.0008277824516172526, 111320.7020463578, 647795574.6671607, -4082003173.641316, 10774905663.51142, -15171875531.51559, 12053065338.62167, -5124939663.577472, 913311935.9512032, 67.5],
+    [0.00337398766765, 111320.7020202162, 4481351.045890365, -23393751.19931662, 79682215.47186455, -115964993.2797253, 97236711.15602145, -43661946.33752821, 8477230.501135234, 52.5],
+    [0.00220636496208, 111320.7020209128, 51751.86112841131, 3796837.749470245, 992013.7397791013, -1221952.21711287, 1340652.697009075, -620943.6990984312, 144416.9293806241, 37.5],
+    [-0.0003441963504368392, 111320.7020576856, 278.2353980772752, 2485758.690035394, 6070.750963243378, 54821.18345352118, 9540.606633304236, -2710.55326746645, 1405.483844121726, 22.5],
+    [-0.0003218135878613132, 111320.7020701615, 0.00369383431289, 823725.6402795718, 0.46104986909093, 2351.343141331292, 1.58060784298199, 8.77738589078284, 0.37238884252424, 7.45]
+]
 
-const searchDrugStores = () => {
-  let sql = 'select * from drugstores'
+function getRange(cC, cB, T) {
+    if (cB != null) {
+        cC = Math.max(cC, cB);
+    }
+    if (T != null) {
+        cC = Math.min(cC, T);
+    }
+    return cC;
+}
+
+function getLoop(cC, cB, T) {
+    while (cC > T) {
+        cC -= T - cB;
+    }
+    while (cC < cB) {
+        cC += T - cB;
+    }
+    return cC;
+}
+
+function convertor(cC, cD) {
+    if (!cC || !cD) {
+        return null;
+    }
+    let T = cD[0] + cD[1] * Math.abs(cC.x);
+    const cB = Math.abs(cC.y) / cD[9];
+    let cE = cD[2] + cD[3] * cB + cD[4] * cB * cB +
+        cD[5] * cB * cB * cB + cD[6] * cB * cB * cB * cB +
+        cD[7] * cB * cB * cB * cB * cB +
+        cD[8] * cB * cB * cB * cB * cB * cB;
+    T *= (cC.x < 0 ? -1 : 1);
+    cE *= (cC.y < 0 ? -1 : 1);
+    return [T, cE];
+}
+
+function convertLL2MC(T) {
+    let cD, cC, len;
+    T.x = getLoop(T.x, -180, 180);
+    T.y = getRange(T.y, -74, 74);
+    const cB = T;
+    for (cC = 0, len = LLBAND.length; cC < len; cC++) {
+        if (cB.y >= LLBAND[cC]) {
+            cD = LL2MC[cC];
+            break;
+        }
+    }
+    if (!cD) {
+        for (cC = LLBAND.length - 1; cC >= 0; cC--) {
+            if (cB.y <= -LLBAND[cC]) {
+                cD = LL2MC[cC];
+                break;
+            }
+        }
+    }
+    const cE = convertor(T, cD);
+    return cE;
+}
+
+
+const  getPointByAddress = (address) => {
+      // 创建地理编码实例
+      const myGeo = new BMap.Geocoder();
+      return new Promise((resolve, reject) => {
+        // 对地址进行地理编码
+        myGeo.getPoint(address, (point) => {
+          if (point) {
+            // 地理编码成功，返回经纬度坐标对象
+            resolve(point);
+          } else {
+            // 地理编码失败
+            reject('地理编码失败');
+          }
+        }, '上海市');
+      });
+}
+
+// 搜索条件
+const radio2 = ref('2')  // 默认为地图选点
+// 搜索范围
+const radioRange = ref('1')
+const keyWorld = ref(null)
+// 搜索事件
+const searchDrugStores = async () => {
+      // 根据地址名称获取经纬度坐标
+    let xyArr = []
+    if(radio2.value == '1'){
+        try {
+          const point = await getPointByAddress(keyWorld.value);
+          console.log('经度：', point.lng);
+          console.log('纬度：', point.lat,state.selectedPoint.x);
+          xyArr = convertLL2MC({x:  point.lng, y: point.lat})
+      } catch (error) {
+          console.error(error,'获取经纬度报错');
+      }
+    }
+   
+
+  let sql = 'select * from drugstore'
   getSQLAPI(sql).then(res => {
     // 计算与选中点位距离
-    let x = parseFloat(state.selectedPoint.x)
-    let y = parseFloat(state.selectedPoint.y)
-    res.forEach(e => {
+    let x = null;
+    let y = null;
+    if(radio2.value == '1'){
+        x = xyArr[0]
+        y = xyArr[1]
+    }else{
+        x = parseFloat(state.selectedPoint.x)
+        y = parseFloat(state.selectedPoint.y)
+    }
+    if(radioRange.value == '1'){
+      res = res.filter(e => {
+          e[5] = parseFloat(calculateDistance(e[3], e[4], x, y))
+          return e[5] <= 0.5
+       })
+    }else if(radioRange.value == '2'){
+      res = res.filter(e => {
+          e[5] = parseFloat(calculateDistance(e[3], e[4], x, y))
+          if( e[5] > 0.5 && e[5] <= 1){
+             return true
+          }else{
+            return false
+          }
+          
+       })
+    }else if(radioRange.value == '3'){
+      res = res.filter(e => {
+          e[5] = parseFloat(calculateDistance(e[3], e[4], x, y))
+          if( e[5] > 1 && e[5] <= 2){
+             return true
+          }else{
+            return false
+          }
+          
+       })
+    }
+    
+    res.forEach((e,index) => {
+       
       e[5] = parseFloat(calculateDistance(e[3], e[4], x, y))
+       if(index<5){
+        console.log(e)
+       }
     })
 
     // 按距离排序
     res.sort((a, b) => {
       return a[5] - b[5]
     })
-
+    if(radio2.value == '1'){
+      emits('addMark', {
+            mapPoint:{
+               x: x,
+               y: y
+              }
+      })
+    }
     emits('passResults', {
       idx: 2,
       points: res
@@ -209,7 +361,7 @@ const searchDrugStores = () => {
 }
 
 const searchParks = () => {
-  let sql = 'select * from parks'
+  let sql = 'select * from park'
   getSQLAPI(sql).then(res => {
     // 计算与选中点位距离
     let x = parseFloat(state.selectedPoint.x)
@@ -234,7 +386,7 @@ const searchParks = () => {
 }
 
 const searchFacilities = () => {
-  let sql = 'select * from facilities'
+  let sql = 'select * from facility'
   getSQLAPI(sql).then(data => {
     // 筛选数据
     let types = state.facilityQuery.types
@@ -282,11 +434,11 @@ const results = computed(() => {
 })
 
 watch(() => props.selectedPoint, () => {
+  console.log(state.selectedPoint,'改變')
   Object.assign(state.selectedPoint, props.selectedPoint)
 })
 
 const pointInfo = computed(() => {
-
   if (state.selectedPoint.longitude && state.selectedPoint.latitude) {
     return state.selectedPoint.longitude.toFixed(4) + ',' + state.selectedPoint.latitude.toFixed(4)
   } else {
@@ -296,13 +448,13 @@ const pointInfo = computed(() => {
 
 // 查询筛选条件中选择框使用的选项数据
 const fetchConditions = () => {
-  getSQLAPI('SELECT DISTINCT kind FROM hospitals').then(res => {
+  getSQLAPI('SELECT DISTINCT kind FROM hospital').then(res => {
     state.hospitalConditions.kinds = res.map(item => {return item[0]})
   })
-  getSQLAPI('SELECT DISTINCT category FROM hospitals').then(res => {
+  getSQLAPI('SELECT DISTINCT category FROM hospital').then(res => {
     state.hospitalConditions.categories = res.map(item => {return item[0]})
   })
-  getSQLAPI('SELECT DISTINCT key_department FROM hospitals').then(res => {
+  getSQLAPI('SELECT DISTINCT key_department FROM hospital').then(res => {
     let temp = res.map(item => {
       if (item[0]) {
         if (item[0].indexOf(',') !== -1) {
@@ -328,7 +480,7 @@ const fetchConditions = () => {
       }
     })
   })
-  getSQLAPI('SELECT DISTINCT type FROM facilities').then(res => {
+  getSQLAPI('SELECT DISTINCT type FROM facility').then(res => {
     state.facilityConditions.types = res.map(item => {return item[0]})
   })
 }
@@ -407,7 +559,7 @@ const changeDisplay = (idx) => {
           </el-col>
           <el-col :span="9">
             <el-select v-model="state.nursingQuery.district" popper-class="mapSelect" placeholder="请选择"
-                       style="font-size: 1vw; z-index: 100001; width: 100%">
+                       style="font-size: 1vw; z-index: 100; width: 100%">
               <el-option v-for="item in districtOptions" :key="item.value" :label="item.label" :value="item.label">
             <span style="
           float: left;
@@ -521,17 +673,44 @@ const changeDisplay = (idx) => {
       <div class="drag-store content" v-if="state.currentShow===2">
         <el-row>
           <el-col :span="7">
+            <div class="label standard-font-size">筛选条件：</div>
+          </el-col>
+          <el-col :span="12" style="display: flex;">
+              <el-radio-group v-model="radio2" class="ml-4">
+                <el-radio label="2" size="large"><span style="font-size: 1vw">地图选点</span></el-radio>
+                <el-radio label="1" size="large"><span style="font-size: 1vw">地址输入</span></el-radio>
+              </el-radio-group>
+          </el-col>
+         
+        </el-row>
+        <el-row>
+          <el-col :span="7">
             <div class="label standard-font-size">您的位置：</div>
           </el-col>
           <el-col :span="9">
-            <el-input disabled v-model="pointInfo" style="width: 100%; font-size: 1vw"></el-input>
+            <el-input v-if="radio2 == '1'" v-model="keyWorld" style="width: 100%; font-size: 1vw"></el-input>
+            <el-input v-else disabled v-model="pointInfo" style="width: 100%; font-size: 1vw"></el-input>
           </el-col>
           <el-col :span="5" style="text-align: right;">
             <el-button color="#2642AA" @click="searchDrugStores" type="primary" style="font-size: 1vw">搜索</el-button>
           </el-col>
         </el-row>
+       
+        <el-row>
+          <el-col :span="7">
+            <div class="label standard-font-size">范围：</div>
+          </el-col>
+          <el-col :span="12" style="display: flex;">
+              <el-radio-group v-model="radioRange" class="ml-4">
+                <el-radio label="1" size="large"><span style="font-size: 1vw">500米内</span></el-radio>
+                <el-radio label="2" size="large"><span style="font-size: 1vw">500-1000米</span></el-radio>
+                <el-radio label="3" size="large"><span style="font-size: 1vw">1000-2000米</span></el-radio>
+              </el-radio-group>
+          </el-col>
+        </el-row>
       </div>
       <div class="park content" v-if="state.currentShow===3">
+      
         <el-row>
           <el-col :span="7">
             <div class="label standard-font-size">您的位置：</div>
@@ -833,7 +1012,7 @@ const changeDisplay = (idx) => {
   padding-right: 1vw;
   padding-bottom: 1vh;
   width: 30vw;
-  z-index: 10000;
+  z-index: 1000;
   top: 1vw;
   right: 1vh;
 
