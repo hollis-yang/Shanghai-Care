@@ -14,14 +14,14 @@ const onSave = () => {
     !actStore.alert.address
   ) {
     ElMessage({
-    showClose: false,
-    message: '请输入完整内容',
-    type: 'error'
-  })
+      showClose: false,
+      message: '请输入完整内容',
+      type: 'error'
+    })
     return;
   }
   actStore.add(actStore.alert.id);
-};
+}
 const addflag = computed(() => actStore.addflag);
 const editflag = computed(() => actStore.editflag);
 </script>
@@ -31,77 +31,56 @@ const editflag = computed(() => actStore.editflag);
     <div class="actAlert">
       <p>
         <span>
-          <el-icon> <timer /> </el-icon>时间：
+          <el-icon>
+            <timer />
+          </el-icon>时间：
         </span>
-        <el-date-picker
-          v-model="actStore.alert.time"
-          type="datetime"
-          placeholder="请输入"
-          :readonly="actStore.addEdit"
-          format="YYYY-MM-DD HH:mm:ss"
-        />
+        <el-date-picker v-model="actStore.alert.time" type="datetime" placeholder="请输入" :readonly="actStore.addEdit"
+          format="YYYY-MM-DD HH:mm:ss" />
       </p>
       <p>
         <span>
-          <el-icon> <Grid /> </el-icon>活动名称：
+          <el-icon>
+            <Grid />
+          </el-icon>活动名称：
         </span>
-        <input
-          :readonly="actStore.addEdit"
-          type="text"
-          class="border"
-          placeholder="请输入"
-          v-model="actStore.alert.name"
-        />
+        <input :readonly="actStore.addEdit" type="text" class="border" placeholder="请输入" v-model="actStore.alert.name" />
       </p>
       <p>
         <span>
-          <el-icon> <HelpFilled /> </el-icon>所属社区：
+          <el-icon>
+            <HelpFilled />
+          </el-icon>所属社区：
         </span>
-        <input
-          :readonly="actStore.addEdit"
-          type="text"
-          class="border"
-          placeholder="请输入"
-          v-model="actStore.alert.community"
-        />
+        <input :readonly="actStore.addEdit" type="text" class="border" placeholder="请输入"
+          v-model="actStore.alert.community" />
       </p>
       <p>
         <span>
-          <el-icon> <MoreFilled /> </el-icon>活动地址：
+          <el-icon>
+            <MoreFilled />
+          </el-icon>活动地址：
         </span>
-        <input
-          :readonly="actStore.addEdit"
-          type="text"
-          class="border"
-          placeholder="请输入"
-          v-model="actStore.alert.address"
-        />
+        <input :readonly="actStore.addEdit" type="text" class="border" placeholder="请输入"
+          v-model="actStore.alert.address" />
       </p>
       <p class="actAlert-but">
-        <el-button v-if="addflag" @click="onSave" type="primary"
-          >保存</el-button
-        >
-        <el-button
-          v-if="editflag && adminStore.isadmin"
-          @click="actStore.editBut"
-          type="primary"
-          >编辑</el-button
-        >
-        <el-button
-          @click="actStore.endalert"
-          type="primary"
-          >关闭</el-button
-        >
+        <el-button v-if="addflag" @click="onSave" type="primary">保存</el-button>
+        <el-button v-if="editflag && adminStore.isadmin" @click="actStore.editBut" type="primary">编辑</el-button>
+        <el-button @click="actStore.endalert" type="primary">关闭</el-button>
       </p>
     </div>
   </div>
 </template>
 
 <style lang="less" scoped>
+span {
+  font-size: 2vh;
+}
+
 input {
   outline: none;
 }
-
 .activity-alert {
   z-index: 9;
   position: fixed;
@@ -129,11 +108,14 @@ input {
         flex: 1;
         border: 0;
         box-shadow: none;
+        font-size: 1.9vh;
+        padding-bottom: 0.5vh;
       }
 
       span {
         display: flex;
         align-items: center;
+
         .el-icon {
           padding-right: 1vw;
         }
@@ -146,6 +128,7 @@ input {
       margin-top: 1vh;
     }
   }
+
   .border {
     border-bottom: 0.1vh solid #ccc !important;
   }

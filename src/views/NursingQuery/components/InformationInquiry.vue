@@ -110,7 +110,7 @@ async function queryInfo() {
   })
   console.log(isInfo)
   if (!isInfo) {
-    alert('暂无查询结果请重新输入')
+    alert('暂无查询结果, 请重新输入!')
     infoObj.value = {
       name: '-',
       gender: '-',
@@ -185,7 +185,7 @@ async function queryInfo() {
     </div>
 
     <div class="btn footer">
-      <el-button type="primary" v-if="!isSet" @click="onSetAndAdd">保存</el-button>
+      <el-button type="primary" v-if="!isSet" @click="onSetAndAdd" class="save-btn">保存</el-button>
       <div v-else-if="infoObj.name && infoObj.name !== '-'" class="footer-btn">
         <el-button v-if="adminStore.isadmin" type="primary" @click="onSetAndAdd">编辑</el-button>
         <el-button v-if="adminStore.isadmin" type="primary" @click="onDel">删除</el-button>
@@ -215,11 +215,11 @@ async function queryInfo() {
       background-color: #1827c4 !important;
       color: #fff !important;
       box-shadow: none !important;
-      font-size: 1.5vh;
+      font-size: 1.8vh;
     }
 
     /deep/ .el-input__inner {
-      font-size: 1.5vh;
+      font-size: 1.8vh;
     }
   }
 
@@ -231,7 +231,7 @@ async function queryInfo() {
       background-color: #1827c4 !important;
       border: none;
       height: 100%;
-      font-size: 1.5vh;
+      font-size: 1.8vh;
     }
   }
 
@@ -243,11 +243,19 @@ async function queryInfo() {
   //   padding: 3vh 2vw;
   // }
 
+  .save-btn {
+    position: absolute;
+    bottom: -17vh;
+    width: 4vw !important;
+    height: 4vh !important;
+  }
+
   .footer-btn {
     position: absolute;
-    bottom: -11vh;
+    bottom: -17vh;
     left: 20vw;
     width: 20vw;
+    height: 4vh;
     display: flex;
 
     /deep/ .el-button {
@@ -258,6 +266,7 @@ async function queryInfo() {
   .information {
     border: 0;
     border-bottom: 0.1vh solid #ccc;
+    font-size: 1.8vh;
 
     /deep/ .el-input__wrapper {
       background: none;
@@ -275,22 +284,23 @@ async function queryInfo() {
     padding-right: 2.5vw;
     padding-top: 1vh;
     margin-top: 5vh;
-    border-radius: 0.5vh;
+    border-radius: 1vh;
     width: 28vw;
+    height: 56.4vh;
 
     .bottom-box {
       display: flex;
-      margin-top: 3vh;
+      margin-top: 3.2vh;
       justify-content: space-between;
 
       &:first-child {
-        margin-top: 1.5vh;
+        margin-top: 2vh;
       }
 
       .left {
         display: flex;
         align-items: center;
-        font-size: 1.8vh;
+        font-size: 2vh;
 
         .icon {
           width: 2.2vh;
@@ -300,7 +310,7 @@ async function queryInfo() {
       }
 
       .right {
-        font-size: 1.7vh;
+        font-size: 1.9vh;
       }
     }
   }

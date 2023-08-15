@@ -26,7 +26,6 @@ export const useTime = defineStore('time', () => {
     medical_history: '',
     allergy: '',
     elevator: '',
-    district: '',
     diet: '',
     solitude: '',
   })

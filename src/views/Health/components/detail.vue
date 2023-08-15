@@ -1,69 +1,13 @@
-<template>
-  <div class="detail">
-    <div class="detail-top">
-      <span class="title">筛选条件</span>
-      <el-select class="conditionSelect" v-model="state.conditionSelectValue" placeholder="请选择">
-        <el-option
-          v-for="item in conditionSelectHealth"
-          :key="item.id"
-          :label="item.label"
-          :value="item.label"
-        >
-        </el-option>
-      </el-select>
-      <el-select class="selectValue" v-model="state.selectValue" placeholder="请选择">
-        <el-option
-          v-for="item in screenArr"
-          :key="item.id"
-          :label="item.label"
-          :value="item.label"
-        >
-        </el-option>
-      </el-select>
-      <div class="btn footer">
-          <el-button type="primary" @click="onSelect">筛选</el-button>
-      </div>
-    </div>
-    <div class="con">
-      <div class="con-item-box">
-        <div class="con-item" v-for="(item, index) in informationData" :key="index">
-        <dv-border-box8 :reverse="true">
-          <div style="padding: 10px;">
-            <div class="item-detail-top">
-              <span class="name"><Icon class="icon" :Components='iconObj.name'></Icon>{{ item[0] }}</span>
-              <span class="gender"><Icon  class="icon" :Components='iconObj.gender'></Icon>{{ item[2] }}</span>
-              <span class="age"><Icon  class="icon" :Components='iconObj.age'></Icon>{{ item[1] }}</span>
-            </div>
-            <span class="domicile text-ellipsis"><Icon  class="icon" :Components='iconObj.address'></Icon>{{ item[9] }}{{ item[10] }}{{ item[4] }}</span>
-            <div class="btn item-detail">
-                <el-button size="small" type="primary" @click="onToDetail(item)">详情</el-button>
-            </div>
-          </div>
-        </dv-border-box8>
-        </div>
-      </div>
-      <div class="page">
-        <el-pagination
-          background
-          :page-size="6"
-          @current-change="onChangePage"
-          layout="prev, pager, next"
-          :total="state.information.length">
-        </el-pagination>
-      </div>
-    </div>
-  </div>
-</template>
 <script setup>
-import { reactive, computed, watch } from "vue";
-import { conditionSelectHealth, gender, ageHealth,isLift, isLivingAlone, some } from '@/utils/data';
+import { reactive, computed, watch } from "vue"
+import { conditionSelectHealth, gender, ageHealth, isLift, isLivingAlone, some } from '@/utils/data'
 import { User, MagicStick, Files, Phone, HomeFilled, Collection, EditPen, Refrigerator, Postcard, Coordinate } from '@element-plus/icons-vue'
 import Icon from './Icon.vue';
 import { BorderBox8 as DvBorderBox8 } from '@kjgl77/datav-vue3'
-import { getSQLAPI } from "@/apis/mysql";
-import { useTime } from '@/stores/time';
-const infoObj = useTime();
-const updateData = computed(()=> infoObj.update)
+import { getSQLAPI } from "@/apis/mysql"
+import { useTime } from '@/stores/time'
+const infoObj = useTime()
+const updateData = computed(() => infoObj.update)
 const iconObj = {
   name: User,
   gender: MagicStick,
@@ -137,11 +81,11 @@ const onSelect = () => {
   if (state.conditionSelectValue !== '全部' && state.selectValue !== '全部') {
     if (state.conditionSelectValue === '性别') {
       sql += ` WHERE gender = '${state.selectValue}'`
-    } else if (state.conditionSelectValue === '年龄'){
+    } else if (state.conditionSelectValue === '年龄') {
       if (state.selectValue === '100岁以上') {
         sql += ` WHERE age >= 100`
       } else {
-        sql += ` WHERE age >= ${state.selectValue.split('-')[0]} AND age <= ${state.selectValue.split('-')[1].slice(0,2)}`
+        sql += ` WHERE age >= ${state.selectValue.split('-')[0]} AND age <= ${state.selectValue.split('-')[1].slice(0, 2)}`
       }
     } else if (state.conditionSelectValue === '所在街道') {
       sql += ` WHERE subdistrict = '${state.selectValue}'`
@@ -173,8 +117,8 @@ const onToDetail = (infoArr) => {
     medical_history: infoArr[6],
     allergy: infoArr[7],
     elevator: infoArr[8],
-    district: infoArr[9],
-    subdistrict: infoArr[10],
+    // district: infoArr[9],
+    // subdistrict: infoArr[10],
     diet: infoArr[11],
     solitude: infoArr[12],
     id: infoArr[13],
@@ -193,17 +137,17 @@ const init = () => {
   const sql = 'SELECT name, age, gender, phone,address, child_phone, medical_history, allergy,elevator,district, subdistrict,diet, solitude,  id FROM health_files'
   getSQLAPI(sql).then((res) => {
     console.log(11111111, res)
-    
-    state.street = [...new Set((res).map((item) =>item[10]))].map((item, index)=> {return {label: item, index}})
-    const medicalHistory = [...new Set((res).map((item) =>item[6]))].map((item, index)=> item)
+
+    state.street = [...new Set((res).map((item) => item[10]))].map((item, index) => { return { label: item, index } })
+    const medicalHistory = [...new Set((res).map((item) => item[6]))].map((item) => item)
     state.allergy = [...new Set((res).map((item) => item[7]))].map((item, index) => { return { label: item, index } })
     const medicalHistoryArr = (medicalHistory.map(item => {
       if (item.includes('、')) {
-          return item.split('、')
+        return item.split('、')
       } else {
-          return item
-        }
-      })).flat()
+        return item
+      }
+    })).flat()
     state.medicalHistory = [...new Set(medicalHistoryArr)].map((item, index) => { return { label: item, index } })
     state.information = res;
   })
@@ -211,41 +155,105 @@ const init = () => {
 init()
 </script>
 
+<template>
+  <div class="detail">
+    <div class="detail-top">
+      <span class="title">筛选条件</span>
+      <el-select class="conditionSelect" v-model="state.conditionSelectValue" placeholder="请选择">
+        <el-option v-for="item in conditionSelectHealth" :key="item.id" :label="item.label" :value="item.label">
+        </el-option>
+      </el-select>
+      <el-select class="selectValue" v-model="state.selectValue" placeholder="请选择">
+        <el-option v-for="item in screenArr" :key="item.id" :label="item.label" :value="item.label">
+        </el-option>
+      </el-select>
+      <div class="footer">
+        <el-button type="primary" @click="onSelect">筛选</el-button>
+      </div>
+    </div>
+    <div class="con">
+      <div class="con-item-box">
+        <div class="con-item" v-for="(item, index) in informationData" :key="index">
+          <dv-border-box8 :reverse="true">
+            <div style="padding: 10px;">
+              <div class="item-detail-top">
+                <span class="name">
+                  <Icon class="icon" :Components='iconObj.name'></Icon>{{ item[0] }}
+                </span>
+                <span class="gender">
+                  <Icon class="icon" :Components='iconObj.gender'></Icon>{{ item[2] }}
+                </span>
+                <span class="age">
+                  <Icon class="icon" :Components='iconObj.age'></Icon>{{ item[1] }}
+                </span>
+              </div>
+              <span class="domicile text-ellipsis">
+                <Icon class="icon" :Components='iconObj.address'></Icon>{{ item[9] }}{{ item[10] }}{{ item[4] }}
+              </span>
+              <div class="btn item-detail">
+                <el-button size="small" type="primary" @click="onToDetail(item)">详情</el-button>
+              </div>
+            </div>
+          </dv-border-box8>
+        </div>
+      </div>
+      <div class="page">
+        <el-pagination background :page-size="6" @current-change="onChangePage" layout="prev, pager, next"
+          :total="state.information.length">
+        </el-pagination>
+      </div>
+    </div>
+  </div>
+</template>
+
 <style lang="less" scoped>
 .detail {
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
+
   .detail-top {
+    position: absolute;
+    top: -5vh;
+    right: -7vw;
     padding: 2vh 2vw;
-    width: 46vw;
-    color: #fff;    
+    width: 50vw;
+    color: #fff;
     background-color: #0000006b;
     display: flex;
     align-items: center;
     flex-shrink: 0;
     margin: 0 2vw;
     flex-wrap: wrap;
+
     .title {
       font-weight: 600;
-      padding-right: 1vw;
+      padding-right: 1.5vw;
+      font-size: 2.2vh;
     }
+
     .conditionSelect {
       width: 14vw;
-      margin-right: 1vw;
+      margin-right: 2vw;
     }
+
     .selectValue {
       width: 22vw;
-
     }
   }
+
   .con {
-    width: 100%;
+    position: absolute;
+    top: 0vh;
+    left: 1vw;
+    width: 50vw;
     margin-top: 2vw;
     flex: 1;
     display: flex;
     flex-direction: column;
+
     .con-item-box {
       display: flex;
       justify-content: space-between;
@@ -256,60 +264,113 @@ init()
       gap: 1vh 1vw;
       flex: 1;
       align-content: flex-start;
+
       .con-item {
-        width: 40%;
+        width: 23vw;
+        height: 17vh;
         border: 0.1vh solid #000;
         background-color: #0000006b;
         color: #fff;
+        margin-bottom: 2vh;
+
         .domicile {
           font-size: 1.5vh;
+          margin-left: 1vw;
+          margin-right: 1vw;
+          margin-top: 0.5vh;
+          font-size: 2vh;
+
           .icon {
             position: relative;
-            top: 0.3vh;
+            top: 0.6vh;
+            width: 2.3vh;
+            height: 2.3vh;
           }
         }
-        
+
         .item-detail-top {
           display: flex;
           justify-content: space-between;
           font-weight: 600;
           padding-bottom: 1vh;
+          margin-top: 2vh;
+          margin-left: 1vw;
+          margin-right: 1vw;
+          font-size: 2vh;
+
+          .icon {
+            width: 2.3vh;
+            height: 2.3vh;
+          }
+
           span {
             display: flex;
             align-items: center;
           }
         }
+
         .item-detail {
-          display: flex;
-          justify-content: flex-end;
-          padding-bottom: 1vh;
+          // display: flex;
+          position: absolute;
+          // justify-content: flex-end;
+          // padding-bottom: 1vh;
+          right: -0.5vw;
+          bottom: 2vh;
+          margin-right: 2vw;
+
+          /deep/ .el-button {
+            background-color: #1827c4 !important;
+            width: 4vw;
+            height: 3.5vh;
+            font-size: 2vh;
+          }
         }
       }
     }
+
     .page {
-      display: flex;
-      justify-content: center;
+      // display: flex;
+      // justify-content: center;
+      position: absolute;
+      bottom: -2vh;
+      left: 15vw;
     }
   }
+
   .btn {
-      display: flex;
-      margin-top: 1vh;
-      /deep/ .el-button {
-        background-color: #1827c4 !important;
-        border: none;
-      }
+    display: flex;
+    margin-top: 1vh;
+
+    /deep/ .el-button {
+      background-color: #1827c4 !important;
+      border: none;
     }
+  }
+
+  .footer {
+    position: absolute;
+    right: 2.5vw;
+
+    /deep/ .el-button {
+      background-color: #1827c4 !important;
+      border: none;
+    }
+  }
 }
+
 .text-ellipsis {
   display: inline-block;
   width: 100%;
-  white-space: nowrap; /* 防止文字换行 */
-  text-overflow: ellipsis; /* 使用省略号代替超出的部分 */
+  white-space: nowrap;
+  /* 防止文字换行 */
+  text-overflow: ellipsis;
+  /* 使用省略号代替超出的部分 */
   overflow: hidden;
 }
-        .icon {
-          width: 1.5vh;
-          height: 1vw;
-          margin-right: 0.5em;
-        }
+
+.icon {
+  width: 1.5vh;
+  height: 1vw;
+  margin-right: 0.5em;
+}
 </style>
