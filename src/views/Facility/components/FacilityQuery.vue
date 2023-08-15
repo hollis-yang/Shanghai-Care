@@ -544,11 +544,11 @@ const radioChange = () => {
         <span class="desc">医院</span>
       </el-button>
       <el-button @click="changeDisplay(2)" color="#2642AA" size="small" :class="{'chosen-btn': state.currentShow===2}" class="el-button" plain>
-        <Icon class="icon" :Components='PictureFilled'></Icon>
+        <Icon class="icon" :Components='HelpFilled'></Icon>
         <span class="desc">药店</span>
       </el-button>
       <el-button @click="changeDisplay(3)" color="#2642AA" size="small" :class="{'chosen-btn': state.currentShow===3}" class="el-button" plain>
-        <Icon class="icon" :Components='HelpFilled'></Icon>
+        <Icon class="icon" :Components='PictureFilled'></Icon>
         <span class="desc">公园</span>
       </el-button>
       <el-button @click="changeDisplay(4)" color="#2642AA" size="small" :class="{'chosen-btn': state.currentShow===4}" class="el-button" plain>
