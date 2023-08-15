@@ -74,6 +74,10 @@ const editflag = computed(() => actStore.editflag);
 </template>
 
 <style lang="less" scoped>
+span {
+  font-size: 2vh;
+}
+
 input {
   outline: none;
 }
