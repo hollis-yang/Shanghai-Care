@@ -26,6 +26,10 @@ const map = ref(null)
 const addMark = (data) => {
   map.value.addMark(data)
 }
+
+const changeDisplay = (idx) => {
+  displayId.value = idx
+}
 // const getLoaction = () => {
 //   map.value.getLoaction('深圳市后瑞地铁站')
 // }
@@ -38,7 +42,7 @@ const addMark = (data) => {
   <div class="facility-container">
     <div class="facility-header">
       <Header></Header>
-    </div> 
+    </div>
   </div>
   <div class="facility-map">
 <!--    <FacilityStatistics></FacilityStatistics>-->
@@ -52,6 +56,7 @@ const addMark = (data) => {
         @addMark="addMark"
         :selected-point="selectedPoint"
         @passResults="getQueryResults"
+        @changeDisplay="changeDisplay"
         @changeMapMode="changeMapMode"></FacilityQuery>
   </div>
 

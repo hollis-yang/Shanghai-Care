@@ -1,4 +1,4 @@
-export function mapRangeToColor(value, min, max, colorMin, colorMax) {
+export function mapRangeToColor(value, min, max, colorMin, colorMax, opacity) {
     value = Math.max(min, Math.min(value, max))
 
     let percent = (value - min) / (max - min)
@@ -8,5 +8,5 @@ export function mapRangeToColor(value, min, max, colorMin, colorMax) {
     let colorG = Math.round(colorMin.g + (colorMax.g - colorMin.g) * percent)
     let colorB = Math.round(colorMin.b + (colorMax.b - colorMin.b) * percent)
 
-    return `rgba(${colorR},${colorG},${colorB},0.8)`
+    return `rgba(${colorR},${colorG},${colorB},${opacity})`
 }

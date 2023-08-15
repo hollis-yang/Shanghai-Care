@@ -77,7 +77,7 @@ const state = reactive({
   }
 })
 
-const emits = defineEmits(['passResults', 'changeMapMode','addMark']);
+const emits = defineEmits(['passResults', 'changeMapMode', 'addMark', 'changeDisplay']);
 
 const onChangePage = (page) => {
   state.page = page
@@ -171,7 +171,7 @@ const searchHospitals = () => {
     let district = state.hospitalQuery.district
     if (district && district !== '全市') {
       data = data.filter(item => {
-        return item[9] === district
+        return item[13].indexOf(district) !== -1
       })
     }
 
@@ -431,10 +431,14 @@ const pointInfo = computed(() => {
 // 查询筛选条件中选择框使用的选项数据
 const fetchConditions = () => {
   getSQLAPI('SELECT DISTINCT kind FROM hospital').then(res => {
-    state.hospitalConditions.kinds = res.map(item => {return item[0]})
+    state.hospitalConditions.kinds = res.map(item => {
+      return item[0]
+    })
   })
   getSQLAPI('SELECT DISTINCT category FROM hospital').then(res => {
-    state.hospitalConditions.categories = res.map(item => {return item[0]})
+    state.hospitalConditions.categories = res.map(item => {
+      return item[0]
+    })
   })
   getSQLAPI('SELECT DISTINCT key_department FROM hospital').then(res => {
     let temp = res.map(item => {
@@ -463,8 +467,44 @@ const fetchConditions = () => {
     })
   })
   getSQLAPI('SELECT DISTINCT type FROM facility').then(res => {
-    state.facilityConditions.types = res.map(item => {return item[0]})
+    state.facilityConditions.types = res.map(item => {
+      return item[0]
+    })
+    let idx = state.facilityConditions.types.indexOf('')
+    if (idx === -1) idx = state.facilityConditions.types.indexOf(undefined)
+    state.facilityConditions.types.splice(idx, 1)
   })
+}
+
+const initSelect = () => {
+  state.nursingQuery = {
+    bedAvailable: [],
+    minPrice: '',
+    maxPrice: '',
+    district: ''
+  }
+  state.hospitalQuery = {
+    kinds: [],
+    categories: [],
+    keyDepartments: [],
+    district: ''
+  }
+
+  state.facilityQuery = {
+    types: [],
+    district: ''
+  }
+
+  state.selectedPoint = {
+    x: 0.0,
+    y: 0.0,
+    longitude: 0.0,
+    latitude: 0.0
+  }
+
+  radio2.value = '2'
+  radioRange.value = '1'
+  keyWorld.value = null
 }
 
 const changeDisplay = (idx) => {
@@ -472,6 +512,7 @@ const changeDisplay = (idx) => {
   state.results = []
   state.page = 1
   state.total = 0
+  emits('changeDisplay', idx)
   if (idx === 0 || idx === 1) {
     emits('changeMapMode', 'normal')
   } else if (idx === 2 || idx === 3) {

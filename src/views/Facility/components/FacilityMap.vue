@@ -86,6 +86,14 @@ const heatMapLevel = {
 
 let ratioMapLayer = null
 
+const ratioMapColors = [
+  {r: 248, g: 244, b: 243},
+  {r: 251, g: 210, b: 188},
+  {r: 237, g: 151, b: 118},
+  {r: 226, g: 131, b: 111},
+  {r: 204, g: 80, b: 70}
+]
+
 // 展示信息配置项
 const configs = [{
   xIdx: 14,
@@ -127,7 +135,7 @@ const configs = [{
     return `
       <div style="color: rgb(209, 209, 209); background-color: rgb(36, 36, 36)">
         <div>地址：${attrs[2]}</div>
-        <div>据当前位置距离：${formatDistance(attrs[5])}</div>
+        <div>距当前位置距离：${formatDistance(attrs[5])}</div>
       </div>`
   }
 }, {
@@ -138,7 +146,7 @@ const configs = [{
   detailPopup: (attrs) => {
     return `
       <div style="color: rgb(209, 209, 209); background-color: rgb(36, 36, 36)">
-      <div>据当前位置距离：${formatDistance(attrs[4])}</div>
+      <div>距当前位置距离：${formatDistance(attrs[4])}</div>
       </div>`
   }
 }, {
@@ -283,8 +291,8 @@ const initMap = async () => {
   });
 
   // apikey
-  const apiKey = "8d915f545dada286c4465188fb4361710"
-  // const apiKey = "7b13a4031f051b6317cdcca67ae391f1"
+  const apiKey = "352645371d80149f32586e9710e7eab4"
+  //const apiKey = "7b13a4031f051b6317cdcca67ae391f1"
   // 天地图-矢量
   tiandituLayer = new WebTileLayer({
     urlTemplate: "http://{subDomain}.tianditu.com/DataServer?T=vec_w&x={col}&y={row}&l={level}&tk=" + apiKey,
@@ -333,6 +341,18 @@ const initMap = async () => {
         mapViewCanvas.style.opacity = 0.7;
       }
     }
+    mapView.on("mouse-wheel", function(event){
+      //
+      const baseScale = 10000;
+      if(event.deltaY > 0 && mapView.scale > 100 * baseScale){
+        event.stopPropagation()
+        return false
+      }
+      if(event.deltaY < 0 && mapView.scale < 1 * baseScale){
+        event.stopPropagation()
+        return false
+      }
+    })
   })
 
   // 点位图层
@@ -487,8 +507,11 @@ const handleShowHeatMap = async () => {
         {color: "#FFFA00", ratio: 0.7},
         {color: "#FF4600", ratio: 1}
       ],
-      maxPixelIntensity: 100,
-      minPixelIntensity: 0
+      // maxPixelIntensity: 100,
+      // minPixelIntensity: 0,
+      radius: 38,
+      maxDensity: 0.005,
+      minDensity: 0
     };
 
     let features = [];
@@ -563,7 +586,15 @@ const handleShowRatioMap = async () => {
 
       let min = Math.min(...Object.values(ratioMap))
       let max = Math.max(...Object.values(ratioMap))
+      let interval = (max - min) / ratioMapColors.length
+
+      // 渲染比例图图层
       for (let key in ratioMap) {
+        // 获取当前值所属的颜色值
+        let idx = Math.floor((ratioMap[key] - min) / interval)
+        if (idx >= ratioMapColors.length) idx = ratioMapColors.length - 1 // 控制最大值
+        let color = ratioMapColors[idx]
+
         const polygonGraphic = new Graphic({
           geometry: {
             type: "polygon",
@@ -571,15 +602,7 @@ const handleShowRatioMap = async () => {
           },
           symbol: {
             type: "simple-fill",
-            color: mapRangeToColor(ratioMap[key], min, max, {
-              r: 251,
-              g: 210,
-              b: 188
-            },{
-              r: 204,
-              g: 80,
-              b: 70
-            }),
+            color: `rgba(${color.r}, ${color.g}, ${color.b}, 0.9)`,
             outline: {
               color: [255, 255, 255],
               width: 1
@@ -591,22 +614,14 @@ const handleShowRatioMap = async () => {
       }
 
       // 写入图例数据
-      let interval = (max - min) / 5
-      for (let i = 0; i < 5; i++) {
+      ratioMapColors.forEach((c, i) => {
+        console.log(c, i)
         state.ratioMapLegend.push({
-          color: mapRangeToColor(min + i * interval, min, max, {
-            r: 251,
-            g: 210,
-            b: 188
-          },{
-            r: 204,
-            g: 80,
-            b: 70
-          }),
+          color: `rgb(${c.r}, ${c.g}, ${c.b})`,
           min: Math.round(min + i * interval),
           max: Math.round(min + (i + 1) * interval)
         })
-      }
+      })
     })
 
   } else {
@@ -692,7 +707,7 @@ onMounted(() => {
     padding: 0.5vh 1.0vh;
 
     .title {
-      font-size: 1.2vw;
+      font-size: 1.0vw;
       margin: 0;
       padding: 0.5vh 0;
       text-align: center;
