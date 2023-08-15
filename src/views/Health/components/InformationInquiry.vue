@@ -1,43 +1,3 @@
-<template>
-  <div class="InformationInquiry">
-    <div class="top">
-      <el-input v-model="input1" placeholder="请输入姓名">
-        <template #prepend>
-          <div>
-            按姓名查询
-          </div>
-        </template>
-      </el-input>
-      <div class="btn">
-        <el-button @click="queryInfo" type="primary">查询</el-button>
-        <el-button v-if="adminStore.isadmin" @click="onAdd" type="primary">新增档案</el-button>
-      </div>
-    </div>
-    <div class="bottom">
-      <div class="bottom-box" v-for="(item,index) in Object.keys(infoObj)" :key="index">
-        <div class="left" v-if="item !== 'id' && item!=='district'&& item!=='subdistrict'">
-          <div class="icon">
-            <Icon :Components='iconObj[item]'></Icon>
-          </div>
-          {{TitleObj[item]}}
-        </div>
-
-        <div class="right" v-if="item !== 'id' && item!=='district'&& item!=='subdistrict'">
-          <span v-if="isSet">{{ infoObj[item] ? infoObj[item] : '-'}}</span>
-          <el-input v-else class="information" size="small" v-model="infoObj[item]" :placeholder="`请输入${TitleObj[item]}`" @change="onChange"></el-input>
-        </div>
-      </div>
-    </div>
-    <div class="btn footer" :class="!isSet ? 'footer-position' : ''">
-        <el-button type="primary" v-if="!isSet" @click="onSetAndAdd">保存</el-button>
-        <div v-else-if="infoObj.name && infoObj.name !== '-' &&  adminStore.isadmin">
-          <el-button type="primary" @click="onSetAndAdd">编辑</el-button>
-          <el-button type="primary" @click="onDel">删除</el-button>
-        </div>
-    </div>
-  </div>
-</template>
-
 <script setup>
 import { User, MagicStick, Files, Phone, HomeFilled, Collection, EditPen, Refrigerator, Postcard, Coordinate } from '@element-plus/icons-vue'
 import { ref, computed } from 'vue'
@@ -77,7 +37,7 @@ const TitleObj = {
   diet: '饮食注意事项',
   solitude: '是否独居',
 }
-const infoObj = computed(() => time.infoHealthObj);
+const infoObj = computed(() => time.infoHealthObj)
 const sqlResult = ref([])
 const getData = async () => {
   const sql = 'SELECT name, age, gender, phone,address, child_phone, medical_history, allergy,elevator,district, subdistrict,diet, solitude,  id FROM health_files'
@@ -116,18 +76,18 @@ const onAdd = () => {
   isSet.value = false
   isAdd.value = true
   time.setInfoHealthObj({
-      name: '',
-      age: '',
-      gender: '',
-      phone: '',
-      address: '',
-      child_phone: '',
-      medical_history: '',
-      allergy: '',
-      elevator: '',
-      diet: '',
-      solitude: '',
-    })
+    name: '',
+    age: '',
+    gender: '',
+    phone: '',
+    address: '',
+    child_phone: '',
+    medical_history: '',
+    allergy: '',
+    elevator: '',
+    diet: '',
+    solitude: '',
+  })
 }
 // 修改或添加
 const onSetAndAdd = () => {
@@ -157,7 +117,7 @@ async function queryInfo() {
   })
   console.log(isInfo)
   if (!isInfo) {
-    alert('暂无查询结果请重新输入')
+    alert('暂无查询结果, 请重新输入!')
     infoObj.value = {
       name: '',
       age: '',
@@ -183,8 +143,6 @@ async function queryInfo() {
     medical_history: infoArr[6],
     allergy: infoArr[7],
     elevator: infoArr[8],
-    district: infoArr[9],
-    subdistrict: infoArr[10],
     diet: infoArr[11],
     solitude: infoArr[12],
     id: infoArr[13],
@@ -204,78 +162,172 @@ async function queryInfo() {
 }
 </script>
 
+<template>
+  <div class="InformationInquiry">
+    <div class="top">
+      <el-input v-model="input1" placeholder="请输入姓名">
+        <template #prepend>
+          <div>
+            按姓名查询
+          </div>
+        </template>
+      </el-input>
+      <div class="btn">
+        <el-button @click="queryInfo" type="primary">查询</el-button>
+        <el-button v-if="adminStore.isadmin" @click="onAdd" type="primary">新增档案</el-button>
+      </div>
+    </div>
+
+    <div class="bottom">
+      <div class="bottom-box" v-for="(item, index) in Object.keys(infoObj)" :key="index">
+        <div class="left" v-if="item !== 'id' && item !== 'district' && item !== 'subdistrict'">
+          <div class="icon">
+            <Icon :Components='iconObj[item]'></Icon>
+          </div>
+          {{ TitleObj[item] }}
+        </div>
+
+        <div class="right" v-if="item !== 'id' && item !== 'district' && item !== 'subdistrict'">
+          <span v-if="isSet">{{ infoObj[item] ? infoObj[item] : '-' }}</span>
+          <el-input v-else class="information" size="small" v-model="infoObj[item]" :placeholder="`请输入${TitleObj[item]}`"
+            @change="onChange"></el-input>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn footer" :class="!isSet ? 'footer-position' : ''">
+      <el-button type="primary" v-if="!isSet" @click="onSetAndAdd" class="save-btn">保存</el-button>
+      <div v-else-if="infoObj.name && infoObj.name !== '-' && adminStore.isadmin" class="footer-btn">
+        <el-button type="primary" @click="onSetAndAdd">编辑</el-button>
+        <el-button type="primary" @click="onDel">删除</el-button>
+      </div>
+    </div>
+  </div>
+</template>
+
+
+
 <style lang='less' scoped>
 .InformationInquiry {
   position: fixed;
   font-size: 1vh;
-  top: 50%;
+  top: 47%;
   width: 30vw;
   height: 50vh;
   transform: translate(0%, -50%);
+
   .top {
     position: absolute;
-    top: -1vh;
-    width: 100%;
+    top: -5vh;
+    width: 33vw;
+    height: 4vh;
     display: flex;
+
     /deep/ .el-input-group__prepend {
       background-color: #1827c4 !important;
       color: #fff !important;
       box-shadow: none !important;
+      font-size: 1.8vh;
     }
-    
+
+    /deep/ .el-input__inner {
+      font-size: 1.8vh;
+    }
   }
+
   .btn {
-    margin-left: 3vw;
-      display: flex;
-      /deep/ .el-button {
-        background-color: #1827c4 !important;
-        border: none;
-      }
+    margin-left: 2vw;
+    display: flex;
+
+    /deep/ .el-button {
+      background-color: #1827c4 !important;
+      border: none;
+      height: 100%;
+      font-size: 1.8vh;
     }
-    .footer {
-      justify-content: flex-end;
-      padding: 1.5vh 0;
+  }
+
+  // .footer {
+  //   justify-content: flex-end;
+  //   padding: 1.5vh 0;
+  // }
+
+  // .footer-position {
+  //   position: absolute;
+  //   right: -1vw;
+  //   top: 103%;
+  // }
+
+  .save-btn {
+    position: absolute;
+    bottom: -23vh;
+    width: 4vw !important;
+    height: 4vh !important;
+  }
+
+  .footer-btn {
+    position: absolute;
+    bottom: -23vh;
+    left: 20vw;
+    width: 20vw;
+    height: 4vh;
+    display: flex;
+
+    /deep/ .el-button {
+      margin-right: 1vw;
     }
-    .footer-position {
-      position: absolute;
-      right: -1vw;
-      top: 103%;
+  }
+
+  .information {
+    border: 0;
+    border-bottom: 0.1vh solid #ccc;
+    font-size: 1.8vh;
+
+    /deep/ .el-input__wrapper {
+      background: none;
+      border: 0;
+      box-shadow: none;
+      min-width: 0;
     }
-    .information {
-        border: 0;
-        border-bottom: 0.1vh solid #ccc;
-      /deep/ .el-input__wrapper {
-        background: none;
-        border: 0;
-        box-shadow: none;
-        min-width: 0;
-      }
-    }
+  }
+
   .bottom {
     background-color: #0000006b;
     color: rgb(255, 255, 255);
-    padding: 1vh 2vw;
-    margin-top: 5vh;
-    border-radius: 0.1vh;
+    // padding: 1vh 2vw;
+    padding-left: 2.5vw;
+    padding-right: 2.5vw;
+    padding-top: 1vh;
+    margin-top: 3vh;
+    border-radius: 1vh;
+    width: 28vw;
+    height: 63vh;
+
     .bottom-box {
       display: flex;
       justify-content: space-between;
-      max-height: 4vh;
-      padding: 0.5vh 0;
+      // max-height: 4vh;
+      // padding: 0.5vh 0;
+      margin-top: 2.7vh;
+
+      &:first-child {
+        margin-top: 2vh;
+      }
+
       .left {
         display: flex;
         align-items: center;
-        font-size: 1vw;
-        // margin-top: 0.2vh;
+        font-size: 2vh;
+
         .icon {
-          width: 1vw;
-          height: 1.5vh;
-          margin-right: 0.5em;
+          width: 2.2vh;
+          height: 2.2vh;
+          margin-right: 1vw;
         }
       }
+
       .right {
-        margin-top: 1vh;
-        font-size: 1vw;
+        font-size: 1.9vh;
       }
     }
   }
