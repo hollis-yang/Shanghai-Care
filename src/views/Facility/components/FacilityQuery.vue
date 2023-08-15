@@ -194,65 +194,6 @@ var LL2MC = [
     [-0.0003218135878613132, 111320.7020701615, 0.00369383431289, 823725.6402795718, 0.46104986909093, 2351.343141331292, 1.58060784298199, 8.77738589078284, 0.37238884252424, 7.45]
 ]
 
-function getRange(cC, cB, T) {
-    if (cB != null) {
-        cC = Math.max(cC, cB);
-    }
-    if (T != null) {
-        cC = Math.min(cC, T);
-    }
-    return cC;
-}
-
-function getLoop(cC, cB, T) {
-    while (cC > T) {
-        cC -= T - cB;
-    }
-    while (cC < cB) {
-        cC += T - cB;
-    }
-    return cC;
-}
-
-function convertor(cC, cD) {
-    if (!cC || !cD) {
-        return null;
-    }
-    let T = cD[0] + cD[1] * Math.abs(cC.x);
-    const cB = Math.abs(cC.y) / cD[9];
-    let cE = cD[2] + cD[3] * cB + cD[4] * cB * cB +
-        cD[5] * cB * cB * cB + cD[6] * cB * cB * cB * cB +
-        cD[7] * cB * cB * cB * cB * cB +
-        cD[8] * cB * cB * cB * cB * cB * cB;
-    T *= (cC.x < 0 ? -1 : 1);
-    cE *= (cC.y < 0 ? -1 : 1);
-    return [T, cE];
-}
-
-function convertLL2MC(T) {
-    let cD, cC, len;
-    T.x = getLoop(T.x, -180, 180);
-    T.y = getRange(T.y, -74, 74);
-    const cB = T;
-    for (cC = 0, len = LLBAND.length; cC < len; cC++) {
-        if (cB.y >= LLBAND[cC]) {
-            cD = LL2MC[cC];
-            break;
-        }
-    }
-    if (!cD) {
-        for (cC = LLBAND.length - 1; cC >= 0; cC--) {
-            if (cB.y <= -LLBAND[cC]) {
-                cD = LL2MC[cC];
-                break;
-            }
-        }
-    }
-    const cE = convertor(T, cD);
-    return cE;
-}
-
-
 const  getPointByAddress = (address) => {
       // 创建地理编码实例
       const myGeo = new BMap.Geocoder();
@@ -271,10 +212,24 @@ const  getPointByAddress = (address) => {
 }
 
 // 搜索条件
-const radio2 = ref('2')  // 默认为地图选点
+const radio2 = ref('1')  // 默认为地址输入
 // 搜索范围
 const radioRange = ref('1')
 const keyWorld = ref(null)
+
+// 经纬度换算墨卡托坐标
+function lonLatToMercator(longitude, latitude) {
+    var E = longitude;
+    var N = latitude;
+    var x = E * 20037508.34 / 180;
+    var y = Math.log(Math.tan((90 + N) * Math.PI / 360)) / (Math.PI / 180);
+    y = y * 20037508.34 / 180;
+    return {
+        x: x, //墨卡托x坐标——对应经度
+        y: y, //墨卡托y坐标——对应维度
+    }
+}
+
 // 搜索事件
 const searchDrugStores = async () => {
       // 根据地址名称获取经纬度坐标
@@ -284,7 +239,7 @@ const searchDrugStores = async () => {
           const point = await getPointByAddress(keyWorld.value);
           console.log('经度：', point.lng);
           console.log('纬度：', point.lat,state.selectedPoint.x);
-          xyArr = convertLL2MC({x:  point.lng, y: point.lat})
+          xyArr = lonLatToMercator(point.lng,point.lat)
       } catch (error) {
           console.error(error,'获取经纬度报错');
       }
@@ -297,8 +252,8 @@ const searchDrugStores = async () => {
     let x = null;
     let y = null;
     if(radio2.value == '1'){
-        x = xyArr[0]
-        y = xyArr[1]
+        x = xyArr.x
+        y = xyArr.y
     }else{
         x = parseFloat(state.selectedPoint.x)
         y = parseFloat(state.selectedPoint.y)
@@ -347,7 +302,7 @@ const searchDrugStores = async () => {
             mapPoint:{
                x: x,
                y: y
-              }
+            }
       })
     }
     emits('passResults', {
@@ -360,12 +315,32 @@ const searchDrugStores = async () => {
   })
 }
 
-const searchParks = () => {
+const searchParks = async() => {
+  let xyArr = []
+    if(radio2.value == '1'){
+        try {
+          const point = await getPointByAddress(keyWorld.value);
+          console.log('经度：', point.lng);
+          console.log('纬度：', point.lat,state.selectedPoint.x);
+          xyArr = lonLatToMercator(point.lng,point.lat)
+      } catch (error) {
+          console.error(error,'获取经纬度报错');
+      }
+    }
   let sql = 'select * from park'
   getSQLAPI(sql).then(res => {
     // 计算与选中点位距离
-    let x = parseFloat(state.selectedPoint.x)
-    let y = parseFloat(state.selectedPoint.y)
+    let x = null;
+    let y = null;
+
+    if(radio2.value == '1'){
+        x = xyArr.x
+        y = xyArr.y
+    }else{
+        x = parseFloat(state.selectedPoint.x)
+        y = parseFloat(state.selectedPoint.y)
+    }
+
     res.forEach(e => {
       e[4] = parseFloat(calculateDistance(e[2], e[3], x, y))
     })
@@ -374,7 +349,14 @@ const searchParks = () => {
     res.sort((a, b) => {
       return a[4] - b[4]
     })
-
+    if(radio2.value == '1'){
+      emits('addMark', {
+            mapPoint:{
+               x: x,
+               y: y
+            }
+      })
+    }
     emits('passResults', {
       idx: 3,
       points: res
@@ -493,12 +475,17 @@ const changeDisplay = (idx) => {
   if (idx === 0 || idx === 1) {
     emits('changeMapMode', 'normal')
   } else if (idx === 2 || idx === 3) {
-    alert('请点击地图选取位置')
+    // alert('请点击地图选取位置')
     // ElMessage({
     //   type: 'info',
     //   message: '请点击地图选取位置'
     // })
     emits('changeMapMode', 'selectPoint')
+  }
+}
+const radioChange = () => {
+  if(radio2.value == 2){
+      alert('请点击地图选取位置')
   }
 }
 
@@ -676,9 +663,9 @@ const changeDisplay = (idx) => {
             <div class="label standard-font-size">筛选条件：</div>
           </el-col>
           <el-col :span="12" style="display: flex;">
-              <el-radio-group v-model="radio2" class="ml-4">
-                <el-radio label="2" size="large"><span style="font-size: 1vw">地图选点</span></el-radio>
+              <el-radio-group v-model="radio2" class="ml-4" @change="radioChange">
                 <el-radio label="1" size="large"><span style="font-size: 1vw">地址输入</span></el-radio>
+                <el-radio label="2" size="large"><span style="font-size: 1vw">地图选点</span></el-radio>
               </el-radio-group>
           </el-col>
          
@@ -710,13 +697,26 @@ const changeDisplay = (idx) => {
         </el-row>
       </div>
       <div class="park content" v-if="state.currentShow===3">
-      
+        <el-row>
+          <el-col :span="7">
+            <div class="label standard-font-size">筛选条件：</div>
+          </el-col>
+          <el-col :span="12" style="display: flex;">
+              <el-radio-group v-model="radio2" class="ml-4" @change="radioChange">
+                <el-radio label="1" size="large"><span style="font-size: 1vw">地址输入</span></el-radio>
+                <el-radio label="2" size="large"><span style="font-size: 1vw">地图选点</span></el-radio>
+              </el-radio-group>
+          </el-col>
+         
+        </el-row>
         <el-row>
           <el-col :span="7">
             <div class="label standard-font-size">您的位置：</div>
           </el-col>
           <el-col :span="9">
-            <el-input disabled v-model="pointInfo" style="width: 100%; font-size: 1vw"></el-input>
+            <el-input v-if="radio2 == '1'" v-model="keyWorld" style="width: 100%; font-size: 1vw"></el-input>
+            <el-input v-else disabled v-model="pointInfo" style="width: 100%; font-size: 1vw"></el-input>
+            <!-- <el-input disabled v-model="pointInfo" style="width: 100%; font-size: 1vw"></el-input> -->
           </el-col>
           <el-col :span="5" style="text-align: right;">
             <el-button color="#2642AA" @click="searchParks" type="primary" style="font-size: 1vw">搜索</el-button>
