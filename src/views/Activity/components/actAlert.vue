@@ -104,6 +104,8 @@ input {
         flex: 1;
         border: 0;
         box-shadow: none;
+        font-size: 1.9vh;
+        padding-bottom: 0.5vh;
       }
 
       span {
