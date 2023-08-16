@@ -9,6 +9,7 @@ import Icon from '../../NursingQuery/components/Icon.vue'
 import { House, MapLocation, Tickets, Document, HomeFilled, StarFilled, PictureFilled, HelpFilled, Promotion, LocationInformation  } from '@element-plus/icons-vue'
 import {calculateDistance, formatDistance} from "@/utils/distance"
 import {ElMessage} from 'element-plus'
+import {bd09togcj02, gcj02towgs84} from "@/utils/lanlatTrans";
 
 // 挂载
 onMounted(() => {
@@ -66,7 +67,7 @@ const state = reactive({
     types: []
   },
   configs: {
-    contentMaxHeight: ['35vh', '26vh', '47vh', '47vh', '']
+    contentMaxHeight: ['35vh', '26vh', '29vh', '47vh', '']
   },
   results: [],
   selectedPoint: {
@@ -236,15 +237,20 @@ const searchDrugStores = async () => {
     let xyArr = []
     if(radio2.value == '1'){
         try {
-          const point = await getPointByAddress(keyWorld.value);
+          let point = await getPointByAddress(keyWorld.value);
+          console.log('bd09')
           console.log('经度：', point.lng);
           console.log('纬度：', point.lat,state.selectedPoint.x);
-          xyArr = lonLatToMercator(point.lng,point.lat)
+
+          point = bd09togcj02(point.lng, point.lat)
+          point = gcj02towgs84(point[0], point[1])
+          console.log('wgs84', point)
+          xyArr = lonLatToMercator(point[0], point[1])
       } catch (error) {
           console.error(error,'获取经纬度报错');
       }
     }
-   
+
 
   let sql = 'select * from drugstore'
   getSQLAPI(sql).then(res => {
@@ -271,7 +277,7 @@ const searchDrugStores = async () => {
           }else{
             return false
           }
-          
+
        })
     }else if(radioRange.value == '3'){
       res = res.filter(e => {
@@ -281,12 +287,12 @@ const searchDrugStores = async () => {
           }else{
             return false
           }
-          
+
        })
     }
-    
+
     res.forEach((e,index) => {
-       
+
       e[5] = parseFloat(calculateDistance(e[3], e[4], x, y))
        if(index<5){
         console.log(e)
@@ -502,7 +508,7 @@ const initSelect = () => {
     latitude: 0.0
   }
 
-  radio2.value = '2'
+  radio2.value = '1'
   radioRange.value = '1'
   keyWorld.value = null
 }
@@ -513,6 +519,7 @@ const changeDisplay = (idx) => {
   state.page = 1
   state.total = 0
   emits('changeDisplay', idx)
+  initSelect()
   if (idx === 0 || idx === 1) {
     emits('changeMapMode', 'normal')
   } else if (idx === 2 || idx === 3) {
@@ -709,7 +716,7 @@ const radioChange = () => {
                 <el-radio label="2" size="large"><span style="font-size: 1vw">地图选点</span></el-radio>
               </el-radio-group>
           </el-col>
-         
+
         </el-row>
         <el-row>
           <el-col :span="7">
@@ -723,7 +730,7 @@ const radioChange = () => {
             <el-button color="#2642AA" @click="searchDrugStores" type="primary" style="font-size: 1vw">搜索</el-button>
           </el-col>
         </el-row>
-       
+
         <el-row>
           <el-col :span="7">
             <div class="label standard-font-size">范围：</div>
@@ -748,7 +755,7 @@ const radioChange = () => {
                 <el-radio label="2" size="large"><span style="font-size: 1vw">地图选点</span></el-radio>
               </el-radio-group>
           </el-col>
-         
+
         </el-row>
         <el-row>
           <el-col :span="7">

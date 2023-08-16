@@ -424,6 +424,82 @@ const initMap = async () => {
   })
 }
 
+const addMark = async (e) => {
+  // 添加选中点位展示
+  // 引入地图组件
+  const [Map,
+    MapView,
+    SpatialReference,
+    WebTileLayer,
+    Point,
+    Graphic,
+    GraphicsLayer,
+    Extent,
+    FeatureLayer,
+    HeatmapRenderer
+  ] = await loadModules([
+    "esri/Map",
+    "esri/views/MapView",
+    "esri/geometry/SpatialReference",
+    "esri/layers/WebTileLayer",
+    "esri/geometry/Point",
+    "esri/Graphic",
+    "esri/layers/GraphicsLayer",
+    "esri/geometry/Extent",
+    "esri/layers/FeatureLayer",
+    "esri/renderers/HeatmapRenderer"])
+  selectPointLayer && selectPointLayer.removeAll()
+  const pointGraphic = new Graphic({
+    geometry: {
+      type: "point",
+      x: e.mapPoint.x,
+      y: e.mapPoint.y,
+      spatialReference
+    },
+    symbol: {
+      type: 'picture-marker',
+      url: 'static/svg/Point.svg',
+      width: 15,
+      height: 15,
+    },
+    attributes: {
+      type: 'selectPoint'
+    }
+  })
+  selectPointLayer && selectPointLayer.add(pointGraphic)
+}
+//     // 根据地址名称获取经纬度坐标
+//  const  getPointByAddress = (address) => {
+//       // 创建地理编码实例
+//       const myGeo = new BMap.Geocoder();
+//       return new Promise((resolve, reject) => {
+//         // 对地址进行地理编码
+//         myGeo.getPoint(address, (point) => {
+//           if (point) {
+//             // 地理编码成功，返回经纬度坐标对象
+//             resolve(point);
+//           } else {
+//             // 地理编码失败
+//             reject('地理编码失败');
+//           }
+//         }, '上海市');
+//       });
+// }
+// const getLoaction = async (address) => {
+//   console.log(address,'获取地址')
+//   try {
+//         const point = await getPointByAddress(address);
+//         console.log('经度：', point.lng);
+//         console.log('纬度：', point.lat);
+//     } catch (error) {
+//         console.error(error,'获取经纬度报错');
+//     }
+// }
+defineExpose({
+  // getLoaction,
+  addMark
+});
+
 const handleShowMap = () => {
   if (state.layers.showMap) {
     if (tiandituLayer) map.add(tiandituLayer)
