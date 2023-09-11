@@ -1,7 +1,7 @@
 <script setup>
 import { User, MagicStick, Files, HomeFilled, OfficeBuilding, Collection, EditPen, GoldMedal, Trophy } from '@element-plus/icons-vue'
 import { ref, computed } from 'vue'
-import { getSQLAPI } from '../../../apis/mysql'
+import { getSQLAPI } from '@/apis/mysql'
 import { insertSQLAPI } from '@/apis/insertsql'
 import Icon from './Icon.vue'
 import { useTime } from '@/stores/time'
@@ -239,7 +239,7 @@ async function queryInfo() {
   //   // justify-content: flex-end;
   //   position: absolute;
   //   left: 15vw;
-    
+
   //   padding: 3vh 2vw;
   // }
 
@@ -267,6 +267,7 @@ async function queryInfo() {
     border: 0;
     border-bottom: 0.1vh solid #ccc;
     font-size: 1.8vh;
+    margin-top: -0.3vh;
 
     /deep/ .el-input__wrapper {
       background: none;
