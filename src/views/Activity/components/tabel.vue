@@ -124,7 +124,7 @@ input {
     width: 90%;
     position: absolute;
     margin: 0 5%;
-    bottom: 2vh;
+    bottom: 1.5vh;
     display: flex;
     justify-content: space-between;
     align-items: center;

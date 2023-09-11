@@ -38,7 +38,7 @@ let actStore = useActStore()
 
 .activity-tabel {
   width: 90%;
-  height: calc(100vh - 29vh);
+  height: calc(100vh - 28vh);
   margin: 0 auto;
   background-color: #0000006b;
   position: relative;
