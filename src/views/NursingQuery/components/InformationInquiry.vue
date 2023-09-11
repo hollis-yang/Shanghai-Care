@@ -246,7 +246,6 @@ async function queryInfo() {
   .save-btn {
     position: absolute;
     bottom: -18.5vh;
-    left: 26.5vw;
     width: 4vw !important;
     height: 4vh !important;
   }

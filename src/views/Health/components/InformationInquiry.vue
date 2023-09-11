@@ -282,6 +282,7 @@ async function queryInfo() {
     border: 0;
     border-bottom: 0.1vh solid #ccc;
     font-size: 1.8vh;
+    margin-top: -0.4vh;
 
     /deep/ .el-input__wrapper {
       background: none;
