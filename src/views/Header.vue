@@ -106,7 +106,7 @@ const isActive = (element) => {
           <User />
         </el-icon>
         <span class="username">{{ userName }}</span>
-        <el-popconfirm width="10vw" confirm-button-text="确定" cancel-button-text="留在此页" :icon="InfoFilled"
+        <el-popconfirm width="11vw" confirm-button-text="确定" cancel-button-text="留在此页" :icon="InfoFilled"
           icon-color="#626AEF" title="确定要退出吗？" @confirm="confirmEvent">
           <template #reference>
             <el-icon class="officon">
