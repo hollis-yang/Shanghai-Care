@@ -24,7 +24,7 @@ const initChart = () => {
       top: '26%',
       bottom: '13%',
       left: '6%',
-      right: '10%'
+      right: '11%'
     },
     legend: {
       orient: 'horizontal',
@@ -98,10 +98,10 @@ const updateChart = () => {
         endLabel: {
           show: true,
           formatter: ' 男: {c}',
-          fontSize: elRef.value.offsetWidth / 100 * 3.6 * 0.7
+          fontSize: elRef.value.offsetWidth / 100 * 3.6 * 0.8
         },
         emphasis: {
-          focus: 'series'
+          focus: 'none'
         },
       },
       {
@@ -121,10 +121,10 @@ const updateChart = () => {
         endLabel: {
           show: true,
           formatter: ' 女: {c}',
-          fontSize: elRef.value.offsetWidth / 100 * 3.6 * 0.7
+          fontSize: elRef.value.offsetWidth / 100 * 3.6 * 0.8
         },
         emphasis: {
-          focus: 'series'
+          focus: 'none'
         },
       }
     ]
@@ -166,7 +166,7 @@ const screenAdapter = () => {
         showSymbol: true,
         symbolSize: elRef.value.offsetWidth / 100 * 3.6 * 0.5,
         endLabel: {
-          fontSize: titleFontSize * 0.7
+          fontSize: titleFontSize * 0.8,
         },
         lineStyle: {
           color: 'rgb(37, 117, 252)',
@@ -177,7 +177,7 @@ const screenAdapter = () => {
         showSymbol: true,
         symbolSize: elRef.value.offsetWidth / 100 * 3.6 * 0.5,
         endLabel: {
-          fontSize: titleFontSize * 0.7
+          fontSize: titleFontSize * 0.8
         },
         lineStyle: {
           color: 'rgb(255, 0, 135)',

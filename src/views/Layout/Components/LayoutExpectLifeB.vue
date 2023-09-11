@@ -24,7 +24,7 @@ const initChart = () => {
       top: '26%',
       bottom: '13%',
       left: '6%',
-      right: '11.5%'
+      right: '13%'
     },
     legend: {
       orient: 'horizontal',
@@ -95,11 +95,11 @@ const updateChart = () => {
         endLabel: {
           show: true,
           formatter: '平均: {c}',
-          fontSize: elRef.value.offsetWidth / 100 * 3.6 * 0.7
+          fontSize: elRef.value.offsetWidth / 100 * 3.6 * 0.8
         },
-        emphasis: {
-          focus: 'series'
-        }
+        // emphasis: {
+        //   focus: 'none'
+        // }
       }
     ]
   }
@@ -140,7 +140,7 @@ const screenAdapter = () => {
         showSymbol: true,
         symbolSize: elRef.value.offsetWidth / 100 * 3.6 * 0.5,
         endLabel: {
-          fontSize: titleFontSize * 0.7
+          fontSize: titleFontSize * 0.8
         },
         lineStyle: {
           color: '#FFA500',
