@@ -17,10 +17,6 @@ npm install
 npm run dev
 ```
 
-### Online Website URL
-
-- http://47.103.58.142/
-
 ### Contributors
 
 - [hollis-yang](https://github.com/hollis-yang)
