@@ -1,9 +1,8 @@
 <script setup>
 import Header from '../Header.vue'
 import FacilityMap from './components/FacilityMap.vue'
-// import FacilityStatistics from './components/FacilityStatistics.vue';
-import FacilityQuery from './components/FacilityQuery.vue';
-import {onMounted, ref} from "@vue/runtime-core";
+import FacilityQuery from './components/FacilityQuery.vue'
+import { ref } from 'vue'
 
 const pois = ref([])
 const displayId = ref(0)
@@ -45,21 +44,12 @@ const changeDisplay = (idx) => {
     </div>
   </div>
   <div class="facility-map">
-<!--    <FacilityStatistics></FacilityStatistics>-->
-    <FacilityMap
-        ref="map"
-        :pois=pois
-        :display-id="displayId"
-        :map-mode="mapMode"
-        @passSelectedPoint="passSelectedPoint"></FacilityMap>
-    <FacilityQuery
-        @addMark="addMark"
-        :selected-point="selectedPoint"
-        @passResults="getQueryResults"
-        @changeDisplay="changeDisplay"
-        @changeMapMode="changeMapMode"></FacilityQuery>
+    <!--    <FacilityStatistics></FacilityStatistics>-->
+    <FacilityMap ref="map" :pois=pois :display-id="displayId" :map-mode="mapMode" @passSelectedPoint="passSelectedPoint">
+    </FacilityMap>
+    <FacilityQuery @addMark="addMark" :selected-point="selectedPoint" @passResults="getQueryResults"
+      @changeDisplay="changeDisplay" @changeMapMode="changeMapMode"></FacilityQuery>
   </div>
-
 </template>
 
 <style scoped lang="less">
@@ -67,7 +57,8 @@ const changeDisplay = (idx) => {
   width: 100%;
   height: 10vh;
 }
-.facility-map{
+
+.facility-map {
   position: relative;
   height: 86vh;
   max-height: 90vh;

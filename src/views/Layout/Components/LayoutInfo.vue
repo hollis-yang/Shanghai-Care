@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 
 const numArr1 = [24870895, 15051900]
 const numArr2 = [5815462, 5536600]
-const nameArr1 = ['上海市常驻人口数', '上海市户籍人口数']
+const nameArr1 = ['上海市常住人口数', '上海市户籍人口数']
 const num1 = ref(numArr1[0])
 const num2 = ref(numArr2[0])
 const name1 = ref(nameArr1[0])

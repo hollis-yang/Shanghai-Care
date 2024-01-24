@@ -34,13 +34,15 @@ const checkResult = ref(null)  // 1表示信息正确
 
 const checkLoginData = async () => {
   const sql = `
-    SELECT COUNT(*), isadmin
+    SELECT COUNT(*), SUM(isadmin)
     FROM user_accounts
     WHERE password = '${password1.value}' AND username = '${username.value}';`
   const res = await getSQLAPI(sql)
 
   checkResult.value = res[0][0]
-  isAdmin.value = res[0][1]
+  isAdmin.value = Number(res[0][1])
+
+  console.log(typeof isAdmin.value)
   adminStore.setIsAdmin(isAdmin.value)
 }
 
