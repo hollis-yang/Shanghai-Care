@@ -14,16 +14,7 @@
         </svg></span>
       <span>图层</span>
     </p>
-    <!--    <el-tooltip-->
-    <!--        class="box-item"-->
-    <!--        effect="dark"-->
-    <!--        content="天地图底图"-->
-    <!--        placement="right"-->
-    <!--    >-->
-    <!--      <div class="item">-->
-    <!--        <el-checkbox v-model="state.layers.showMap" @change="handleShowMap" style="height: auto; color: white;">地图</el-checkbox>-->
-    <!--      </div>-->
-    <!--    </el-tooltip>-->
+
     <el-tooltip class="box-item" effect="dark" content="反映上海全市范围内养老设施相关地点分布情况" placement="right">
       <div class="item">
         <el-checkbox v-model="state.layers.showHeatMap" @change="handleShowHeatMap"
@@ -53,10 +44,9 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref, watch } from "vue";
+import { onMounted, reactive, watch } from "vue";
 import { formatDistance } from "@/utils/distance";
 import { getSQLAPI } from "@/apis/mysql";
-import { mapRangeToColor } from "@/utils/color";
 
 const emits = defineEmits(['passSelectedPoint']);
 
@@ -67,14 +57,7 @@ const props = defineProps({
 });
 
 let map = null
-let mapView = null
-// 坐标系
-let spatialReference = null
-// 切换模式
-let isDarkMode = ref(false)
-
 let selectPointLayer = null
-
 let tiandituLayer = null
 let tiandituTextLayer = null
 
@@ -240,21 +223,27 @@ const clearSelectPoint = () => {
 
 const initMap = async () => {
 
-  // 初始化地图
-  map = L.map('facilityMapId', {
-    center: [31.231706, 121.472644],
-    zoom: 10,
-    zoomControl: false,
+
+  map = L.map('facilityMapId',{
+    center: [31.231706, 121.472644], // 地图中心
+    zoom: 10,   //缩放比列
+    zoomControl: false, //禁用 + - 按钮
+    attributionControl: false,  // 移除右下角leaflet标识
+    crs: L.CRS.EPSG4326,
   });
 
   // 添加天地图 矢量图层
-  L.kqmap.mapping.tiandituTileLayer({
-    layerType: "vec",
+  const VEC_C = 'http://{s}.tianditu.com/vec_c/wmts?layer=vec&style=default&tilematrixset=c&Service=WMTS&Request=GetTile&Version=1.0.0&Format=tiles&TileMatrix={z}&TileCol={x}&TileRow={y}&tk=';
+  const CVA_C = 'http://{s}.tianditu.com/cva_c/wmts?layer=cva&style=default&tilematrixset=c&Service=WMTS&Request=GetTile&Version=1.0.0&Format=tiles&TileMatrix={z}&TileCol={x}&TileRow={y}&tk=';
+  const tdtMapKey = '7b13a4031f051b6317cdcca67ae391f1'
+  L.tileLayer(VEC_C + tdtMapKey, {
+    zoomOffset: 1,
+    subdomains: ['t0', 't1', 't2', 't3', 't4', 't5', 't6', 't7'],
   }).addTo(map);
-
-  // 添加天地图 矢量注记图层
-  L.kqmap.mapping.tiandituTileLayer({
-    layerType: "cva",
+  L.tileLayer(CVA_C + tdtMapKey, {
+    tileSize: 256,
+    zoomOffset: 1,
+    subdomains: ['t0', 't1', 't2', 't3', 't4', 't5', 't6', 't7'],
   }).addTo(map);
 
   // 点位图层
@@ -299,61 +288,10 @@ const initMap = async () => {
           .addTo(selectPointLayer)
     }
   })
-  // 获取点击位置元素
-  // mapView.on('click', (e) => {
-  //   mapView.hitTest(e).then((e2) => {
-  //     // 点击空白处
-  //     if (e2.results.length === 0) {
-  //       if (props.mapMode === 'selectPoint') {
-  //         // 传递选中点位信息
-  //         emits('passSelectedPoint', {
-  //           x: e.mapPoint.x,
-  //           y: e.mapPoint.y,
-  //           longitude: e.mapPoint.longitude,
-  //           latitude: e.mapPoint.latitude
-  //         })
-  //         // 添加选中点位展示
-  //         selectPointLayer && selectPointLayer.removeAll()
-  //         const pointGraphic = new Graphic({
-  //           geometry: {
-  //             type: "point",
-  //             x: e.mapPoint.x,
-  //             y: e.mapPoint.y,
-  //             spatialReference
-  //           },
-  //           symbol: {
-  //             type: 'picture-marker',
-  //             url: 'static/svg/Point.svg',
-  //             width: 15,
-  //             height: 15,
-  //           },
-  //           attributes: {
-  //             type: 'selectPoint'
-  //           }
-  //         })
-  //         selectPointLayer && selectPointLayer.add(pointGraphic)
-  //       }
-  //     } else {
-  //       e2.results.forEach(e3 => {
-  //         let attrs = e3.graphic.attributes
-  //         if (attrs && attrs.type === 'facilityPoint') { // 判断是否点击地图上展示的设施点位
-  //           mapView.popup.open({
-  //             title: attrs[1],
-  //             content: currentConfig.detailPopup(attrs),
-  //             location: new Point({
-  //               // x: attrs[currentConfig.xIdx],
-  //               // y: attrs[currentConfig.yIdx],
-  //               longitude: attrs[currentConfig.xIdx],
-  //               latitude: attrs[currentConfig.yIdx],
-  //               spatialReference
-  //             }),
-  //             // featureMenuOpen: true
-  //           })
-  //         }
-  //       })
-  //     }
-  //   })
-  // })
+
+
+
+
 }
 
 const addMark = async (e) => {
@@ -367,33 +305,7 @@ const addMark = async (e) => {
   L.marker([e.mapPoint.lat, e.mapPoint.lng], {icon: icon})
       .addTo(selectPointLayer)
 }
-//     // 根据地址名称获取经纬度坐标
-//  const  getPointByAddress = (address) => {
-//       // 创建地理编码实例
-//       const myGeo = new BMap.Geocoder();
-//       return new Promise((resolve, reject) => {
-//         // 对地址进行地理编码
-//         myGeo.getPoint(address, (point) => {
-//           if (point) {
-//             // 地理编码成功，返回经纬度坐标对象
-//             resolve(point);
-//           } else {
-//             // 地理编码失败
-//             reject('地理编码失败');
-//           }
-//         }, '上海市');
-//       });
-// }
-// const getLoaction = async (address) => {
-//   console.log(address,'获取地址')
-//   try {
-//         const point = await getPointByAddress(address);
-//         console.log('经度：', point.lng);
-//         console.log('纬度：', point.lat);
-//     } catch (error) {
-//         console.error(error,'获取经纬度报错');
-//     }
-// }
+
 defineExpose({
   // getLoaction,
   addMark
@@ -444,8 +356,6 @@ const handleShowHeatMap = async () => {
 
       data1[yIdx][xIdx][2]++
     })
-
-    console.log(data1.flat())
 
     let data2 = []
 

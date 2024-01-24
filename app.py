@@ -9,10 +9,10 @@ app = Flask(__name__)
 CORS(app)
 
 # 数据库连接配置
-connection = pymysql.connect(
-    host='rm-cn-pe33et4n300018wo.rwlb.rds.aliyuncs.com',
-    user='ecnu',
-    password='Ecnu123456',
+connection = pymysql.connect(   
+    host='rm-cn-x0r3j6fcx0024svo.rwlb.rds.aliyuncs.com',
+    user='webs',
+    password='WebGIS2023',  
     database='ecnu'
 )
 
@@ -73,4 +73,4 @@ def add_data():
 
 
 if __name__ == '__main__':
-    app.run(host="127.0.0.1", port=5050, debug=True)
+    app.run(host="127.0.0.1", port=5000, debug=True)

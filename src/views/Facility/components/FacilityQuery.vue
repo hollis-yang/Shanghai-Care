@@ -1,14 +1,14 @@
 
 <script setup>
-import { onMounted, ref, onUnmounted, reactive, computed, watch } from 'vue'
+import { onMounted, ref, reactive, computed, watch } from 'vue'
 import { districtOptions } from '@/utils/district'
 import { getSQLAPI } from "@/apis/mysql";
 import { BorderBox8 as DvBorderBox8 } from '@kjgl77/datav-vue3'
 import Icon from '../../NursingQuery/components/Icon.vue'
-import { House, MapLocation, Tickets, Document, HomeFilled, StarFilled, PictureFilled, HelpFilled, Promotion, LocationInformation } from '@element-plus/icons-vue'
+import { House, MapLocation, Tickets, Document, HomeFilled, StarFilled, PictureFilled, HelpFilled} from '@element-plus/icons-vue'
 import { calculateDistance, formatDistance } from "@/utils/distance"
-import { ElMessage } from 'element-plus'
-import { bd09togcj02, gcj02towgs84 } from "@/utils/lanlatTrans";
+import { gcj02towgs84 } from "@/utils/lanlatTrans";
+import AMapLoader from '@amap/amap-jsapi-loader';
 
 // 挂载
 onMounted(() => {
@@ -181,25 +181,24 @@ const searchHospitals = () => {
     state.total = data.length
   })
 }
-var LLBAND = [75, 60, 45, 30, 15, 0]
-var LL2MC = [
-  [-0.0015702102444, 111320.7020616939, 1704480524535203, -10338987376042340, 26112667856603880, -35149669176653700, 26595700718403920, -10725012454188240, 1800819912950474, 82.5],
-  [0.0008277824516172526, 111320.7020463578, 647795574.6671607, -4082003173.641316, 10774905663.51142, -15171875531.51559, 12053065338.62167, -5124939663.577472, 913311935.9512032, 67.5],
-  [0.00337398766765, 111320.7020202162, 4481351.045890365, -23393751.19931662, 79682215.47186455, -115964993.2797253, 97236711.15602145, -43661946.33752821, 8477230.501135234, 52.5],
-  [0.00220636496208, 111320.7020209128, 51751.86112841131, 3796837.749470245, 992013.7397791013, -1221952.21711287, 1340652.697009075, -620943.6990984312, 144416.9293806241, 37.5],
-  [-0.0003441963504368392, 111320.7020576856, 278.2353980772752, 2485758.690035394, 6070.750963243378, 54821.18345352118, 9540.606633304236, -2710.55326746645, 1405.483844121726, 22.5],
-  [-0.0003218135878613132, 111320.7020701615, 0.00369383431289, 823725.6402795718, 0.46104986909093, 2351.343141331292, 1.58060784298199, 8.77738589078284, 0.37238884252424, 7.45]
-]
 
-const getPointByAddress = (address) => {
+const getPointByAddress = async (address) => {
+
+  let AMap = await AMapLoader.load({
+    "key": "5278a4565c9a98ec83ec56a13b93ec07",              // 申请好的Web端开发者Key，首次调用 load 时必填
+    "version": "1.4.15",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
+    "plugins": ['AMap.Geocoder'],           // 需要使用的的插件列表，如比例尺'AMap.Scale'等
+  })
+
   // 创建地理编码实例
-  const myGeo = new BMap.Geocoder();
+  const myGeo = new AMap.Geocoder();
   return new Promise((resolve, reject) => {
     // 对地址进行地理编码
-    myGeo.getPoint(address, (point) => {
-      if (point) {
+    console.log(myGeo.getLocation)
+    myGeo.getLocation(address, (status, point) => {
+      if (status === 'complete') {
         // 地理编码成功，返回经纬度坐标对象
-        resolve(point);
+        resolve([point.geocodes[0].location.lng, point.geocodes[0].location.lat]);
       } else {
         // 地理编码失败
         reject('地理编码失败');
@@ -235,13 +234,9 @@ const searchDrugStores = async () => {
   if (radio2.value == '1') {
     try {
       point = await getPointByAddress(keyWorld.value);
-      console.log('bd09')
-      console.log('经度：', point.lng);
-      console.log('纬度：', point.lat, state.selectedPoint.x);
 
-      point = bd09togcj02(point.lng, point.lat)
       point = gcj02towgs84(point[0], point[1])
-      console.log('wgs84', point)
+      // console.log('wgs84', point)
       xyArr = lonLatToMercator(point[0], point[1])
     } catch (error) {
       console.error(error, '获取经纬度报错');
@@ -328,7 +323,8 @@ const searchParks = async () => {
       point = await getPointByAddress(keyWorld.value);
       console.log('经度：', point.lng);
       console.log('纬度：', point.lat, state.selectedPoint.x);
-      xyArr = lonLatToMercator(point.lng, point.lat)
+      point = gcj02towgs84(point[0], point[1])
+      xyArr = lonLatToMercator(point[0], point[1])
     } catch (error) {
       console.error(error, '获取经纬度报错');
     }
@@ -355,14 +351,7 @@ const searchParks = async () => {
     res.sort((a, b) => {
       return a[4] - b[4]
     })
-    // if (radio2.value == '1') {
-    //   emits('addMark', {
-    //     mapPoint: {
-    //       x: x,
-    //       y: y
-    //     }
-    //   })
-    // }
+
     if (radio2.value == '1') {
       emits('addMark', {
         mapPoint: {
@@ -533,11 +522,7 @@ const changeDisplay = (idx) => {
   if (idx === 0 || idx === 1) {
     emits('changeMapMode', 'normal')
   } else if (idx === 2 || idx === 3) {
-    // alert('请点击地图选取位置')
-    // ElMessage({
-    //   type: 'info',
-    //   message: '请点击地图选取位置'
-    // })
+
     emits('changeMapMode', 'normal') // selectPoint
   }
 }

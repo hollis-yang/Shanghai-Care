@@ -4,12 +4,6 @@
     <meta charset="UTF-8"/>
     <link rel="icon" href="/favicon.ico"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <script type="text/javascript"
-            src="http://api.map.baidu.com/api?v=3.0&ak=2hLZ833KQdLtZxuvepsZaaVkWQH8r4js"></script>
-    <script>window.lib_path = "libs/kqwebclient/leaflet/3rd_libs"</script>
-    <script type="text/javascript" include="leaflet.heatmap,leaflet.easybutton,fontawesome"
-            src="libs/kqwebclient/leaflet/include-leaflet.js"></script>
-    <script type="text/javascript" src="libs/kqwebclient/leaflet/kq-release.js"></script>
     <script type="text/javascript" src="libs/mapv.js"></script>
     <title>上海市智慧养老系统</title>
     <style>
@@ -20,6 +14,11 @@
 </head>
 <body>
 <div id="app"></div>
+<script>
+    window._AMapSecurityConfig = {
+        securityJsCode: '70ecbef67d3ad68b222462ea9a1d9ca8'
+    }
+</script>
 <script type="module" src="/src/main.js"></script>
 </body>
 </html>
