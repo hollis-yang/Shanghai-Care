@@ -1,0 +1,91 @@
+.layout-container {
+  position: relative;
+}
+
+.layout-info {
+  position: absolute;
+  top: 12vh;
+  left: 4vw;
+  .chart {
+    width: 27vw;
+    height: 15vh;
+  }
+}
+
+.layout-age {
+  position: absolute;
+  top: 27vh;
+  left: 4vw;
+  .chart {
+    width: 27vw;
+    height: 40vh;
+  }
+}
+
+.layout-expect-life {
+  position: absolute;
+  top: 69vh;
+  left: 4vw;
+  .chart {
+    width: 29.5vw;
+    height: 26vh;
+  }
+}
+
+.layout-map {
+  position: absolute;
+  top: 12vh;
+  left: 33vw;
+  .chartA,
+  .chartB {
+    width: 35vw;
+    height: 52vh;
+  }
+  .arr-left {
+    position: absolute;
+    left: 10%;
+    top: 22vh;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: white;
+    z-index: 999;
+  }
+  .arr-right {
+    position: absolute;
+    right: 10%;
+    top: 22vh;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: white;
+    z-index: 999;
+  }
+}
+
+.layout-district {
+  position: absolute;
+  top: 64vh;
+  left: 33vw;
+
+  .chart {
+    width: 35vw;
+    height: 31vh;
+  }
+}
+
+.layout-table {
+  position: absolute;
+  top: 12vh;
+  left: 70vw;
+}
+
+.fade-in {
+  animation: fadeIn 1.5s;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

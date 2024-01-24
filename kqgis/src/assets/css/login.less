@@ -1,0 +1,115 @@
+* {
+  box-sizing: border-box;
+}
+
+/* 覆盖global.less中的背景 */
+#app {
+  background: url(../../assets/img/login.jpg);
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 100% 100%;
+  width: 100%;
+  height: 100%;
+}
+
+#app {
+  color: #fff;
+  font-family: Calibri;
+  display: flex;
+  flex-direction: column; // 垂直
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  overflow: hidden;
+  margin: 0;
+}
+
+.container {
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 7vh 7vh 4vh;
+  border-radius: 2vh;
+
+  h1 {
+    text-align: center;
+    margin-top: -2vh;
+    margin-bottom: 4vh;
+  }
+
+  .btn {
+    cursor: pointer;
+    display: inline-block;
+    width: 100%;
+    background-color: skyblue;
+    padding: 1.3vh;
+    margin-bottom: 1vh;
+    font-size: 2vh;
+    border: 0;
+    border-radius: 0.5vh;
+    // margin-top: 1vh;
+
+    &:focus {
+      outline: none;
+    }
+
+    &:active {
+      transform: scale(0.98); // 点击是缩小到98%
+    }
+  }
+
+  .text {
+    margin-top: 2vh;
+  }
+
+  .form-control {
+    position: relative;
+    margin: 1.7vh 0 3.4vh;
+
+    input {
+      background-color: transparent; // 外层div透明
+      border: 0;
+      border-bottom: 0.2vh #fff solid;
+      display: block;
+      width: 100%;
+      padding: 2vh 0;  // 撑开输入框
+      font-size: 2vh;
+      color: #fff;
+
+      // 有文字内容或聚焦时都能触发
+      &:focus,
+      &:valid {
+        outline: 0;
+        border-bottom-color: skyblue;
+      }
+    }
+
+    label {
+      position: absolute;
+      top: 1.2vh;
+      left: 0;
+      pointer-events: none;
+
+      span {
+        display: inline-block;
+        font-size: 2vh;
+        // 波浪效果
+        transition: 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);  // transition-timing-function
+      }
+    }
+
+    // 如果没有聚焦/文字内容则不触发
+    input:focus + label span,
+    input:valid + label span {
+      color: skyblue;
+      transform: translateY(-2.65vh);
+    }
+  }
+
+  .change {
+    cursor: pointer;
+    font-size: 2vh;
+  }
+}
+
+.elbtn {
+  display: none;
+}
