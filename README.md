@@ -2,7 +2,13 @@
 
 - The front-end of this project uses **Vue 3**, which is a progressive JavaScript framework, also along with next generation front-end tool **Vite** and status management tool **Pinia**.
 - The back-end server of this project uses **Flask**, a lightweight Python web application framework developed with Werkzeug and Jinjia2.
-- The map service we use includes ArcGIS JS API, KQGIS 2D for Leaflet and Open-source Leaflet.
+
+### Map Service
+
+The map service we use in this branch is **ArcGIS JS API**.
+Other versions:
+- [KQGIS 2D for Leaflet](https://github.com/hollis-yang/Shanghai-Care/tree/kqgis)
+- [Open Source Leaflet](https://github.com/hollis-yang/Shanghai-Care/tree/leaflet)
 
 ### Project Setup
 
